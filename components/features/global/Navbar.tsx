@@ -62,7 +62,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Home</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+            <ul className="grid gap-2 md:w-100 lg:w-125 lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <Link
@@ -93,7 +93,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Components</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid gap-2 sm:w-[400px] md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+            <ul className="grid gap-2 sm:w-100 md:w-125 md:grid-cols-2 lg:w-150">
               {components.map((component) => (
                 <ListItem
                   key={component.title}
@@ -114,7 +114,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem className="hidden md:block">
           <NavigationMenuTrigger>List</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[300px] gap-4">
+            <ul className="grid w-75 gap-4">
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="#">
@@ -147,7 +147,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem className="hidden md:block">
           <NavigationMenuTrigger>Simple</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[200px] gap-4">
+            <ul className="grid w-50 gap-4">
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="#">Components</Link>
@@ -165,7 +165,7 @@ export function NavigationMenuDemo() {
         <NavigationMenuItem className="hidden md:block">
           <NavigationMenuTrigger>With Icon</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[200px] gap-4">
+            <ul className="grid w-50 gap-4">
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="#" className="flex-row items-center gap-2">
