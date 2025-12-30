@@ -57,11 +57,12 @@ export function Navbar() {
 
         {!isMobile && (
           <div className="flex items-center gap-3">
-            <Button variant="outline" >
+            <Button variant="outline" className="cursor-pointer">
               <Search /> Search
             </Button>
             <Button
               className="
+              cursor-pointer
     text-white
     bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
     hover:opacity-90
