@@ -124,8 +124,104 @@
   }
 }
 
-
-.arrow{
+.arrow {
   width: 9px !important;
   height: 9px !important;
 }
+
+
+.inverted-radius-image-bottom {
+  --r: 20px; 
+  --s: 40px; 
+  --x: 90px; 
+  --y: 10px; 
+  
+
+  aspect-ratio: 1;
+  background: white;
+  border-radius: var(--r);
+  --_m:/calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%);
+  --_g:conic-gradient(from 90deg at calc(100% - var(--r)) calc(100% - var(--r)),#0000 25%,#000 0);
+  --_d:(var(--s) + var(--r));
+  mask:
+    calc(100% - var(--_d) - var(--x)) 100% var(--_m),
+    100% calc(100% - var(--_d) - var(--y)) var(--_m),
+    radial-gradient(var(--s) at 100% 100%,#0000 99%,#000 calc(100% + 1px)) 
+     calc(-1*var(--r) - var(--x)) calc(-1*var(--r) - var(--y)),
+    var(--_g) calc(-1*var(--_d) - var(--x)) 0,
+    var(--_g) 0 calc(-1*var(--_d) - var(--y));
+  mask-repeat: no-repeat;
+}
+
+.inverted-radius-image-top {
+  --r: 20px; 
+  --s: 30px; 
+  --x: 20px; 
+  --y: 10px; 
+  
+  aspect-ratio: 1;
+  background: white;
+  border-radius: var(--r);
+  --_m:/calc(2*var(--r)) calc(2*var(--r)) radial-gradient(#000 70%,#0000 72%);
+  --_g:conic-gradient(at var(--r) var(--r),#000 75%,#0000 0);
+  --_d:(var(--s) + var(--r));
+  mask:
+    calc(var(--_d) + var(--x)) 0 var(--_m),
+    0 calc(var(--_d) + var(--y)) var(--_m),
+    radial-gradient(var(--s) at 0 0,#0000 99%,#000 calc(100% + 1px)) 
+     calc(var(--r) + var(--x)) calc(var(--r) + var(--y)),
+    var(--_g) calc(var(--_d) + var(--x)) 0,
+    var(--_g) 0 calc(var(--_d) + var(--y));
+  mask-repeat: no-repeat;
+}
+
+.inverted-radius-image-double {
+  --r: 20px; 
+  --s-top: 30px; 
+  --s-bottom: 30px; 
+  --x-top: 20px; 
+  --y-top: 10px;
+  --x-bottom: 90px;
+  --y-bottom: 10px;
+
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r);
+  overflow: hidden;
+  position: relative;
+
+ 
+  -webkit-mask-image: 
+    radial-gradient(circle at var(--x-top) var(--y-top), transparent var(--s-top), black calc(var(--s-top) + 1px)) top/100% 50% no-repeat,
+    radial-gradient(circle at calc(100% - var(--x-bottom)) calc(100% - var(--y-bottom)), transparent var(--s-bottom), black calc(var(--s-bottom) + 1px)) bottom/100% 50% no-repeat;
+  -webkit-mask-composite: intersect;
+  -webkit-mask-repeat: no-repeat;
+
+  mask-image: 
+    radial-gradient(circle at var(--x-top) var(--y-top), transparent var(--s-top), black calc(var(--s-top) + 1px)) top/100% 50% no-repeat,
+    radial-gradient(circle at calc(100% - var(--x-bottom)) calc(100% - var(--y-bottom)), transparent var(--s-bottom), black calc(var(--s-bottom) + 1px)) bottom/100% 50% no-repeat;
+  mask-composite: intersect;
+  mask-repeat: no-repeat;
+}
+
+
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade {
+  animation: fadeIn 1.0s ease-in-out;
+}
+
+
+

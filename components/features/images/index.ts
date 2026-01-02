@@ -3,6 +3,16 @@ import trusted_brands_1 from "./trusted_brands_1.png";
 import trusted_brands_2 from "./trusted_brands_2.png";
 import trusted_brands_3 from "./trusted_brands_3.png";
 import trusted_brands_4 from "./trusted_brands_4.png";
+import man_carrying_solar_panel from "./man_carrying_solar_panel.png";
+import solar_cells from "./solar_cells.png";
+import our_packages_one from "./our_packages_one.png";
+import our_packages_two from "./our_packages_two.png";
+import our_packages_three from "./our_packages_three.png";
+import our_packages_four from "./our_packages_four.png";
+import how_it_works_one from "./how_it_works_one.png"
+import how_it_works_two from "./how_it_works_two.png"
+import how_it_works_three from "./how_it_works_three.png"
+import how_it_works_four from "./how_it_works_four.png"
 
 
 
@@ -14,5 +24,15 @@ export {
     trusted_brands_1,
     trusted_brands_2,
     trusted_brands_3,
-    trusted_brands_4
+    trusted_brands_4,
+    man_carrying_solar_panel,
+    solar_cells,
+    our_packages_one,
+    our_packages_two,
+    our_packages_three,
+    our_packages_four,
+    how_it_works_one,
+    how_it_works_two,
+    how_it_works_three,
+    how_it_works_four
 }

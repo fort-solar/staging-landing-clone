@@ -57,7 +57,7 @@ export function Navbar() {
 
         {!isMobile && (
           <div className="flex items-center gap-3">
-            <Button variant="outline" className="cursor-pointer">
+            <Button variant="outline" className="border-[#0000004D] cursor-pointer">
               <Search /> Search
             </Button>
             <Button
@@ -101,12 +101,12 @@ export function Navbar() {
             ))}
 
             <div className="mt-4 flex flex-col gap-2">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
                 <Search /> Search
               </Button>
               <Button
                 className="
-    w-full
+    w-fit
     text-white
     bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
     hover:opacity-90
