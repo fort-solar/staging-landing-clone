@@ -1,0 +1,97 @@
+import React from 'react';
+import { Button } from '../button';
+import Image from 'next/image';
+import { solar_cells, man_carrying_solar_panel, solar_installation_image } from '@/components/features/images'
+
+const HomeAbout = () => {
+    return (
+        <div>
+            <div className='flex justify-between w-full items-center'>
+                <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
+                    About Fortsolar
+                </div>
+                <div>
+                    <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
+                        Get a Free Quote
+                    </Button>
+                </div>
+            </div>
+
+            <div className='max-w-4xl mt-7'>
+                <p>We transform how people power their homes and businesses across Nigeria. Established in 2022, we’re committed to providing reliable, affordable, and future-ready solar energy solutions that help households, offices, and remote workers save time and money on electricity bills.</p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-5">
+                <div className='grid grid-cols-1 lg:grid-cols-2'>
+
+
+                    <div className='bg-[#EBFAEB80] h-125'>
+                        <div className='h-[50%] p-4 space-y-2'>
+                            <p className='text-sm font-bold'>01</p>
+                            <p className='font-medium text-2xl font-poppins'>Our Mission</p>
+                            <p>To empower individuals and businesses with dependable, cost-effective solar solutions that drive sustainability, reduce carbon footprints, and ensure continuous access to clean energy.</p>
+                        </div>
+                        <div className='h-[50%] p-4 relative'>
+                            <Image
+                                fill
+                                alt="solar cells image"
+                                src={solar_cells}
+                                className="object-fill rounded-4xl px-4 py-4"
+                            />
+                        </div>
+                    </div>
+
+
+                    <div className='bg-[#DAF1FB80] h-125 flex flex-col-reverse lg:flex-col'>
+                        <div className='h-[50%] p-4 relative'>
+                            <Image
+                                fill
+                                alt="man_carrying_solar_panel"
+                                src={man_carrying_solar_panel}
+                                className="object-fill rounded-4xl px-4 py-4"
+                            />
+                        </div>
+                        <div className='h-[50%] p-4 space-y-2'>
+                            <p className='text-sm font-bold'>02</p>
+                            <p className='font-medium text-2xl font-poppins'>Our Vision</p>
+                            <p>To be a leading force in Africa’s renewable energy revolution, ensuring every home and business has access to clean, sustainable, and affordable power.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div>
+                    <div className="hidden lg:block relative h-131 w-full rounded-4xl overflow-hidden">
+                        <div className="inverted-radius-image-bottom w-full h-full">
+                            <Image
+                                fill
+                                alt="solar installation image"
+                                src={solar_installation_image}
+                                className="object-cover w-full h-full"
+                            />
+                        </div>
+                        <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-1 rounded-tl-4xl rounded-br-4xl">
+                            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                                Learn More
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className='lg:hidden block'>
+                        <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                            Learn More
+                        </Button>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    )
+}
+
+export default HomeAbout
