@@ -9,10 +9,11 @@ import our_packages_one from "./our_packages_one.png";
 import our_packages_two from "./our_packages_two.png";
 import our_packages_three from "./our_packages_three.png";
 import our_packages_four from "./our_packages_four.png";
-import how_it_works_one from "./how_it_works_one.png"
-import how_it_works_two from "./how_it_works_two.png"
-import how_it_works_three from "./how_it_works_three.png"
-import how_it_works_four from "./how_it_works_four.png"
+import how_it_works_one from "./how_it_works_one.png";
+import how_it_works_two from "./how_it_works_two.png";
+import how_it_works_three from "./how_it_works_three.png";
+import how_it_works_four from "./how_it_works_four.png";
+import avatar from "./avatar.png";
 
 
 
@@ -34,5 +35,6 @@ export {
     how_it_works_one,
     how_it_works_two,
     how_it_works_three,
-    how_it_works_four
+    how_it_works_four,
+    avatar
 }

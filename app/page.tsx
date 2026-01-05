@@ -4,6 +4,8 @@ import HomeAbout from "@/components/ui/home/HomeAbout";
 import HomeExplore from "@/components/ui/home/HomeExplore";
 import HomeWhy from "@/components/ui/home/HomeWhy";
 import HomeHow from "@/components/ui/home/HomeHow";
+import HomeBrands from "@/components/ui/home/HomeBrands";
+import Testimonials from "@/components/features/global/Testimonials";
 
 
 
@@ -20,6 +22,8 @@ export default function Home() {
       <HomeExplore /> 
       <HomeWhy />
       <HomeHow />
+      <HomeBrands />
+      <Testimonials />
     </div>
   );
 }
