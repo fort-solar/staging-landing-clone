@@ -6,6 +6,9 @@ import HomeWhy from "@/components/ui/home/HomeWhy";
 import HomeHow from "@/components/ui/home/HomeHow";
 import HomeBrands from "@/components/ui/home/HomeBrands";
 import Testimonials from "@/components/features/global/Testimonials";
+import Blog from "@/components/features/global/Blog";
+import CallToActionOne from "@/components/features/global/CallToActionOne";
+import CallToActionTwo from "@/components/features/global/CallToActionTwo";
 
 
 
@@ -24,6 +27,9 @@ export default function Home() {
       <HomeHow />
       <HomeBrands />
       <Testimonials />
+      <Blog />
+      <CallToActionOne />
+      <CallToActionTwo />
     </div>
   );
 }

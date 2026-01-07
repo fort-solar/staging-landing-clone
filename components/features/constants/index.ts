@@ -72,3 +72,21 @@ export const TESTIMONIAL_CONTENT = [
   },
  
 ];
+
+export const BLOG_CONTENT = [
+  {
+    subheading: "Panels",
+    title: "5 Reasons Now Is the Best Time to Switch to Solar Energy",
+    preview: "Electricity costs keep rising, but solar power offers a sustainable and cost-effective solution. Discover why there’s no better time to invest in solar energy—whether you’re powering your home, office, or business."
+  },
+  {
+    subheading: "Solar Installations",
+    title: "5 Reasons Now Is the Best Time to Switch to Solar Energy",
+    preview: "Electricity costs keep rising, but solar power offers a sustainable and cost-effective solution. Discover why there’s no better time to invest in solar energy—whether you’re powering your home, office, or business."
+  },
+  {
+    subheading: "Partnerships",
+    title: "5 Reasons Now Is the Best Time to Switch to Solar Energy",
+    preview: "Electricity costs keep rising, but solar power offers a sustainable and cost-effective solution. Discover why there’s no better time to invest in solar energy—whether you’re powering your home, office, or business."
+  },
+]
