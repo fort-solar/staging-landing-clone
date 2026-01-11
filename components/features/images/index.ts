@@ -16,6 +16,7 @@ import how_it_works_two from "./how_it_works_two.png";
 import how_it_works_three from "./how_it_works_three.png";
 import how_it_works_four from "./how_it_works_four.png";
 import avatar from "./avatar.png";
+import logo_footer from "./logo_footer.png";
 
 
 
@@ -40,5 +41,6 @@ export {
     how_it_works_two,
     how_it_works_three,
     how_it_works_four,
-    avatar
+    avatar,
+    logo_footer
 }

@@ -33,7 +33,7 @@ export function Navbar() {
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Logo className="h-8 w-auto" />
-          <span className="sr-only">FortSolar</span>
+          {/* <span className="sr-only">FortSolar</span> */}
         </Link>
 
 
