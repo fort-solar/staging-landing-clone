@@ -1,4 +1,4 @@
-import { solar_installation_image } from "../images";
+import { solar_installation_image_single_cut } from "../images";
 
 export const CAROUSEL_CONTENT = [
   {
@@ -9,7 +9,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Enjoy clean, reliable energy without breaking the bank. Our flexible financing options let you install your system today and pay over time.",
     buttonName: "Apply for Financing",
-    image: solar_installation_image,
+    image: solar_installation_image_single_cut,
   },
   {
     toast: "Solar Installations",
@@ -19,7 +19,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Whether you’re powering a residence or a commercial space, our solar solutions deliver consistent performance, lower bills, and total peace of mind.",
     buttonName: "Get a Quote",
-    image: solar_installation_image,
+    image: solar_installation_image_single_cut,
   },
   {
     toast: "Solar Products & Packages",
@@ -29,7 +29,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Explore our collection of verified solar panels, batteries, and inverters, all sourced from trusted manufacturers and built for lasting performance.",
     buttonName: "View Store",
-    image: solar_installation_image,
+    image: solar_installation_image_single_cut,
   },
 ];
 

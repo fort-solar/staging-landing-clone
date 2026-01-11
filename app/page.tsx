@@ -9,6 +9,9 @@ import Testimonials from "@/components/features/global/Testimonials";
 import Blog from "@/components/features/global/Blog";
 import CallToActionOne from "@/components/features/global/CallToActionOne";
 import CallToActionTwo from "@/components/features/global/CallToActionTwo";
+import Faq from "@/components/features/global/Faq";
+import Newsletter from "@/components/features/global/Newsletter";
+import Footer from "@/components/features/global/Footer";
 
 
 
@@ -30,6 +33,9 @@ export default function Home() {
       <Blog />
       <CallToActionOne />
       <CallToActionTwo />
+      <Faq />
+      <Newsletter />
+      <Footer />
     </div>
   );
 }

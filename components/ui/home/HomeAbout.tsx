@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../button';
 import Image from 'next/image';
-import { solar_cells, man_carrying_solar_panel, solar_installation_image } from '@/components/features/images'
+import { solar_cells, man_carrying_solar_panel,  solar_installation_image_double_cut } from '@/components/features/images'
 
 const HomeAbout = () => {
     return (
@@ -61,16 +61,16 @@ const HomeAbout = () => {
                 </div>
 
                 <div>
-                    <div className="hidden lg:block relative h-131 w-full rounded-4xl overflow-hidden">
-                        <div className="inverted-radius-image-bottom w-full h-full">
+                    <div className="hidden lg:block relative h-125 w-full rounded-4xl overflow-hidden">
+                        <div className="w-full h-full">
                             <Image
                                 fill
                                 alt="solar installation image"
-                                src={solar_installation_image}
-                                className="object-cover w-full h-full"
+                                src={solar_installation_image_double_cut}
+                                className="object-fill w-full h-full"
                             />
                         </div>
-                        <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-1 rounded-tl-4xl rounded-br-4xl">
+                        <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-7 rounded-tl-4xl rounded-br-4xl">
                             <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
                                 Learn More
                             </Button>

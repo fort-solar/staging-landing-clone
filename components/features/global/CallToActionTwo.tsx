@@ -1,7 +1,5 @@
 import React from 'react'
 import { Button } from '@/components/ui/button';
-import { man_carrying_solar_panel } from '../images';
-import Image from 'next/image';
 
 const CallToActionTwo = () => {
     return (
@@ -14,6 +12,12 @@ const CallToActionTwo = () => {
                     <Button className="w-fit bg-transparent border-white border hover:bg-transparent cursor-pointer">
                         Become an Installer
                     </Button>
+                </div>
+
+
+
+                <div className="relative w-full h-full bg-[url('/man_carrying_solar_panel.png')] bg-cover bg-center">
+                  <div className="absolute inset-0 bg-linear-to-l from-[rgba(1,50,1,0)] to-[#013203] z-0" />
                 </div>
 
             </div>

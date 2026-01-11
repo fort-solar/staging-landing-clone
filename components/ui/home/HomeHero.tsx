@@ -126,16 +126,16 @@ const HomeHero = () => {
             </div>
 
 
-            <div className="hidden lg:block relative h-131 w-full overflow-hidden rounded-4xl border-white">
+            <div className="hidden lg:block relative h-125 w-full overflow-hidden rounded-4xl border-white">
                 <Image
                     fill
                     alt="solar installation image"
                     src={CAROUSEL_CONTENT[current].image}
-                    className="object-cover rounded-4xl inverted-radius-image-bottom"
+                    className="object-fill rounded-4xl"
                 />
 
 
-                <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-1 rounded-tl-4xl rounded-br-4xl">
+                <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-7 rounded-tl-4xl rounded-br-4xl">
                     <button
                         onClick={() =>
                             setCurrent((prev) =>
