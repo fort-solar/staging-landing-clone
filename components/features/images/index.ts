@@ -1,4 +1,6 @@
 import solar_installation_image from "./solar_installation_image.png";
+import solar_installation_image_single_cut from "./solar_installation_image_single_cut.png";
+import solar_installation_image_double_cut from "./solar_installation_image_double_cut.png";
 import trusted_brands_1 from "./trusted_brands_1.png";
 import trusted_brands_2 from "./trusted_brands_2.png";
 import trusted_brands_3 from "./trusted_brands_3.png";
@@ -22,6 +24,8 @@ import avatar from "./avatar.png";
 
 export {
     solar_installation_image,
+    solar_installation_image_single_cut,
+    solar_installation_image_double_cut,
     trusted_brands_1,
     trusted_brands_2,
     trusted_brands_3,
