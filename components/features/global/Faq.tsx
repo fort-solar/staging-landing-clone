@@ -14,8 +14,8 @@ const Faq = () => {
         <div className="mt-20 bg-[url('/sun.png')] bg-cover bg-center">
             <div className='relative overflow-hidden bg-transparent'>
                 <div className="relative min-h-screen w-full max-w-6xl mx-auto px-4 py-20 space-y-10  dark:bg-black sm:items-start">
-                    <div className='flex justify-between w-full items-center mt-5'>
-                        <div className="leading-16 max-w-2xl text-3xl lg:text-5xl font-bold font-poppins mt-2">
+                    <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
+                        <div className="leading-10 lg:leading-16 max-w-2xl text-3xl lg:text-5xl font-bold font-poppins mt-2">
                             Frequently Asked Questions
                         </div>
                         <div>
@@ -24,9 +24,9 @@ const Faq = () => {
                             </Button>
                         </div>
                     </div>
-                    <div className="grid grid-cols-[4fr_8fr]">
-                        <div className="flex items-end">
-                          <div className="space-y-1 text-white w-[80%] rounded-xl h-fit bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] p-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-[4fr_8fr] gap-8 lg:gap-2">
+                        <div className="order-2 lg:order-1  flex items-end">
+                          <div className="space-y-2 text-white lg:w-[80%] rounded-xl h-fit bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] p-4">
                             <p className="text-lg font-bold">
                                 Don&apos;t see what you&apos;re looking for?
                             </p>
@@ -47,7 +47,7 @@ const Faq = () => {
                         </div>   
                         </div>
                        
-                        <div><Accordion type="single" collapsible className="w-full space-y-4">
+                        <div className="order-1 lg:order-2"><Accordion type="single" collapsible className="w-full space-y-4">
 
 
                             <AccordionItem

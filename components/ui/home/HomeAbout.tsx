@@ -6,7 +6,7 @@ import { solar_cells, man_carrying_solar_panel,  solar_installation_image_double
 const HomeAbout = () => {
     return (
         <div>
-            <div className='flex justify-between w-full items-center'>
+             <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
                 <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
                     About Fortsolar
                 </div>

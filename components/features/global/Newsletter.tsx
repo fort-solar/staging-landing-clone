@@ -12,11 +12,11 @@ const Newsletter = () => {
   return (
     <div>
       <div className="relative  w-full max-w-6xl mx-auto px-4 pt-20  dark:bg-black sm:items-start">
-        <div className='grid grid-cols-[3fr_6fr_3fr]'>
+        <div className='grid grid-cols-1 lg:grid-cols-[3fr_6fr_3fr]'>
           <div className="bg-[url('/engineer.png')] bg-cover bg-center min-h-87.5">
 
           </div>
-          <div className='py-10 h-full'>
+          <div className='py-10 h-full min-h-87.5'>
             <div className='h-full max-w-2xl mx-auto text-center flex flex-col gap-5 items-center justify-center'>
               <p className="leading-16 max-w-2xl text-3xl lg:text-5xl font-bold font-poppins mt-2">Stay Updated with Solar Insights</p>
               <div className='max-w-xl mt-4 mb-7'>
@@ -25,11 +25,11 @@ const Newsletter = () => {
             </div>
           </div>
 
-          <div className="bg-[url('/solar_panel_in_sun.png')] bg-cover bg-center">
+          <div className="bg-[url('/solar_panel_in_sun.png')] bg-cover bg-center min-h-87.5">
 
           </div>
         </div>
-        <div className='grid grid-cols-[3fr_6fr_3fr]'>
+        <div className='grid grid-cols-1 lg:grid-cols-[3fr_6fr_3fr] mt-5 lg:mt-0'>
           <div className="">
 
           </div>
@@ -49,33 +49,33 @@ const Newsletter = () => {
 
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-5 mt-10">
-          <div className='flex items-start gap-2'>
+        <div className="grid grid-cols-2 gap-5 lg:gap-2 lg:grid-cols-5 mt-10">
+          <div className='flex flex-wrap items-start gap-2'>
             <Phone className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Tel</p>
               <Link href={"tel:+2349023566347"} className='text-[#058A05] text-sm'>+234 902 3566 347</Link>
             </div>
           </div>
-          <div className='flex items-start gap-2'>
+          <div className='flex flex-wrap items-start gap-2'>
             <Mail className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Mail</p>
               <Link href="mailto:fortsolarx@gmail.com" className='text-[#058A05] text-sm'>fortsolarx@gmail.com</Link>
             </div>
           </div>
-          <div className='flex items-start justify-center gap-2 col-span-1 md:col-span-2'>
+          <div className='flex flex-wrap items-start lg:justify-center gap-2 col-span-1 lg:col-span-2'>
             <MapPin className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Lagos Address</p>
-              <p className='text-[#058A05] text-sm'>706 Campfire Ave. Meriden, CT 06450</p>
+              <p className='text-[#058A05] text-sm'>Suite D1 038 HFP East Line Complex Abraham Adesanya</p>
             </div>
           </div>
-          <div className='flex items-start gap-2'>
+          <div className='flex flex-wrap items-start gap-2'>
             <MapPin  className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Uyo Address</p>
-              <p className='text-[#058A05] text-sm'>183 Ikot Ekpene Road, Uyo</p>
+              <p className='text-[#058A05] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
             </div>
           </div>
         </div>

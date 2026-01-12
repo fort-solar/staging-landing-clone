@@ -37,7 +37,7 @@ export const TESTIMONIAL_CONTENT = [
   {
     name: "Cliff Curtis",
     role: "founder",
-    testimony: "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.",
+    testimony: "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.Venenatis odio et elementum pretium in.",
     star: 5
   },
   {

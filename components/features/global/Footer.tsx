@@ -9,8 +9,8 @@ const Footer = () => {
   return (
     <div>
       <div className="w-full max-w-6xl mx-auto px-4 pt-20 pb-10 space-y-10  dark:bg-black sm:items-start">
-        <div className="grid grid-cols-2 lg:grid-cols-7">
-          <div className='col-span-2 space-y-4'>
+        <div className="grid grid-cols-2 lg:grid-cols-7 gap-8 lg:gap-2">
+          <div className='col-span-2 space-y-4 mb-5 lg:mb-0'>
             <Image src={logo_footer} alt="footer logo" height={200} width={200} />
             <p className='text-[#3B3B3BB2]'>Reliable solar solutions built to keep you powered, anytime, anywhere.</p>
           </div>
@@ -75,12 +75,18 @@ const Footer = () => {
         </div>
 
       </div>
-      <div className="bg-gray-50 w-full max-w-6xl mx-auto px-4 py-4 space-y-10  dark:bg-black sm:items-start">
-        <div>
-          
-        </div>
+      <div className="bg-gray-50 py-6">
+        <div className="flex flex-col-reverse gap-5 lg:flex-row items-center justify-center lg:justify-between w-full max-w-6xl mx-auto px-4  dark:bg-black sm:items-start">
+          <p className='text-xs'>© 2022 - {new Date().getFullYear()}. All rights reserved.</p>
+          <div className='flex gap-5 items-center'>
+            <TwitterIcon />
+            <LinkedinIcon />
+            <FacebookIcon />
+          </div>
 
+        </div>
       </div>
+
     </div>
   )
 }

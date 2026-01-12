@@ -7,7 +7,7 @@ const HomeHow = () => {
     return (
         <div className="bg-[#B8C0CC1A]">
             <div className=" min-h-screen w-full max-w-6xl mx-auto px-4 py-10 space-y-10  dark:bg-black sm:items-start">
-                <div className='flex justify-between w-full items-center mt-5'>
+                 <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
                     <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
                         How It Works
                     </div>
