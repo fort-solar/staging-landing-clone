@@ -1,15 +1,9 @@
 import React from 'react'
 
-export const SquarePlay = () => {
+export const SquarePlay = ({className}: {className?: string}) => {
     return (
-        <svg width="163" height="142" viewBox="0 0 163 142" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            <foreignObject x="0" y="0" width="208" height="208"><div {...({ xmlns: "http://www.w3.org/1999/xhtml" } as any)} style={{
-                backdropFilter: "blur(13px)",
-                clipPath: "url(#bgblur_0_250_868_clip_path)",
-                height: "100%",
-                width: "100%",
-            }}></div></foreignObject><g filter="url(#filter0_d_250_868)" data-figma-bg-blur-radius="26">
+        <svg className={className} width="50" height="50" viewBox="75 60 58 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+           <g filter="url(#filter0_d_250_868)" data-figma-bg-blur-radius="26">
                 <rect x="75" y="60" width="58" height="58" rx="19" fill="white" fill-opacity="0.09" shape-rendering="crispEdges" />
                 <rect x="76" y="61" width="56" height="56" rx="18" stroke="white" stroke-width="2" shape-rendering="crispEdges" />
             </g>

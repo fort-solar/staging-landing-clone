@@ -90,3 +90,18 @@ export const BLOG_CONTENT = [
     preview: "Electricity costs keep rising, but solar power offers a sustainable and cost-effective solution. Discover why there’s no better time to invest in solar energy—whether you’re powering your home, office, or business."
   },
 ]
+
+export const navItems = [
+  { label: "Home", path: "/home" },
+  { label: "About", path: "/about" },
+  { label: "Store", path: "/coming-soon" },
+  { label: "Installations", path: "/coming-soon" },
+  { label: "Blog", path: "/coming-soon" },
+  { label: "Contact", path: "/contact" },
+]
+
+export const NotDesigned = [
+    {
+        name: ""
+    }
+]

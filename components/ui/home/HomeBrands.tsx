@@ -34,7 +34,7 @@ const HomeBrands = () => {
                     </div>
 
                 </div>
-                <div className="border-t border-t-white flex items-center justify-between lg:justify-center lg:gap-20">
+                <div className="border-t border-t-white flex items-center justify-center gap-10 lg:gap-20">
                     <MiroIconFull />
                     <div className='space-y-2'>
                         <div className='flex gap-1'>
