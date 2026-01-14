@@ -1,15 +1,55 @@
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '../button'
+import { SlantedArrow } from '@/components/features/icons/SlantedArrow'
 
 const ContactHero = () => {
     return (
-        <div className='h-[50vh]'>
+        <div className='h-[60vh]'>
             <div className="relative bg-[url('/contact_hero_image.png')] bg-cover bg-center h-full z-10">
                 <div className='absolute px-4 inset-0 z-10  flex flex-col items-center space-y-5 text-center justify-center '>
                     <h1 className="text-4xl lg:text-5xl font-bold font-poppins text-white max-w-4xl mx-auto">Start Your Solar Journey Today</h1>
                     <p className='max-w-2xl mx-auto text-white text-lg'>Have questions about our solar products, packages, or installations? Our support and sales team are always ready to help you make the switch to clean, reliable energy.</p>
+                    <div className="flex gap-4">
+                        <Link href="/coming-soon">
+                            <Button
+                                className="
+                            transition-all
+                      text-white
+                      cursor-pointer
+                      text-sm
+                      flex 
+                      items-center 
+                      justify-center 
+                      gap-3
+                      bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                      hover:opacity-90
+                    "
+                            >
+                                Get a Free Quote
+                                <SlantedArrow className='h-1 w-1 arrow' />
+                            </Button>
+                        </Link>
+                        <Link href="#">
+                            <Button
+                                variant={"outline"}
+                                className="
+                            transition-all
+                            border-white
+                            text-white
+                            bg-transparent
+                      cursor-pointer
+                      text-sm
+                      hover:opacity-90
+                    "
+                            >
+                                Send Us a Message
+                            </Button>
+                        </Link>
+
+                    </div>
                 </div>
+
                 <div className="absolute inset-0 bg-linear-to-b from-[#01320394] to-[#01320394] z-0" />
             </div>
         </div>
