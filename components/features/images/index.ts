@@ -17,6 +17,8 @@ import how_it_works_three from "./how_it_works_three.png";
 import how_it_works_four from "./how_it_works_four.png";
 import avatar from "./avatar.png";
 import logo_footer from "./logo_footer.png";
+import Result from "./Result.png";
+import video_background from "./video_background.jpg";
 
 
 
@@ -42,5 +44,7 @@ export {
     how_it_works_three,
     how_it_works_four,
     avatar,
-    logo_footer
+    logo_footer,
+    Result,
+    video_background
 }

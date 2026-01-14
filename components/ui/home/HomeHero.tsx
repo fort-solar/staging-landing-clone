@@ -6,6 +6,7 @@ import { Button } from "../button";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { GreenTick } from "@/components/features/icons/Greentick";
 import Image from "next/image";
+import { solar_installation_image } from "@/components/features/images";
 import { trusted_brands_1, trusted_brands_2, trusted_brands_3, trusted_brands_4 } from "@/components/features/images";
 
 
@@ -71,7 +72,7 @@ const HomeHero = () => {
                             width={300}
                             height={300}
                             alt="solar installation image"
-                            src={CAROUSEL_CONTENT[current].image}
+                            src={solar_installation_image}
                             className="object-fit rounded-4xl w-full"
                         />
                     </div>
@@ -87,7 +88,6 @@ const HomeHero = () => {
                         >
                             ←
                         </button>
-
                         <button
                             onClick={() =>
                                 setCurrent((prev) => (prev + 1) % CAROUSEL_CONTENT.length)
@@ -146,6 +146,8 @@ const HomeHero = () => {
                     >
                         ←
                     </button>
+
+
 
                     <button
                         onClick={() =>

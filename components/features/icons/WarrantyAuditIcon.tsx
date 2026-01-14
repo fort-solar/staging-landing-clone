@@ -1,8 +1,8 @@
 import React from 'react'
 
-export const WarrantyAuditIcon = () => {
+export const WarrantyAuditIcon = ({className}:{className?: string}) => {
     return (
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={className} width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="0.5" y="0.5" width="47" height="47" rx="23.5" stroke="url(#paint0_linear_288_365)" />
             <path d="M13 13.9999C17.2608 13.9999 17.9879 13.6189 24 13.6189C30.6776 13.6189 30.7392 13.9999 35 13.9999C35.0677 13.9999 35.1353 13.9995 35.2028 13.9986C35.7201 15.5721 36 21.2534 36 23C36 30.4553 30.9009 36.7197 24 38.4959C17.0991 36.7197 12 30.4553 12 23C12 21.2534 12.2799 15.5721 12.7972 13.9986C12.8647 13.9995 12.9323 13.9999 13 13.9999Z" stroke="#058A05" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M26.8333 21C26.3731 21 26 21.3874 26 21.8654V29.1346C26 29.6126 26.3731 30 26.8333 30H27.1667C27.6269 30 28 29.6126 28 29.1346V21.8654C28 21.3874 27.6269 21 27.1667 21H26.8333Z" fill="#2CB22C" />

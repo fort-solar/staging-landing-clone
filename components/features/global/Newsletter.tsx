@@ -49,22 +49,22 @@ const Newsletter = () => {
 
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-5 lg:gap-2 lg:grid-cols-5 mt-10">
-          <div className='flex flex-wrap items-start gap-2'>
+        <div className="grid grid-cols-2 gap-5 lg:gap-2 lg:grid-cols-4 mt-10">
+          <div className='flex flex-col items-start gap-2'>
             <Phone className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Tel</p>
               <Link href={"tel:+2349023566347"} className='text-[#058A05] text-sm'>+234 902 3566 347</Link>
             </div>
           </div>
-          <div className='flex flex-wrap items-start gap-2'>
+          <div className='flex flex-col items-start gap-2'>
             <Mail className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Mail</p>
               <Link href="mailto:fortsolarx@gmail.com" className='text-[#058A05] text-sm'>fortsolarx@gmail.com</Link>
             </div>
           </div>
-          <div className='flex flex-wrap items-start lg:justify-center gap-2 col-span-1 lg:col-span-2'>
+          <div className='flex flex-col items-start gap-2'>
             <MapPin className='text-[#B8C0CC] w-5 h-5'/>
             <div>
               <p className='text-[#B8C0CC] text-sm'>Lagos Address</p>

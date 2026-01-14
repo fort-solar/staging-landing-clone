@@ -12,9 +12,6 @@ const CallToActionTwo = () => {
                         Become an Installer
                     </Button>
                 </div>
-
-
-
                 <div className="hidden md:block relative w-full h-full bg-[url('/man_carrying_solar_panel.png')] bg-cover bg-center">
                   <div className="absolute inset-0 bg-linear-to-l from-[rgba(1,50,1,0)] to-[#013203] z-0" />
                 </div>
