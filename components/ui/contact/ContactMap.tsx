@@ -60,8 +60,6 @@ const ContactMap = () => {
           ))}
         </TabsList>
       </Tabs>
-
-
       <div className="overflow-hidden h-full ">
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
@@ -75,9 +73,7 @@ const ContactMap = () => {
           <Marker position={office.position} />
         </GoogleMap>
       </div>
-
-
-      <p className="text-center text-sm text-gray-600">
+      <p className="hidden lg:block text-center text-sm text-gray-600">
         {office.address}
       </p>
     </div>
