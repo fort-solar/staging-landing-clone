@@ -45,7 +45,7 @@ export default function ComingSoon() {
 
 
         <p className="mt-10 text-xs text-white/50">
-          FortSolar — powering a brighter future 🌞
+          Fortsolar — powering a brighter future 🌞
         </p>
       </div>
     </div>

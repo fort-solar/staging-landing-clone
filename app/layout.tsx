@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://fortsolar.com"),
 
   title: {
-    default: "FortSolar | Clean, Reliable Solar Power",
-    template: "%s | FortSolar",
+    default: "Fortsolar | Clean, Reliable Solar Power",
+    template: "%s | Fortsolar",
   },
 
   description:
@@ -31,24 +31,24 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "FortSolar | Clean, Reliable Solar Power",
+    title: "Fortsolar | Clean, Reliable Solar Power",
     description:
       "Residential and commercial solar solutions designed for reliability, savings, and sustainability.",
     type: "website",
-    siteName: "FortSolar",
+    siteName: "Fortsolar",
     images: [
       {
         url: "/FortsolarLogo.png",
         width: 1200,
         height: 630,
-        alt: "FortSolar – Clean, Reliable Solar Power",
+        alt: "Fortsolar – Clean, Reliable Solar Power",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "FortSolar | Clean, Reliable Solar Power",
+    title: "Fortsolar | Clean, Reliable Solar Power",
     description:
       "Residential and commercial solar solutions for homes and businesses.",
   },

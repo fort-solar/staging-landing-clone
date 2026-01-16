@@ -29,15 +29,19 @@ const Footer = () => {
           <div className="flex justify-start lg:justify-end">
             <div className='space-y-3'>
               <p className='text-sm text-[#3B3B3B] font-semibold'>Company</p>
-              <Link href="/about">
-               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>About Us</p>
-              </Link>
-             
+              <div>
+                <Link href="/about">
+                  <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>About Us</p>
+                </Link>
+              </div>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Services</p>
-              <Link href="/contact">
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Contact</p>
-              </Link>
-              
+              <div>
+                <Link href="/contact">
+                  <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Contact</p>
+                </Link>
+              </div>
+
+
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Become an installer</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>News</p>
             </div>

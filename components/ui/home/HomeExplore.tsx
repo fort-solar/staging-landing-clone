@@ -1,9 +1,14 @@
+"use client"
+
 import React from "react";
 import { GreenMarkIcon } from "@/components/features/icons/GreenMarkIcon";
-import Image from "next/image";
-import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { Button } from "../button";
-import { our_packages_one, our_packages_two, our_packages_three, our_packages_four } from "@/components/features/images";
+import CardOne from "./homeexplorecontents/CardOne";
+import CardTwo from "./homeexplorecontents/CardTwo";
+import CardThree from "./homeexplorecontents/CardThree";
+import CardFour from "./homeexplorecontents/CardFour";
+import { MobileSlider } from '../mobileSlider';
+import { SwiperSlide } from "swiper/react";
 
 const HomeExplore = () => {
     return (
@@ -28,143 +33,19 @@ const HomeExplore = () => {
                         Affordable and efficient solutions tailored to your needs.
                     </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
-                    <div className="
-  group flex flex-col justify-between rounded-lg pt-4 px-4
-  bg-white border border-transparent cursor-pointer
-  transition-all duration-300
-  hover:bg-[#EBFAEB] hover:border-[#058A05]
-">
-                        <div className="flex w-full justify-between items-center">
-                            <p className="font-semibold text-lg">
-                                Campus Lite Bundle
-                            </p>
-
-                            <div className="
-      border p-3 rounded-lg border-[#CCCCCC]
-      transition-all duration-300
-      group-hover:bg-[#058A05]
-      group-hover:border-[#058A05]
-    ">
-                                <SlantedArrow
-                                    className="
-          text-[#058A05]
-          transition-colors duration-300
-          group-hover:text-white
-        "
-                                />
-                            </div>
-                        </div>
-
-                        <div className="relative h-75 lg:h-62.5 mt-5">
-                            <Image
-                                fill
-                                alt="our_packages_one"
-                                src={our_packages_one}
-                                className="object-fill rounded-t-lg"
-                            />
-                        </div>
-                    </div>
-
-
-                    <div className=" group flex flex-col justify-between rounded-lg pt-4 px-4 bg-white border border-transparent cursor-pointer transition-all duration-300  hover:bg-[#EBFAEB] hover:border-[#058A05]">
-                        <div className="flex w-full justify-between items-center">
-                            <p className="font-semibold text-lg">
-                                5kva Home Solar Bundle
-                            </p>
-                            <div className="
-      border p-3 rounded-lg border-[#CCCCCC]
-      transition-all duration-300
-      group-hover:bg-[#058A05]
-      group-hover:border-[#058A05]
-    ">
-                                <SlantedArrow
-                                    className="
-          text-[#058A05]
-          transition-colors duration-300
-          group-hover:text-white
-        "
-                                />
-                            </div>
-                        </div>
-                        <div className="relative h-75 lg:h-62.5 mt-5">
-                            <Image
-                                fill
-                                alt="our_packages_two"
-                                src={our_packages_two}
-                                className="object-fill rounded-t-lg"
-                            />
-                        </div>
-                    </div>
-                    <div className="
-  group flex flex-col justify-between rounded-lg pt-4 px-4
-  bg-white border border-transparent cursor-pointer
-  transition-all duration-300
-  hover:bg-[#EBFAEB] hover:border-[#058A05]
-">
-                        <div className="flex w-full justify-between items-center">
-                            <p className="font-semibold text-lg">
-                                Campus Bundle
-                            </p>
-                            <div className="
-      border p-3 rounded-lg border-[#CCCCCC]
-      transition-all duration-300
-      group-hover:bg-[#058A05]
-      group-hover:border-[#058A05]
-    ">
-                                <SlantedArrow
-                                    className="
-          text-[#058A05]
-          transition-colors duration-300
-          group-hover:text-white
-        "
-                                />
-                            </div>
-                        </div>
-                        <div className="relative h-75 lg:h-62.5 mt-5">
-                            <Image
-                                fill
-                                alt="our_packages_three"
-                                src={our_packages_three}
-                                className="object-fill rounded-t-lg"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="
-  group flex flex-col justify-between rounded-lg pt-4 px-4
-  bg-white border border-transparent cursor-pointer
-  transition-all duration-300
-  hover:bg-[#EBFAEB] hover:border-[#058A05]
-">
-                        <div className="flex w-full justify-between items-center">
-                            <p className="font-semibold text-lg">
-                                3kva Commercial Bundle
-                            </p>
-                            <div className="
-      border p-3 rounded-lg border-[#CCCCCC]
-      transition-all duration-300
-      group-hover:bg-[#058A05]
-      group-hover:border-[#058A05]
-    ">
-                                <SlantedArrow
-                                    className="
-          text-[#058A05]
-          transition-colors duration-300
-          group-hover:text-white
-        "
-                                />
-                            </div>
-                        </div>
-                        <div className="relative h-75 lg:h-62.5 mt-5">
-                            <Image
-                                fill
-                                alt="our_packages_four"
-                                src={our_packages_four}
-                                className="object-fill rounded-t-lg"
-                            />
-                        </div>
-                    </div>
+                <div>
+                    <MobileSlider extra={true}>
+                        <SwiperSlide><CardOne /></SwiperSlide>
+                        <SwiperSlide><CardTwo /></SwiperSlide>
+                        <SwiperSlide><CardThree /></SwiperSlide>
+                        <SwiperSlide><CardFour /></SwiperSlide>
+                    </MobileSlider>
+                </div>
+                <div className="md:grid hidden md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
+                    <CardOne />
+                    <CardTwo />
+                    <CardThree />
+                    <CardFour />
                 </div>
 
                 <div className="flex items-center justify-center py-4">

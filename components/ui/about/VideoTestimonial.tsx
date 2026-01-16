@@ -9,7 +9,7 @@ const VideoTestimonial = () => {
                     <p className="text-3xl lg:text-5xl font-bold font-poppins">
                         Video Testimonials
                     </p>
-                    <p>Real stories. Real results. Watch how FortSolar is transforming lives and powering success across the nation.</p>
+                    <p>Real stories. Real results. Watch how Fortsolar is transforming lives and powering success across the nation.</p>
                 </div>
                 <div className="mt-10 mb-20 grid grid-cols-1 lg:grid-cols-3 gap-14">
                     <div className="relative min-h-100 rounded-xl overflow-hidden bg-[url('/video_testimony_image_one.png')] bg-cover bg-center">

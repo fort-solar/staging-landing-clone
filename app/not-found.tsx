@@ -7,8 +7,8 @@ export default function NotFound() {
   return (
     <div>
       <div className="min-h-screen relative flex items-center justify-center px-6 overflow-hidden bg-[#0A0F0A]">
-        <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-green-500/30 rounded-full blur-[140px]" />
-        <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-green-700/40 rounded-full blur-[160px]" />
+        <div className="absolute -top-50 -left-50 w-125 h-125 bg-green-500/30 rounded-full blur-[140px]" />
+        <div className="absolute -bottom-50 -right-50 w-125 h-125 bg-green-700/40 rounded-full blur-[160px]" />
 
 
         <div className="relative z-10 w-full max-w-3xl rounded-[32px] bg-white/10 backdrop-blur-2xl border border-white/20 shadow-xl p-10 md:p-16 text-center text-white">
@@ -41,7 +41,7 @@ export default function NotFound() {
 
 
           <p className="mt-10 text-xs text-white/50">
-            FortSolar — powering a brighter future 🌞
+            Fortsolar — powering a brighter future 🌞
           </p>
         </div>
       </div>

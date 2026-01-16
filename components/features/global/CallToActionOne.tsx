@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 const CallToActionOne = () => {
     return (
         <div className='mt-20'>
-            <div className="min-h-[20vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-5 dark:bg-black sm:items-start bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] lg:rounded-[108px] flex flex-col items-center justify-center text-center gap-5">
+            <div className="min-h-[20vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-12 lg:py-0 dark:bg-black sm:items-start bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] rounded-3xl md:rounded-[80px] lg:rounded-[108px] flex flex-col items-center justify-center text-center gap-5">
                 <div className='max-w-3xl mx-auto'>
                     <p className='text-white leading-10 lg:leading-16 text-3xl lg:text-5xl font-bold font-poppins'>Ready to power your home or business with solar?</p>
                 </div>
                 <div className='max-w-xl mx-auto'>
-                    <p className='text-white'>Discover how affordable clean energy can be with FortSolar. Start saving money and the planet in just a few clicks.</p>
+                    <p className='text-white'>Discover how affordable clean energy can be with Fortsolar. Start saving money and the planet in just a few clicks.</p>
                 </div>
                 <div className='flex gap-5 items-center max-w-xl mx-auto'>
                     <div>

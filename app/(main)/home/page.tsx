@@ -32,6 +32,7 @@ export default function Home() {
       <Testimonials />
       <Blog />
       <CallToActionOne />
+    
       <CallToActionTwo />
       <Faq />
       <Newsletter />

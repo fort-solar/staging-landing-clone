@@ -78,7 +78,7 @@ const Faq = () => {
                                     How long does installation take
                                 </AccordionTrigger>
                                 <AccordionContent className="text-[16px] opacity-80 leading-relaxed">
-                                    Most FortSolar installations are completed within 2–5 days, depending on system size and site conditions. Our team handles everything from inspection to setup, ensuring minimal disruption to your routine.
+                                    Most Fortsolar installations are completed within 2–5 days, depending on system size and site conditions. Our team handles everything from inspection to setup, ensuring minimal disruption to your routine.
                                 </AccordionContent>
                             </AccordionItem>
 
