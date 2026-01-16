@@ -1,6 +1,9 @@
 import React from 'react'
 import { Phone, Mail, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import { FacebookIcon } from '@/components/features/icons/FacebookIcon';
+import { LinkedinIcon } from '@/components/features/icons/LinkedinIcon';
+import { TwitterIcon } from '@/components/features/icons/TwitterIcon';
 
 const ContactSectionOne = () => {
     return (
@@ -64,6 +67,12 @@ const ContactSectionOne = () => {
                         </div>
                     </div>
                 </div>
+                <div className='flex gap-5 items-center justify-center'>
+                    <TwitterIcon />
+                    <LinkedinIcon className='text-[#058A05]'/>
+                    {/* #3B3B3B */}
+                    <FacebookIcon />
+                </div>˝
 
             </div>
         </div>

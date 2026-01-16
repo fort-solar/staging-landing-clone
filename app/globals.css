@@ -126,6 +126,13 @@
   body {
     @apply bg-background font-inter text-fortsolartext;
   }
+    .input {
+    @apply w-full px-4 text-sm py-3 border rounded-lg focus:outline-none focus:ring-1 focus:ring-fortsolartext;
+  }
+
+  .label {
+    @apply text-sm font-medium mb-1 block;
+  }
 }
 
 .arrow {
