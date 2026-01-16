@@ -3,6 +3,7 @@
 import React from 'react'
 import 'react-phone-number-input/style.css'
 // import PhoneInput from 'react-phone-number-input'
+import { Checkbox } from "@/components/ui/checkbox"
 
 const ContactForm = () => {
     // const [value, setValue] = React.useState<string | undefined>();
@@ -69,6 +70,9 @@ const ContactForm = () => {
                         className="input"
                         placeholder=""
                     />
+                </div>
+                <div className='col-span-2 text-sm flex items-center gap-1'>
+                  <Checkbox />  You agree to our friendly <span className='underline cursor-pointer'>privacy policy.</span> 
                 </div>
 
                 <button className="py-3 mt-4 rounded-2xl col-span-2   cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90">

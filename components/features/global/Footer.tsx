@@ -4,6 +4,7 @@ import { LinkedinIcon } from '../icons/LinkedinIcon'
 import { TwitterIcon } from '../icons/TwitterIcon'
 import Image from 'next/image'
 import { logo_footer } from '../images'
+import Link from 'next/link'
 
 const Footer = () => {
   return (
@@ -28,9 +29,15 @@ const Footer = () => {
           <div className="flex justify-start lg:justify-end">
             <div className='space-y-3'>
               <p className='text-sm text-[#3B3B3B] font-semibold'>Company</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>About Us</p>
+              <Link href="/about">
+               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>About Us</p>
+              </Link>
+             
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Services</p>
+              <Link href="/contact">
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Contact</p>
+              </Link>
+              
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Become an installer</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>News</p>
             </div>

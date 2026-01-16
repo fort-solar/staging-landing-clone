@@ -62,7 +62,7 @@ const ContactMap = () => {
       </Tabs>
 
 
-      <div className="overflow-hidden h-full rounded-2   border shadow-lg">
+      <div className="overflow-hidden h-full ">
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           zoom={14}
