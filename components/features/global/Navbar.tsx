@@ -20,6 +20,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
 
 
 
@@ -59,9 +61,31 @@ export default function Navbar() {
 
 
         <div className="hidden lg:flex items-center justify-end gap-3">
-          <Button variant="outline" className="disabled border-[#0000004D] cursor-pointer">
-            <Search /> Search
-          </Button>
+          <div
+            className={`relative flex items-center overflow-hidden transition-all duration-300 ease-out
+    border rounded-lg py-2 bg-white
+    ${searchOpen ? "w-64 px-3" : "w-fit px-0"}
+  `}
+          >
+
+            <button
+              onClick={() => setSearchOpen(true)}
+              className={`absolute left-2 transition-all flex items-center gap-3 duration-200
+      ${searchOpen ? "opacity-0 scale-75" : "opacity-100"}
+    `}
+            >
+              <Search className="w-4 h-4" /> Search
+            </button>
+            <input
+              type="text"
+              placeholder="Search..."
+              autoFocus={searchOpen}
+              onBlur={() => setSearchOpen(false)}
+              className={`w-full bg-transparent text-sm outline-none transition-all duration-300
+      ${searchOpen ? "opacity-100 pl-8" : "opacity-0 pointer-events-none"}
+    `}
+            />
+          </div>
           <Link href="/coming-soon">
             <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
           </Link>
@@ -110,9 +134,6 @@ export default function Navbar() {
                 </button>
               );
             })}
-            <Button variant="outline" className="w-fit px-10 mb-5 disabled border-[#0000004D] cursor-pointer">
-              <Search /> Search
-            </Button>
             <Link href="/coming-soon">
               <Button className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
             </Link>
