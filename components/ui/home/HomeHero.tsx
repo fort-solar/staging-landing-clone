@@ -24,16 +24,23 @@ const HomeHero = () => {
     }, [current, setCurrent]);
 
     const scrollToTop = () => {
-        heroRef.current?.scrollIntoView({
+        if (!heroRef.current) return;
+
+        const offset = 80; 
+        const elementTop =
+            heroRef.current.getBoundingClientRect().top + window.scrollY;
+
+        window.scrollTo({
+            top: elementTop - offset,
             behavior: "smooth",
-            block: "start",
         });
     };
 
 
 
+
     return (
-        <div className="w-full max-w-6xl mx-auto px-4 py-10 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start" ref={heroRef}>
+        <div className="w-full max-w-6xl mx-auto px-4 py-5 lg:py-10 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start" ref={heroRef}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
                 <div>
                     <div className='flex flex-col gap-5'>
@@ -42,7 +49,7 @@ const HomeHero = () => {
                             className="animate-fade"
                         >
                             <div
-                                className="mt-10 p-2 text-xs lg:text-sm w-fit rounded-lg font-medium"
+                                className="p-2 text-xs lg:text-sm w-fit rounded-lg font-medium"
                                 style={{
                                     backgroundColor: CAROUSEL_CONTENT[current].toast_background_color,
                                     color: CAROUSEL_CONTENT[current].toast_color,
@@ -60,7 +67,7 @@ const HomeHero = () => {
                             </div>
                         </div>
 
-                        <div className="mt-0     lg:mt-2">
+                        <div className="mt-0 lg:mt-2">
                             <Link href="/coming-soon">
                                 <Button
                                     className="
@@ -97,7 +104,7 @@ const HomeHero = () => {
                                     setCurrent((prev) =>
                                         prev === 0 ? CAROUSEL_CONTENT.length - 1 : prev - 1
                                     );
-                                    scrollToTop();
+                                    setTimeout(scrollToTop, 100);
                                 }}
                                 className="h-12 cursor-pointer w-12 rounded-xl bg-white flex items-center justify-center shadow"
                             >
@@ -106,7 +113,7 @@ const HomeHero = () => {
                             <button
                                 onClick={() => {
                                     setCurrent((prev) => (prev + 1) % CAROUSEL_CONTENT.length);
-                                    scrollToTop();
+                                    setTimeout(scrollToTop, 100);
                                 }}
                                 className="h-12 w-12 cursor-pointer rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
     hover:opacity-90 text-white flex items-center justify-center shadow"
