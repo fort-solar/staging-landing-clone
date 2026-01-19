@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const CallToActionOne = () => {
     return (
@@ -13,14 +14,20 @@ const CallToActionOne = () => {
                 </div>
                 <div className='flex gap-5 items-center max-w-xl mx-auto'>
                     <div>
-                        <Button className="w-fit bg-transparent border-white border hover:bg-transparent cursor-pointer">
-                            Get a Free Quote
-                        </Button>
+                        <Link href={"/coming-soon"}>
+                            <Button className="w-fit bg-transparent border-white border hover:bg-transparent cursor-pointer">
+                                Get a Free Quote
+                            </Button>
+                        </Link>
+
                     </div>
                     <div>
-                        <Button className="w-fit bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
-                            Explore Packages
-                        </Button>
+                        <Link href="/coming-soon">
+                            <Button className="w-fit bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
+                                Explore Packages
+                            </Button>
+                        </Link>
+
                     </div>
                 </div>
             </div>

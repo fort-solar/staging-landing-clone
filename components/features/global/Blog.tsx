@@ -2,18 +2,20 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BLOG_CONTENT } from '../constants';
 import { SlantedArrow } from '../icons/SlantedArrow';
+import Link from 'next/link';
 
 
 const Blog = () => {
     return (
         <div>
             <div className="min-h-[60%] w-full max-w-6xl mx-auto px-4 space-y-10 py-10 dark:bg-black sm:items-start">
-                 <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
+                <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
                     <div className="max-w-3xl leading-10 lg:leading-16 text-3xl lg:text-5xl font-bold font-poppins mt-2">
                         Insights and Updates from Fortsolar
                     </div>
                     <div>
-                        <Button
+                        <Link href="/coming-soon"
+                        >     <Button
                             className="
                                                transition-all
                                          text-white
@@ -27,8 +29,9 @@ const Blog = () => {
                                          hover:opacity-90
                                        "
                         >
-                            Explore All Articles {" "}{" "}→
-                        </Button>
+                                Explore All Articles {" "}{" "}→
+                            </Button>
+                        </Link>
                     </div>
                 </div>
 

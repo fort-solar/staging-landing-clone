@@ -26,7 +26,7 @@ const ContactSectionOne = () => {
                             <div className='mt-2 flex flex-col gap-1'>
                                 <p className='text-[#101828] text-lg font-semibold'>Call Us</p>
                                 <Link href={"tel:+2347066524793"} className='text-[#667085] text-sm'>+234 706 652 4793</Link>
-                                <Link href={"tel:0201 330 9043"} className='text-[#667085] text-sm'>0201 330 9043</Link>
+                                <Link href={"tel:+2342013309043"} className='text-[#667085] text-sm'>+234 201 330 9043</Link>
                             </div>
                         </div>
                         <div className="p-7 border-r border-b">

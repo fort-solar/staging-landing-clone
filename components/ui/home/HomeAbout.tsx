@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button } from '../button';
 import Image from 'next/image';
-import { solar_cells, man_carrying_solar_panel,  solar_installation_image_double_cut } from '@/components/features/images'
+import Link from 'next/link';
+import { solar_cells, man_carrying_solar_panel, solar_installation_image_double_cut } from '@/components/features/images'
 
 const HomeAbout = () => {
     return (
         <div>
-             <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
+            <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
                 <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
                     About Fortsolar
                 </div>
@@ -71,16 +72,21 @@ const HomeAbout = () => {
                             />
                         </div>
                         <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-7 rounded-tl-4xl rounded-br-4xl">
-                            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
-                                Learn More
-                            </Button>
+                            <Link href="/about">
+                                <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                                    Learn More
+                                </Button>
+                            </Link>
+
                         </div>
                     </div>
 
                     <div className='lg:hidden block'>
-                        <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
-                            Learn More
-                        </Button>
+                        <Link href="/about">
+                            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                                Learn More
+                            </Button>
+                        </Link>
                     </div>
 
 

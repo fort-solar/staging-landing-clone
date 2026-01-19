@@ -8,6 +8,7 @@ import CardThree from './homehowcontents/CardThree';
 import CardFour from './homehowcontents/CardFour';
 import { MobileSlider } from '../mobileSlider';
 import { SwiperSlide } from "swiper/react";
+import Link from 'next/link';
 
 const HomeHow = () => {
     return (
@@ -18,9 +19,12 @@ const HomeHow = () => {
                         How It Works
                     </div>
                     <div>
-                        <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
-                            Get Started
-                        </Button>
+                        <Link href="/coming-soon">
+                            <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
+                                Get Started
+                            </Button>
+                        </Link>
+
                     </div>
                 </div>
                 <div className='max-w-4xl mt-7'>

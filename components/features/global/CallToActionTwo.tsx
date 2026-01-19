@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const CallToActionTwo = () => {
     return (
@@ -10,9 +11,12 @@ const CallToActionTwo = () => {
     gap-4 px-6 py-10 lg:px-16">
                     <p className='text-white leading-16 text-3xl md:text-4xl lg:text-5xl font-bold font-poppins'>Join Our Installer Network</p>
                     <p className=' text-white '>Are you a certified installer? Reach more customers and grow your business with Fortsolar</p>
-                    <Button className="w-fit bg-transparent border-white border hover:bg-transparent cursor-pointer">
-                        Become an Installer
-                    </Button>
+                    <Link href={"/coming-soon"}>
+                        <Button className="w-fit bg-transparent border-white border hover:bg-transparent cursor-pointer">
+                            Become an Installer
+                        </Button>
+                    </Link>
+
                 </div>
                 <div className="hidden md:block relative w-full h-full bg-[url('/man_carrying_solar_panel.png')] bg-cover bg-center">
                     <div className="absolute inset-0 bg-linear-to-l from-[rgba(1,50,1,0)] to-[#013203] z-0" />

@@ -6,6 +6,7 @@ import { Button } from "../button";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { GreenTick } from "@/components/features/icons/Greentick";
 import Image from "next/image";
+import Link from "next/link";
 import { solar_installation_image } from "@/components/features/images";
 import { trusted_brands_1, trusted_brands_2, trusted_brands_3, trusted_brands_4 } from "@/components/features/images";
 
@@ -39,18 +40,19 @@ const HomeHero = () => {
                             {CAROUSEL_CONTENT[current].toast}
                         </div>
 
-                        <div className="text-4xl lg:text-6xl font-bold font-poppins mt-2">
+                        <div className="text-4xl lg:text-6xl font-bold font-poppins mt-1 lg:mt-2    ">
                             {CAROUSEL_CONTENT[current].title}
                         </div>
 
-                        <div className="mt-2">
+                        <div className="mt-1 lg:mt-2">
                             {CAROUSEL_CONTENT[current].content}
                         </div>
                     </div>
 
-                    <div className="mt-2 ">
-                        <Button
-                            className="
+                    <div className="mt-0     lg:mt-2">
+                        <Link href="/coming-soon">
+                            <Button
+                                className="
                             transition-all
                       text-white
                       cursor-pointer
@@ -62,12 +64,14 @@ const HomeHero = () => {
                       bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
                       hover:opacity-90
                     "
-                        >
-                            {CAROUSEL_CONTENT[current].buttonName}
-                            <SlantedArrow className='h-1 w-1 arrow' />
-                        </Button>
+                            >
+                                {CAROUSEL_CONTENT[current].buttonName}
+                                <SlantedArrow className='h-1 w-1 arrow' />
+                            </Button>
+                        </Link>
+
                     </div>
-                    <div className="lg:hidden block h-100 w-full overflow-hidden rounded-4xl border-white">
+                    <div className="lg:hidden block h-87.5 w-full overflow-hidden rounded-4xl border-white">
                         <Image
                             width={300}
                             height={300}

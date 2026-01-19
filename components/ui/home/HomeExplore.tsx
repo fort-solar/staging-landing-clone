@@ -9,6 +9,7 @@ import CardThree from "./homeexplorecontents/CardThree";
 import CardFour from "./homeexplorecontents/CardFour";
 import { MobileSlider } from '../mobileSlider';
 import { SwiperSlide } from "swiper/react";
+import Link from "next/link";
 
 const HomeExplore = () => {
     return (
@@ -49,8 +50,9 @@ const HomeExplore = () => {
                 </div>
 
                 <div className="flex items-center justify-center py-4">
-                    <Button
-                        className="
+                    <Link href={"/coming-soon"}>
+                        <Button
+                            className="
                             transition-all
                       text-white
                       cursor-pointer
@@ -62,9 +64,11 @@ const HomeExplore = () => {
                       bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
                       hover:opacity-90
                     "
-                    >
-                        See All Packages {" "}{" "}→
-                    </Button>
+                        >
+                            See All Packages {" "}{" "}→
+                        </Button>
+                    </Link>
+
                 </div>
             </div>
         </div>
