@@ -12,9 +12,12 @@ const HomeAbout = () => {
                     About Fortsolar
                 </div>
                 <div>
-                    <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
-                        Get a Free Quote
-                    </Button>
+                    <Link href="/coming-soon">
+                        <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
+                            Get a Free Quote
+                        </Button>
+                    </Link>
+
                 </div>
             </div>
 

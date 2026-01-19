@@ -36,7 +36,7 @@ const HomeWhy = () => {
 
                         <div className='flex flex-col gap-6'>
                             <div className='justify-end w-full flex'>
-                                <div className="max-w-[90%] lg:max-w-[75%] grid grid-cols-[1fr_11fr] gap-4 bg-gray-50 p-4 rounded-xl">
+                                <div className="max-w-[90%] lg:max-w-[85%] grid grid-cols-[1fr_11fr] gap-4 bg-gray-50 p-4 rounded-xl">
                                     <FreeInstallationIcon className='w-8 h-8' />
                                     <div>
                                         <p className="text-[16px] font-bold">Free Installation</p>
@@ -45,7 +45,7 @@ const HomeWhy = () => {
                                 </div>
                             </div>
                             <div className='justify-start w-full flex'>
-                                <div className="max-w-[90%] lg:max-w-[75%] grid grid-cols-[1fr_11fr] gap-4 bg-[#EBFAEB] p-4 rounded-xl">
+                                <div className="max-w-[90%] lg:max-w-[85%] grid grid-cols-[1fr_11fr] gap-4 bg-[#EBFAEB] p-4 rounded-xl">
                                     <SolarfinancingIcon className='w-8 h-8' />
                                     <div>
                                         <p className="text-[16px] font-bold">Solar Financing</p>
@@ -54,7 +54,7 @@ const HomeWhy = () => {
                                 </div>
                             </div>
                             <div className='justify-end w-full flex'>
-                                <div className="max-w-[90%] lg:max-w-[75%] grid grid-cols-[1fr_11fr] gap-4 bg-gray-50 p-4 rounded-xl">
+                                <div className="max-w-[90%] lg:max-w-[85%] grid grid-cols-[1fr_11fr] gap-4 bg-gray-50 p-4 rounded-xl">
                                     <CustomerSupportIcon className='w-8 h-8' />
                                     <div>
                                         <p className="text-[16px] font-bold">24/7 Customer Support</p>
@@ -63,7 +63,7 @@ const HomeWhy = () => {
                                 </div>
                             </div>
                             <div className='justify-start w-full flex'>
-                                <div className="max-w-[90%] lg:max-w-[75%] grid grid-cols-[1fr_11fr] gap-4 bg-[#EBFAEB] p-4 rounded-xl">
+                                <div className="max-w-[90%] lg:max-w-[85%] grid grid-cols-[1fr_11fr] gap-4 bg-[#EBFAEB] p-4 rounded-xl">
                                     <WarrantyAuditIcon className='w-8 h-8' />
                                     <div>
                                         <p className="text-[16px] font-bold">Warranty & Energy Audit</p>

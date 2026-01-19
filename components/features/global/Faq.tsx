@@ -34,16 +34,12 @@ const Faq = () => {
                                 <p className="text-sm">
                                     Reach out to our team directly and we&apos;ll get back to you.
                                 </p>
-                                <Button
-                                    className="
-                                          cursor-pointer
-                                text-[#058A05]
-                                bg-white
-                                hover:opacity-90
-                              "
-                                >
-                                    Get in Touch
-                                </Button>
+                                <Link href="/contact">
+                                    <Button className="w-fit bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
+                                        Get in Touch
+                                    </Button>
+                                </Link>
+
 
                             </div>
                         </div>

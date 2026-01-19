@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <div className="min-h-screen  bg-white dark:bg-black">
        <HomeHero />
-      <main className="min-h-screen w-full max-w-6xl mx-auto px-4 py-5 lg:py-10 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start">
+      <main className="min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-5 pb-5 lg:pb-20  space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start">
         <HomeAbout />
       </main>
       <HomeExplore /> 
