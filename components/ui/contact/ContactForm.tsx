@@ -2,15 +2,17 @@
 
 import React from 'react'
 import 'react-phone-number-input/style.css'
-// import PhoneInput from 'react-phone-number-input'
 import { Checkbox } from "@/components/ui/checkbox"
 
-const ContactForm = () => {
-    // const [value, setValue] = React.useState<string | undefined>();
+interface ContactHeroProps {
+  formRef: React.RefObject<HTMLFormElement | null>;
+}
+
+const ContactForm = ({ formRef }: ContactHeroProps) => {
 
 
     return (
-        <form className="py-8 space-y-5">
+        <form className="py-8 space-y-5" id='contact-form' ref={formRef}>
             <p className='text-2xl lg:text-3xl font-semibold text-[#101828]'>Get in touch</p>
             <p className='text-[#667085] mb-10'>Our friendly team would love to hear from you.</p>
             <div className='grid grid-cols-2 gap-5'>

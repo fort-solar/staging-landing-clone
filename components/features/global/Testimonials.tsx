@@ -7,6 +7,52 @@ import { motion } from "framer-motion";
 import { avatar } from '../images';
 import Image from 'next/image';
 
+interface AvatarInitialProps {
+  name: string;
+  size?: number; 
+}
+
+const AvatarInitial = ({ name, size = 40 }: AvatarInitialProps) => {
+  const getInitials = (fullName: string) => {
+    const parts = fullName.trim().split(" ");
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  };
+
+  const getColorFromName = (str: string) => {
+    const colors = [
+      "from-green-500 to-emerald-600",
+      "from-green-500 to-emerald-600",
+      "from-green-500 to-emerald-600",
+      "from-green-500 to-emerald-600",
+      "from-green-500 to-emerald-600",
+    ];
+
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  return (
+    <div
+      className={`flex items-center justify-center rounded-full text-white font-semibold bg-linear-to-br ${getColorFromName(
+        name
+      )}`}
+      style={{
+        width: size,
+        height: size,
+        fontSize: size / 2.2,
+      }}
+    >
+      {getInitials(name)}
+    </div>
+  );
+};
+
+
 const Testimonials = () => {
     return (
         <div>
@@ -47,9 +93,9 @@ export default Testimonials
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function TestimonialRow({ t }: any) {
     return (
-        <div className='bg-[#F9FAFB] p-4 space-y-2'>
+        <div className='bg-[#F9FAFB] p-4 space-y-6'>
             <div className='flex gap-2 items-center'>
-                <Image alt='avatar image' height={50} width={50} src={avatar} />
+                <AvatarInitial name={t.name} />
                 <div>
                     <p className='font-semibold'>{t.name}</p>
                     <p className='text-xs font-medium'>{t.role}</p>

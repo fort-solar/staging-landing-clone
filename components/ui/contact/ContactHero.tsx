@@ -1,9 +1,53 @@
+"use client"
+
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '../button'
 import { SlantedArrow } from '@/components/features/icons/SlantedArrow'
 
-const ContactHero = () => {
+interface ContactHeroProps {
+    formRef: React.RefObject<HTMLFormElement | null>;
+}
+
+const ContactHero = ({ formRef }: ContactHeroProps) => {
+
+    const scrollToForm = () => {
+        if (!formRef.current) return;
+
+        const offset = 80;
+        const startY = window.scrollY;
+        const targetY =
+            formRef.current.getBoundingClientRect().top +
+            window.scrollY -
+            offset;
+
+        const duration = 1000;
+        const startTime = performance.now();
+
+        const easeInOutCubic = (t: number) =>
+            t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        const animateScroll = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = easeInOutCubic(progress);
+
+            window.scrollTo({
+                top: startY + (targetY - startY) * easedProgress,
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(animateScroll);
+            }
+        };
+
+        requestAnimationFrame(animateScroll);
+    };
+
+
+
     return (
         <div className='h-[60vh]'>
             <div className="relative bg-[url('/contact_hero_image.png')] bg-cover bg-center h-full z-10">
@@ -30,10 +74,9 @@ const ContactHero = () => {
                                 <SlantedArrow className='h-1 w-1 arrow' />
                             </Button>
                         </Link>
-                        <Link href="#">
-                            <Button
-                                variant={"outline"}
-                                className="
+                        <Button
+                            variant={"outline"}
+                            className="
                             transition-all
                             border-white
                             text-white
@@ -42,10 +85,12 @@ const ContactHero = () => {
                       text-sm
                       hover:opacity-90
                     "
-                            >
-                                Send Us a Message
-                            </Button>
-                        </Link>
+                            onClick={() => {
+                                setTimeout(scrollToForm, 100);
+                            }}
+                        >
+                            Send Us a Message
+                        </Button>
 
                     </div>
                 </div>

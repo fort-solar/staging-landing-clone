@@ -23,17 +23,52 @@ const HomeHero = () => {
         return () => clearInterval(timer);
     }, [current, setCurrent]);
 
+    // const scrollToTop = () => {
+    //     if (!heroRef.current) return;
+
+    //     const offset = 80; 
+    //     const elementTop =
+    //         heroRef.current.getBoundingClientRect().top + window.scrollY;
+
+    //     window.scrollTo({
+    //         top: elementTop - offset,
+    //         behavior: "smooth",
+    //     });
+    // };
+
     const scrollToTop = () => {
         if (!heroRef.current) return;
 
-        const offset = 80; 
-        const elementTop =
-            heroRef.current.getBoundingClientRect().top + window.scrollY;
+        const offset = 80;
+        const startY = window.scrollY;
+        const targetY =
+            heroRef.current.getBoundingClientRect().top +
+            window.scrollY -
+            offset;
 
-        window.scrollTo({
-            top: elementTop - offset,
-            behavior: "smooth",
-        });
+        const duration = 1000;
+        const startTime = performance.now();
+
+        const easeInOutCubic = (t: number) =>
+            t < 0.5
+                ? 4 * t * t * t
+                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+        const animateScroll = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = easeInOutCubic(progress);
+
+            window.scrollTo({
+                top: startY + (targetY - startY) * easedProgress,
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(animateScroll);
+            }
+        };
+
+        requestAnimationFrame(animateScroll);
     };
 
 

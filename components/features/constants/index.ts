@@ -35,45 +35,45 @@ export const CAROUSEL_CONTENT = [
 
 export const TESTIMONIAL_CONTENT = [
   {
-    name: "Cliff Curtis",
-    role: "founder",
+    name: "Bridget Samuel",
+    role: "Creator",
     testimony:
-      "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.Venenatis odio et elementum pretium in.",
+      "FortSolar pays attention to details and ensures you get the best energy solutions for your home and business. The best!",
     star: 5,
   },
   {
-    name: "Cliff Benjamin",
-    role: "Teacher",
-    testimony:
-      "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. ",
-    star: 4,
-  },
-  {
-    name: "John Eze",
+    name: "Atanda Micheal",
     role: "Software Developer",
     testimony:
-      "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.",
-    star: 4,
+      "I did a 2kva solar. Since the beginning of using it, it has never failed me. The 2kva worked with my Freezer of 115watt. Fort Solar Energy is the best. ",
+    star: 5,
   },
   {
-    name: "Amadi Odege",
+    name: "Sule Umar",
+    role: "Mobile Developer",
+    testimony:
+      "Quality product with experience technicians offering responsive during and after installations services.",
+    star: 5,
+  },
+  {
+    name: "Lintochi Razor",
+    role: "Language Specialist",
+    testimony:
+      "Swift and very reliable. They know their onion's and are extremely fast. Will always recommend them to anyone looking to have solar",
+    star: 5,
+  },
+  {
+    name: "Bridget Samuel",
+    role: "Creator",
+    testimony:
+      "FortSolar pays attention to details and ensures you get the best energy solutions for your home and business. The best!",
+    star: 5,
+  },
+  {
+    name: "Atanda Micheal",
     role: "Software Developer",
     testimony:
-      "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.",
-    star: 3,
-  },
-  {
-    name: "Bob Emmanuel",
-    role: "Student",
-    testimony:
-      "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.",
-    star: 4,
-  },
-  {
-    name: "Dr Eben Abia",
-    role: "Doctor",
-    testimony:
-      "Lorem ipsum dolor sit amet consectetur. Nunc nunc volutpat imperdiet vitae habitasse molestie. Quis consectetur duis nunc ac netus euismod feugiat. Nunc consequat aliquet et scelerisque morbi ultrices id pulvinar. Consectetur facilisi dictum placerat ultrices sapien suspendisse est lacus volutpat. Gravida vitae at duis nunc nisl porttitor mattis gravida posuere. Venenatis odio et elementum pretium in. Augue massa euismod eu pellentesque sed duis. Ullamcorper sit purus mauris dignissim urna senectus. Tempor dui vitae sit bibendum eget. Volutpat tellus urna justo facilisi vel nullam fringilla.",
+      "I did a 2kva solar. Since the beginning of using it, it has never failed me. The 2kva worked with my Freezer of 115watt. Fort Solar Energy is the best. ",
     star: 5,
   },
 ];
