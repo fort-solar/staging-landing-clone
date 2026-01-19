@@ -102,7 +102,8 @@ const HomeHero = () => {
                             </div>
                         </div>
 
-                        <div className="mt-0 lg:mt-2">
+                        <div className="mt-0 lg:mt-2 animate-fade"
+                        >
                             <Link href="/coming-soon">
                                 <Button
                                     className="
