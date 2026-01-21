@@ -113,3 +113,52 @@ export const NotDesigned = [
     name: "",
   },
 ];
+
+export const servicesSlides = [
+    {
+        title: "Solar Products",
+        description: "Power your space with our wide range of quality solar panels, batteries, inverters, fans, streetlights, floodlights and more sourced from reliable manufacturers, designed for durability and performance.",
+        buttonName: "Shop Products",
+        link: "/coming-soon",
+        leftColor: "#F1F2F5",
+        marginBottom: "mb-3",
+        rightBackgroundImage: "/about_services_one.png"
+
+    },
+    {
+        title: "Solar Installations",
+        description: "Professional setup from start to finish, fast, clean, and backed by expert technicians.",
+        buttonName: "Book Installation",
+        link: "/coming-soon",
+        leftColor: "#EBFAEB",
+        marginBottom: "mb-6",
+        rightBackgroundImage: "/about_services_two.png"
+    },
+    {
+        title: "Solar Financing",
+        description: "Go solar now and pay flexibly over time making renewable energy more affordable for everyone.",
+        buttonName: "Learn More",
+        link: "/coming-soon",
+        leftColor: "#EDF6FA",
+        marginBottom: "mb-9",
+        rightBackgroundImage: "/about_services_three.png"
+    },
+    {
+        title: "Solar Streetlights",
+        description: "Brighten up communities and businesses with efficient, long-lasting solar streetlight solutions.",
+        buttonName: "View Streetlights",
+         link: "/coming-soon",
+        leftColor: "#FFFBEB",
+        marginBottom: "mb-12",
+        rightBackgroundImage: "/about_services_four.png"
+    },
+    {
+        title: "Solar CCTV",
+        description: "Secure your property 24/7 with smart solar-powered surveillance systems.",
+        buttonName: "View Solutions",
+         link: "/coming-soon",
+        leftColor: "#FEF5EF",
+        marginBottom: "mb-0",
+        rightBackgroundImage: "/about_services_five.png"
+    },
+]
