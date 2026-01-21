@@ -29,7 +29,7 @@ const AboutServices = () => {
                             grabCursor={true}
                             loop={true}
                             autoplay={{
-                                delay: 2500,
+                                delay: 3000,
                                 disableOnInteraction: false,
                             }}
                             modules={[Autoplay, EffectCards]}
@@ -41,8 +41,8 @@ const AboutServices = () => {
 
                                 return (
                                  <SwiperSlide key={i}>
-                                    <div className="min-h-[70vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto  dark:bg-black sm:items-start rounded-[18px] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-                                        <div className={`order-2 lg:order-1 flex flex-col lg:h-full items-start justify-center text-start gap-5 px-5 lg:px-16`} style={{ backgroundColor: s.leftColor }}>
+                                    <div className=" w-full max-w-6xl mx-auto  dark:bg-black sm:items-start rounded-[18px] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+                                        <div className={`order-2 lg:order-1 flex flex-col h-full  min-h-[40vh] lg:min-h-[60vh] justify-center text-start gap-5 px-5 lg:px-16`} style={{ backgroundColor: s.leftColor }}>
                                             <p className='text-[#3B3B3B] leading-16 text-3xl lg:text-5xl font-bold font-poppins'>{s.title}</p>
                                             <p className=' text-[#3B3B3B] '>{s.description}</p>
                                             <Link href={s.link}>
@@ -66,7 +66,7 @@ const AboutServices = () => {
                                             </Link>
 
                                         </div>
-                                        <div className={`order-1 lg:order-2 relative w-full h-full  bg-cover bg-center`} style={{ backgroundImage: `url(${image})` }}>
+                                        <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[60vh]  bg-cover bg-center`} style={{ backgroundImage: `url(${image})` }}>
                                         </div>
 
                                     </div>
