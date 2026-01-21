@@ -77,7 +77,7 @@ const HomeHero = () => {
     return (
         <div className="w-full max-w-6xl mx-auto px-4 py-5 lg:py-10 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start" ref={heroRef}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
-                <div>
+                <div className="flex flex-col  justify-between">
                     <div className='flex flex-col gap-5'>
                         <div
                             key={current}
@@ -158,34 +158,37 @@ const HomeHero = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="mt-10 py-1 px-2 rounded-lg bg-[#058a0525] flex gap-2 items-center">
-                        <GreenTick className="w-4 h-4" />
-                        <p className="text-[#058A05] text-xs lg:text-sm">Trusted by 100+ homeowners businesses and partners.</p>
+                    <div>
+                        <div className="mt-10 py-1 px-2 rounded-lg bg-[#058a0525] flex gap-2 items-center">
+                            <GreenTick className="w-4 h-4" />
+                            <p className="text-[#058A05] text-xs lg:text-sm">Trusted by 100+ homeowners businesses and partners.</p>
+                        </div>
+                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mt-4">
+                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
+                                <Image alt="partners" src={trusted_brands_1} height={30} width={30} />
+                            </div>
+                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
+                                <Image alt="partners" src={trusted_brands_2} height={30} width={30} />
+                            </div>
+                            <div className="border rounded-lg bg-black w-full py-5 flex justify-center items-center">
+                                <Image alt="partners" src={trusted_brands_3} height={30} width={30} />
+                            </div>
+                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
+                                <Image alt="partners" src={trusted_brands_1} height={30} width={30} />
+                            </div>
+                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
+                                <Image alt="partners" src={trusted_brands_4} height={30} width={30} />
+                            </div>
+                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
+                                <Image alt="partners" src={trusted_brands_4} height={30} width={30} />
+                            </div>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mt-4">
-                        <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                            <Image alt="partners" src={trusted_brands_1} height={30} width={30} />
-                        </div>
-                        <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                            <Image alt="partners" src={trusted_brands_2} height={30} width={30} />
-                        </div>
-                        <div className="border rounded-lg bg-black w-full py-5 flex justify-center items-center">
-                            <Image alt="partners" src={trusted_brands_3} height={30} width={30} />
-                        </div>
-                        <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                            <Image alt="partners" src={trusted_brands_1} height={30} width={30} />
-                        </div>
-                        <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                            <Image alt="partners" src={trusted_brands_4} height={30} width={30} />
-                        </div>
-                        <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                            <Image alt="partners" src={trusted_brands_4} height={30} width={30} />
-                        </div>
-                    </div>
+
                 </div>
 
 
-                <div className="hidden lg:block relative h-125 w-full overflow-hidden rounded-4xl border-white">
+                <div className="hidden lg:block relative h-130 w-full overflow-hidden rounded-4xl border-white">
                     <Image
                         fill
                         alt="solar installation image"

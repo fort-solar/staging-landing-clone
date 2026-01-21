@@ -19,6 +19,7 @@ import avatar from "./avatar.png";
 import logo_footer from "./logo_footer.png";
 import Result from "./Result.png";
 import video_background from "./video_background.jpg";
+import double_solar_panels from "./double_solar_panels.png";
 
 
 
@@ -46,5 +47,6 @@ export {
     avatar,
     logo_footer,
     Result,
-    video_background
+    video_background,
+    double_solar_panels
 }

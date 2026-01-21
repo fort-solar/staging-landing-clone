@@ -1,11 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
-import { our_packages_two } from "@/components/features/images";
+import { our_packages_one } from "@/components/features/images";
+import BundleIcon from '@/components/features/icons/BundleIcon';
+import BoltIcon from '@/components/features/icons/BoltIcon';
+import CircularGreenCheck from '@/components/features/icons/CircularGreenCheck';
 
 const CardTwo = () => {
     return (
-        <div className=" group flex flex-col justify-between rounded-lg pt-4 px-4 bg-white border border-transparent cursor-pointer transition-all duration-300  hover:bg-[#EBFAEB] hover:border-[#058A05]">
+        <div className=" group flex flex-col justify-between overflow-hidden rounded-lg pt-4 px-4 bg-white border border-transparent cursor-pointer transition-all duration-300  hover:bg-[#EBFAEB] hover:border-[#058A05]">
             <div className="flex w-full justify-between items-center">
                 <p className="font-semibold text-lg">
                     5kva Home Solar Bundle
@@ -25,14 +28,74 @@ const CardTwo = () => {
                     />
                 </div>
             </div>
-            <div className="relative h-75 lg:h-62.5 mt-5">
-                <Image
-                    fill
-                    alt="our_packages_two"
-                    src={our_packages_two}
-                    className="object-fill rounded-t-lg"
-                />
-            </div>
+             <div className="
+                      relative h-72 lg:h-60
+                      perspective-1000
+                    ">
+                            <div
+                                className="
+                        hidden md:block
+                        absolute inset-0
+                        backface-hidden
+                        transition-transform duration-700
+                        group-hover:rotate-y-180
+                      "
+                            >
+                                <Image
+                                    fill
+                                    src={our_packages_one}
+                                    alt="Campus Bundle"
+                                    className="object-cover rounded-t-lg"
+                                />
+                            </div>
+                            <div
+                                className="
+                        relative
+                        h-full
+                        bg-white rounded-t-lg
+                        p-4
+                        md:absolute md:inset-0
+                        md:rotate-y-180
+                        md:backface-hidden
+                        transition-transform duration-700
+                        md:group-hover:rotate-y-360
+                      "
+                            >
+                                <div className='space-y-4'>
+                                    <div className="flex gap-2 items-center">
+                                        <BundleIcon />
+                                        <p className='font-bold text-sm text-[#036D03]'>Bundle Components</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <div className='flex items-center justify-between'>
+                                            <p className='text-[11px]'>1kva/2kwh All-in-one Power Station</p>
+                                            <CircularGreenCheck />
+                                        </div>
+                                        <div className='flex items-center justify-between'>
+                                            <p className='text-[11px]'>450W Monocrystalline Panels (x2)</p>
+                                            <CircularGreenCheck />
+                                        </div>
+                                    </div>
+                                    <hr className='border-[#3B3B3BB2]' />
+                                    <div className="flex gap-2 items-center">
+                                        <BoltIcon />
+                                        <p className='font-bold text-sm text-[#036D03]'>Fortified To Power</p>
+                                    </div>
+                                    <ul className='flex flex-col flex-wrap max-h-16'>
+                                        <li className='text-xs'>TV</li>
+                                        <li className='text-xs'>Laptop</li>
+                                        <li className='text-xs'>Standing Fan</li>
+                                        <li className='text-xs'>Led Bulbs</li>
+                                        <li className='text-xs'>Router</li>
+                                        <li className='text-xs'>Table Side Fridge</li>
+                                        <li className='text-xs'>Phones</li>
+                                    </ul>
+                                </div>
+                            </div>
+            
+            
+            
+                        </div>
         </div>
     )
 }

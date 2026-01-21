@@ -4,8 +4,6 @@ import React from 'react';
 import { StarIcon } from '../icons/StarIcon';
 import { TESTIMONIAL_CONTENT } from '../constants';
 import { motion } from "framer-motion";
-import { avatar } from '../images';
-import Image from 'next/image';
 
 interface AvatarInitialProps {
   name: string;

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Phone, Mail, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { FacebookIcon } from '@/components/features/icons/FacebookIcon';
-import { LinkedinIcon } from '@/components/features/icons/LinkedinIcon';
 import { TwitterIcon } from '@/components/features/icons/TwitterIcon';
+import { FaTiktok, FaYoutube, FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
+
 
 
 
@@ -34,7 +34,7 @@ const ContactSectionOne = () => {
                         <div className="p-7 border-r border-b">
                             <MapPin className='text-[#058A05] w-5 h-5 mb-5' />
                             <div className='mt-2'>
-                                {/* <p className='text-[#101828] text-lg font-semibold'>Lagos Experience Centre</p> */}
+
                                 <p className='text-[#667085] text-sm'>Suite D1 038 HFP Eastline Shopping Complex Abraham Adesanya Axis, Lekki-Epe Expressway, Lagos</p>
                             </div>
                         </div>
@@ -63,18 +63,40 @@ const ContactSectionOne = () => {
                         <div className="p-7 border-r border-b">
                             <MapPin className='text-[#058A05] w-5 h-5 mb-5' />
                             <div className='mt-2'>
-                                {/* <p className='text-[#101828] text-lg font-semibold'>Uyo Experience Centre</p> */}
+                               
                                 <p className='text-[#667085] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className='flex gap-5 items-center justify-center'>
-                    <TwitterIcon />
-                    <LinkedinIcon className='text-[#058A05]'/>
+                <div className='flex gap-7 items-center justify-center'>
+                    <Link href="https://facebook.com/fortsolar.ng/">
+                        <FaFacebook className="w-6 h-6 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://x.com/Fortsolar">
+                        <TwitterIcon className="w-6 h-6 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://www.linkedin.com/company/fortsolar/">
+                        <FaLinkedin className='w-6 h-6 hover:text-[#058A05] cursor-pointer' />
+                    </Link>
+
                     {/* #3B3B3B */}
-                    <FacebookIcon />
-                </div>˝
+                    <Link href="https://www.tiktok.com/@fortsolar">
+                        <FaTiktok className="w-6 h-6 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://youtube.com/@Fortsolar">
+                        <FaYoutube className="w-6 h-6 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://www.instagram.com/fortsolar.ng/">
+                        <FaInstagram className="w-6 h-6 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+
+                </div>
 
             </div>
         </div>

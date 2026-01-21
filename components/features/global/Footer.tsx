@@ -1,10 +1,9 @@
-import React from 'react'
-import { FacebookIcon } from '../icons/FacebookIcon'
-import { LinkedinIcon } from '../icons/LinkedinIcon'
-import { TwitterIcon } from '../icons/TwitterIcon'
-import Image from 'next/image'
-import { logo_footer } from '../images'
-import Link from 'next/link'
+import React from 'react';
+import Image from 'next/image';
+import { logo_footer } from '../images';
+import Link from 'next/link';
+import { TwitterIcon } from '@/components/features/icons/TwitterIcon';
+import { FaTiktok, FaYoutube, FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -89,11 +88,34 @@ const Footer = () => {
       <div className="bg-gray-50 py-6">
         <div className="flex flex-col-reverse gap-5 lg:flex-row items-center justify-center lg:justify-between w-full max-w-6xl mx-auto px-4  dark:bg-black sm:items-start">
           <p className='text-xs'>© 2022 - {new Date().getFullYear()}. All rights reserved.</p>
-          <div className='flex gap-5 items-center'>
-            <TwitterIcon />
-            <LinkedinIcon />
-            <FacebookIcon />
-          </div>
+           <div className='flex gap-7 items-center'>
+                    <Link href="https://facebook.com/fortsolar.ng/">
+                        <FaFacebook className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://x.com/Fortsolar">
+                        <TwitterIcon className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://www.linkedin.com/company/fortsolar/">
+                        <FaLinkedin className='w-5 h-5 hover:text-[#058A05] cursor-pointer' />
+                    </Link>
+
+                    {/* #3B3B3B */}
+                    <Link href="https://www.tiktok.com/@fortsolar">
+                        <FaTiktok className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://youtube.com/@Fortsolar">
+                        <FaYoutube className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+                    <Link href="https://www.instagram.com/fortsolar.ng/">
+                        <FaInstagram className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                    </Link>
+
+
+                </div>
         </div>
       </div>
 

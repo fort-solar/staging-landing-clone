@@ -43,21 +43,21 @@ export const TESTIMONIAL_CONTENT = [
   },
   {
     name: "Atanda Micheal",
-    role: "Software Developer",
+    role: "Home Owner",
     testimony:
       "I did a 2kva solar. Since the beginning of using it, it has never failed me. The 2kva worked with my Freezer of 115watt. Fort Solar Energy is the best. ",
     star: 5,
   },
   {
     name: "Sule Umar",
-    role: "Mobile Developer",
+    role: "Home Owner",
     testimony:
       "Quality product with experience technicians offering responsive during and after installations services.",
     star: 5,
   },
   {
     name: "Lintochi Razor",
-    role: "Language Specialist",
+    role: "Home Owner",
     testimony:
       "Swift and very reliable. They know their onion's and are extremely fast. Will always recommend them to anyone looking to have solar",
     star: 5,
@@ -71,7 +71,7 @@ export const TESTIMONIAL_CONTENT = [
   },
   {
     name: "Atanda Micheal",
-    role: "Software Developer",
+   role: "Home Owner",
     testimony:
       "I did a 2kva solar. Since the beginning of using it, it has never failed me. The 2kva worked with my Freezer of 115watt. Fort Solar Energy is the best. ",
     star: 5,
