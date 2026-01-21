@@ -1,0 +1,19 @@
+#app {
+  height: 100%;
+}
+
+
+#app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+}
