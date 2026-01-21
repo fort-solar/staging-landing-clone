@@ -162,3 +162,5 @@ export const servicesSlides = [
         rightBackgroundImage: "/about_services_five.png"
     },
 ]
+
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
