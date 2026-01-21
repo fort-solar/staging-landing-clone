@@ -38,7 +38,7 @@ const ContactMap = () => {
   }
 
   return (
-    <div className="h-100 lg:h-162.5 w-full space-y-6">
+    <div className="h-112.5 lg:h-150 w-full space-y-6">
 
       <Tabs
         defaultValue="lagos"

@@ -49,12 +49,12 @@ const ContactHero = ({ formRef }: ContactHeroProps) => {
 
 
     return (
-        <div className='h-[60vh]'>
+        <div className='h-[50vh]'>
             <div className="relative bg-[url('/contact_hero_image.png')] bg-cover bg-center h-full z-10">
                 <div className='absolute px-4 inset-0 z-10  flex flex-col items-center space-y-5 text-center justify-center '>
                     <h1 className="text-4xl lg:text-5xl font-bold font-poppins text-white max-w-4xl mx-auto">Start Your Solar Journey Today</h1>
                     <p className='max-w-2xl mx-auto text-white text-lg'>Have questions about our solar products, packages, or installations? Our support and sales team are always ready to help you make the switch to clean, reliable energy.</p>
-                    <div className="flex gap-4">
+                    <div className="flex gap-2 lg:gap-4">
                         <Link href="/coming-soon">
                             <Button
                                 className="
