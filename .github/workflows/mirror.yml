@@ -21,7 +21,13 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan github.com >> ~/.ssh/known_hosts
       
+      - name: Remove workflow file before mirroring
+        run: |
+          rm -rf .github/workflows/mirror.yml
+          git add .github/workflows/mirror.yml
+          git commit -m "Remove mirror workflow for personal repo" || true
+      
       - name: Mirror to personal repo
         run: |
           git remote add personal git@github.com:fort-solar/fortsolar-landing-webapp-clone.git
-          git push --mirror personal
+          git push --force personal
