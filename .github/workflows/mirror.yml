@@ -14,9 +14,14 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Mirror to personal repo
-        env:
-          PERSONAL_REPO_TOKEN: ${{ secrets.PERSONAL_REPO_TOKEN }}
+      - name: Setup SSH
         run: |
-          git remote add personal https://x-access-token:${PERSONAL_REPO_TOKEN}@github.com/fort-solar/fortsolar-landing-webapp-clone.git
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      
+      - name: Mirror to personal repo
+        run: |
+          git remote add personal git@github.com:fort-solar/fortsolar-landing-webapp-clone.git
           git push --mirror personal
