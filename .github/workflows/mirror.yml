@@ -1,0 +1,22 @@
+name: Mirror to Personal Repo
+
+on:
+  push:
+    branches:
+      - main
+      - '**'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Mirror to personal repo
+        env:
+          PERSONAL_REPO_TOKEN: ${{ secrets.PERSONAL_REPO_TOKEN }}
+        run: |
+          git remote add personal https://x-access-token:${PERSONAL_REPO_TOKEN}@github.com/fort-solar/fortsolar-landing-webapp-clone.git
+          git push --mirror personal
