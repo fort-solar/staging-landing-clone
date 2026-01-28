@@ -1,48 +1,22 @@
-name: Mirror to Fortsolar Personal Repo (DEBUG)
+name: Mirror to Personal Repo
 
 on:
   push:
     branches:
       - main
-
-permissions:
-  contents: write
+      - '**'
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout source repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Verify token exists
+      
+      - name: Mirror to personal repo
         env:
-          TOKEN: ${{ secrets.MIRROR_TOKEN }}
+          PERSONAL_REPO_TOKEN: ${{ secrets.PERSONAL_REPO_TOKEN }}
         run: |
-          if [ -z "$TOKEN" ]; then
-            echo "ERROR: MIRROR_TOKEN is empty"
-            exit 1
-          fi
-          echo "MIRROR_TOKEN detected (length: ${#TOKEN})"
-
-      - name: Debug access to mirror repo
-        run: |
-          MIRROR_URL="https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git"
-
-          echo "Testing read access to mirror repo..."
-          git ls-remote "$MIRROR_URL" HEAD
-
-          echo "Read access OK"
-
-      - name: Push to personal mirror
-        run: |
-          MIRROR_URL="https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git"
-
-          git remote remove mirror 2>/dev/null || true
-          git remote add mirror "$MIRROR_URL"
-
-          echo "Pushing to mirror..."
-          git push mirror HEAD:main --force
+          git remote add personal https://x-access-token:${PERSONAL_REPO_TOKEN}@github.com/fort-solar/fortsolar-landing-webapp-clone.git
+          git push --mirror personal
