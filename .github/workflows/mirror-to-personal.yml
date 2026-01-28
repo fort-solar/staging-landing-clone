@@ -18,7 +18,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Verify token exists
+        env:
+          TOKEN: ${{ secrets.MIRROR_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "ERROR: MIRROR_TOKEN is empty"
+            exit 1
+          fi
+          echo "MIRROR_TOKEN detected (length: ${#TOKEN})"
+
       - name: Push to personal mirror
         run: |
+          git remote remove mirror 2>/dev/null || true
           git remote add mirror https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git
           git push mirror main --force
