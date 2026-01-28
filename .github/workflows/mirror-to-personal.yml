@@ -1,4 +1,4 @@
-name: Mirror to Fortsolar Personal Repo
+name: Mirror to Fortsolar Personal Repo (DEBUG)
 
 on:
   push:
@@ -28,8 +28,21 @@ jobs:
           fi
           echo "MIRROR_TOKEN detected (length: ${#TOKEN})"
 
+      - name: Debug access to mirror repo
+        run: |
+          MIRROR_URL="https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git"
+
+          echo "Testing read access to mirror repo..."
+          git ls-remote "$MIRROR_URL" HEAD
+
+          echo "Read access OK"
+
       - name: Push to personal mirror
         run: |
+          MIRROR_URL="https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git"
+
           git remote remove mirror 2>/dev/null || true
-          git remote add mirror https://x-access-token:${{ secrets.MIRROR_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git
-          git push mirror main --force
+          git remote add mirror "$MIRROR_URL"
+
+          echo "Pushing to mirror..."
+          git push mirror HEAD:main --force
