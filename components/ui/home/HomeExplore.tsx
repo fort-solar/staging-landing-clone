@@ -28,14 +28,15 @@ const HomeExplore = () => {
                     <div className="text-3xl lg:text-5xl font-bold font-poppins flex ">
                         <p className="relative inline-flex items-center px-2 py-1 lg:py-4 cursor-pointer" onClick={() => setActiveSection("Packages")}>
                             {activeSection === "Packages" && (<GreenMarkIcon className="absolute inset-0 w-full h-full z-0" />)}
-                            <span className="relative z-10">Packages </span>
+                            <span className={`relative z-10 ${activeSection === "Products" ? "opacity-60" : ""}`}>Packages </span>
                         </p>
                         <p className="relative inline-flex items-center px-2 py-1 lg:py-4">
                             &
                         </p>
                         <p className="relative inline-flex items-center px-2 py-1 lg:py-4 cursor-pointer" onClick={() => setActiveSection("Products")}>
                             {activeSection === "Products" && (<GreenMarkIcon className="absolute inset-0 w-full h-full z-0" />)}
-                            Products
+                            <span className={`relative z-10 ${activeSection === "Packages" ? "opacity-60" : ""}`}> Products </span>
+                           
                         </p>
                     </div>
                     <p className="mt-2 font-medium max-w-xl">
