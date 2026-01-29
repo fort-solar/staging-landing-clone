@@ -86,7 +86,7 @@ export default function Navbar() {
     `}
             />
           </div>
-          <Link href="/coming-soon">
+          <Link href="/energy-calculator">
             <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
           </Link>
 
@@ -134,7 +134,7 @@ export default function Navbar() {
                 </button>
               );
             })}
-            <Link href="/coming-soon">
+            <Link href="/energy-calculator">
               <Button className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
             </Link>
           </div>
