@@ -6,6 +6,7 @@ import PdfIcon from "@/components/features/icons/PdfIcon";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Button } from "../button";
+import GetQuoteDialog from "./GetQuoteDialog";
 
 const DEVICES = [
   { label: "Laptop", watts: 65 },
@@ -278,7 +279,10 @@ const CalculatorSectionTwo = () => {
         </div>
 
         <div className="flex gap-4 my-8">
-          <Button className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6  hover:opacity-90">Get Quote →</Button>
+          <GetQuoteDialog totals={totals} selectedDevices={selectedDevices} onSubmit={async (payload) => {
+            console.log("Quote payload:", payload);
+            // call your API here (POST /quote)
+          }} />
           <Button disabled={totals.totalWh === 0} variant="outline" onClick={downloadPdf} className="cursor-pointer">
             <PdfIcon /> Download Summary & Save
           </Button>
