@@ -21,14 +21,15 @@ type Row = {
   quantity: number;
   watts: number;
   hours: number;
+  selected: boolean;
 };
-
 const createRow = (): Row => ({
   id: crypto.randomUUID(),
   item: "",
   quantity: 1,
   watts: 0,
   hours: 1,
+  selected: false,
 });
 
 const CalculatorSectionTwo = () => {
@@ -46,12 +47,14 @@ const CalculatorSectionTwo = () => {
   };
 
   const totals = useMemo(() => {
-    const totalWh = rows.reduce(
+    const activeRows = rows.filter(r => r.selected);
+
+    const totalWh = activeRows.reduce(
       (sum, r) => sum + r.quantity * r.watts * r.hours,
       0
     );
 
-    const peakWatts = rows.reduce(
+    const peakWatts = activeRows.reduce(
       (sum, r) => sum + r.quantity * r.watts,
       0
     );
@@ -63,17 +66,34 @@ const CalculatorSectionTwo = () => {
     };
   }, [rows]);
 
+
+  const selectedDevices = useMemo(() => {
+    return rows
+      .filter(r => r.selected)
+      .map(r => ({
+        item: r.item,
+        quantity: r.quantity,
+        watts: r.watts,
+        hours: r.hours,
+        wattHours: r.quantity * r.watts * r.hours,
+      }));
+  }, [rows]);
+
+
   const downloadPdf = () => {
     const doc = new jsPDF();
 
     doc.setFontSize(16);
-    doc.text("Energy System Summary", 14, 20);
+    doc.text("Custom System Recommendation", 14, 20);
 
     doc.setFontSize(11);
     doc.text(
-      "Here’s a breakdown of your estimated daily energy usage.",
+      "Here’s a quick breakdown of your total energy usage based on your inputs. This shows your daily demand and the solar setup that fits perfectly.",
       14,
-      30
+      30,
+      {
+        maxWidth: 180,
+      }
     );
 
     autoTable(doc, {
@@ -99,6 +119,8 @@ const CalculatorSectionTwo = () => {
 
     doc.save("energy-summary.pdf");
   };
+
+
 
 
 
@@ -131,12 +153,13 @@ const CalculatorSectionTwo = () => {
                       className="w-full border-none focus:ring-0 outline-0   rounded-md p-2"
                       value={row.item}
                       onChange={e => {
-                        const device = DEVICES.find(
-                          d => d.label === e.target.value
-                        );
+                        const value = e.target.value;
+                        const device = DEVICES.find(d => d.label === value);
+
                         updateRow(row.id, {
-                          item: e.target.value,
+                          item: value,
                           watts: device?.watts || 0,
+                          selected: Boolean(device),
                         });
                       }}
                     >
