@@ -69,16 +69,16 @@ const CalculatorSectionTwo = () => {
 
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
-      {/* TABLE */}
+
       <div className="overflow-x-auto border border-gray-200">
-        <table className="min-w-[900px] w-full text-sm">
+        <table className="min-w-225 w-full text-sm">
           <thead>
             <tr className="text-[#101828] font-semibold border-b">
-              <th className="p-3 border-r">Item</th>
-              <th className="p-3 border-r">Qty</th>
-              <th className="p-3 border-r">Watts</th>
-              <th className="p-3 border-r">Hours</th>
-              <th className="p-3 border-r">Watt Hours</th>
+              <th className="p-3 border-r text-start">Item</th>
+              <th className="p-3 border-r text-start">Quantity</th>
+              <th className="p-3 border-r text-start">Watts <span className="font-normal">(Per Item)</span> </th>
+              <th className="p-3 border-r text-start">Hours <span className="font-normal">(Per Day)</span></th>
+              <th className="p-3 border-r text-start">Watt Hours <span className="font-normal">(W X Hrs)</span></th>
               <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
@@ -92,7 +92,7 @@ const CalculatorSectionTwo = () => {
                 <tr key={row.id} className="border-t">
                   <td className="p-2 border-r">
                     <select
-                      className="w-full border rounded-md p-2"
+                      className="w-full border-none focus:ring-0 outline-0   rounded-md p-2"
                       value={row.item}
                       onChange={e => {
                         const device = DEVICES.find(
@@ -117,7 +117,7 @@ const CalculatorSectionTwo = () => {
                     <input
                       type="number"
                       min={1}
-                      className="w-20 border rounded-md p-2"
+                      className="w-20 border-none focus:ring-0 outline-0 rounded-md p-2"
                       value={row.quantity}
                       onChange={e =>
                         updateRow(row.id, {
@@ -127,34 +127,46 @@ const CalculatorSectionTwo = () => {
                     />
                   </td>
 
-                  <td className="p-2 border-r">
-                    <input
-                      type="number"
-                      className="w-24 border rounded-md p-2"
-                      value={row.watts}
-                      onChange={e =>
-                        updateRow(row.id, {
-                          watts: Number(e.target.value),
-                        })
-                      }
-                    />
+                  <td >
+                    <div className="px-4 py-2 border-r flex items-center justify-between">
+                      <input
+                        type="number"
+                        className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
+                        value={row.watts}
+                        onChange={e =>
+                          updateRow(row.id, {
+                            watts: Number(e.target.value),
+                          })
+                        }
+                      />
+                      <p className="font-medium text-sm bg-[#B8C0CC33] p-2 text-[#3B3B3BB2] rounded-sm">W</p>
+                    </div>
+
                   </td>
 
-                  <td className="p-2 border-r">
-                    <input
-                      type="number"
-                      className="w-24 border rounded-md p-2"
-                      value={row.hours}
-                      onChange={e =>
-                        updateRow(row.id, {
-                          hours: Number(e.target.value),
-                        })
-                      }
-                    />
+                  <td >
+                    <div className="px-4 py-2 border-r flex items-center justify-between">
+                      <input
+                        type="number"
+                        className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
+                        value={row.hours}
+                        onChange={e =>
+                          updateRow(row.id, {
+                            hours: Number(e.target.value),
+                          })
+                        }
+                      />
+                      <p className="font-medium text-sm bg-[#B8C0CC33] p-2 text-[#3B3B3BB2] rounded-sm">Hrs</p>
+                    </div>
+
                   </td>
 
-                  <td className="p-2 border-r font-medium">
-                    {wattHours} Wh
+                  <td >
+                    <div className="px-4 py-2 border-r flex items-center justify-between">
+                      <p>  {wattHours}</p>
+                      <p className="font-medium text-sm bg-[#B8C0CC33] p-2 text-[#3B3B3BB2] rounded-sm">Wh</p>
+                    </div>
+
                   </td>
 
                   <td className="p-2 text-center bg-red-50">
@@ -175,32 +187,39 @@ const CalculatorSectionTwo = () => {
       <div className="flex justify-end">
         <Button
           onClick={() => setRows(r => [...r, createRow()])}
-          className="px-6 py-5 text-white bg-green-600 rounded-b-lg"
+          className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
         >
           Add Item
         </Button>
       </div>
 
-      {/* SUMMARY */}
+
       <div ref={summaryRef} className="my-20 max-w-2xl">
-        <p className="text-lg font-semibold mb-4">
+        <p className="text-lg font-semibold mb-4 text-[#101828]">
           Your Custom System Recommendation
         </p>
+        <p className="pb-10">
+          Here’s a quick breakdown of your total energy usage based on your inputs. This shows your daily demand and the solar setup that fits perfectly.
+        </p>
 
-        <table className="w-full border rounded-lg text-sm">
+        <table className="w-full max-w-xl border rounded-lg text-sm">
           <tbody>
-            <tr><td className="p-3">Total Load</td><td>{totals.peakKW.toFixed(2)} kW</td></tr>
-            <tr><td className="p-3">Daily Energy Use</td><td>{totals.dailyKWh.toFixed(2)} kWh</td></tr>
-            <tr><td className="p-3">Estimated Inverter</td><td>{Math.ceil(totals.peakKW * 1.25)} kW</td></tr>
-            <tr><td className="p-3">Battery Capacity</td><td>{Math.ceil(totals.dailyKWh)} kWh</td></tr>
-            <tr><td className="p-3">PV Size</td><td>{(totals.dailyKWh / 4).toFixed(2)} kWp</td></tr>
+            <tr className="border-b"><td className="p-3">Total Load</td><td>{totals.peakKW.toFixed(2)} kW</td></tr>
+            <tr className="border-b"><td className="p-3">Calculated Daily Energy Use</td><td>{totals.dailyKWh.toFixed(2)} kWh</td></tr>
+            <tr className="border-b"><td className="p-3">Estimated Inverter Size</td><td>{Math.ceil(totals.peakKW * 1.25)} kW</td></tr>
+            <tr className="border-b"><td className="p-3">Estimated Battery Capacity</td><td>{Math.ceil(totals.dailyKWh)} kWh</td></tr>
+            <tr className=""><td className="p-3">Estimated PV Size</td><td>{(totals.dailyKWh / 4).toFixed(2)} kWp</td></tr>
           </tbody>
         </table>
 
+        <div className="mt-8">
+          <p className="italic">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
+        </div>
+
         <div className="flex gap-4 my-8">
-          <Button>Get Quote →</Button>
-          <Button variant="outline" onClick={downloadPdf}>
-            <PdfIcon /> Download Summary
+          <Button className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6  hover:opacity-90">Get Quote →</Button>
+          <Button variant="outline" onClick={downloadPdf} className="cursor-pointer">
+            <PdfIcon /> Download Summary & Save
           </Button>
         </div>
       </div>
