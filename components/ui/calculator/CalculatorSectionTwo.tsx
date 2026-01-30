@@ -210,6 +210,7 @@ const CalculatorSectionTwo = () => {
                       <input
                         type="number"
                         min={0}
+                        max={24}
                         className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
                         value={row.hours}
                         onChange={e =>
