@@ -3,7 +3,8 @@
 import React, { useMemo, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 import PdfIcon from "@/components/features/icons/PdfIcon";
-import html2pdf from "html2pdf.js";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Button } from "../button";
 
 const DEVICES = [
@@ -63,39 +64,41 @@ const CalculatorSectionTwo = () => {
   }, [rows]);
 
   const downloadPdf = () => {
-    if (!summaryRef.current) return;
+    const doc = new jsPDF();
 
-    html2pdf()
-      .from(summaryRef.current)
-      .set({
-        margin: 10,
-        filename: "energy-summary.pdf",
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4" },
-      })
-      .save();
+    doc.setFontSize(16);
+    doc.text("Energy System Summary", 14, 20);
+
+    doc.setFontSize(11);
+    doc.text(
+      "Here’s a breakdown of your estimated daily energy usage.",
+      14,
+      30
+    );
+
+    autoTable(doc, {
+      startY: 40,
+      head: [["Metric", "Value"]],
+      body: [
+        ["Total Load", `${totals.peakKW.toFixed(2)} kW`],
+        ["Calculated Daily Energy Use", `${totals.dailyKWh.toFixed(2)} kWh`],
+        ["Estimated Inverter Size", `${Math.ceil(totals.peakKW * 1.25)} kW`],
+        ["Estimated Battery Capacity", `${Math.ceil(totals.dailyKWh)} kWh`],
+        ["Estimated PV Size", `${(totals.dailyKWh / 4).toFixed(2)} kWp`],
+      ],
+      theme: "grid",
+      styles: {
+        fontSize: 11,
+        cellPadding: 4,
+      },
+      headStyles: {
+        fillColor: [44, 178, 44],
+        textColor: 255,
+      },
+    });
+
+    doc.save("energy-summary.pdf");
   };
-
-
-  // const downloadPdf = async () => {
-  //   if (!summaryRef.current) return;
-
-  //   try {
-  //     const html2pdf = (await import("html2pdf.js")).default;
-
-  //     await html2pdf()
-  //       .from(summaryRef.current)
-  //       .set({
-  //         margin: 10,
-  //         filename: "energy-summary.pdf",
-  //         html2canvas: { scale: 2 },
-  //       })
-  //       .save();
-  //   } finally {
-  //     document.body.style.pointerEvents = "auto";
-  //     document.body.style.overflow = "auto";
-  //   }
-  // };
 
 
 
