@@ -9,7 +9,7 @@ import CircularGreenCheck from '@/components/features/icons/CircularGreenCheck';
 const CardThree = () => {
     return (
         <div className="
-      group flex flex-col justify-between overflow-hidden rounded-lg pt-4 px-4
+      group flex flex-col gap-3 justify-between overflow-hidden rounded-lg pt-4 px-4
       bg-white border border-transparent cursor-pointer
       transition-all duration-300
       hover:bg-[#EBFAEB] hover:border-[#058A05]

@@ -21,9 +21,9 @@ const HomeAbout = () => {
                 </div>
             </div>
 
-            <div className='max-w-4xl mt-7'>
-                <p>We transform how people power their homes and businesses across Nigeria. Established in 2022, we’re committed to providing reliable, affordable, and future-ready solar energy solutions that help households, offices, and remote workers save time and money on electricity bills.</p>
-            </div>
+           `     <div className='max-w-4xl mt-7'>
+                    <p>We transform how people power their homes and businesses across Nigeria. Established in 2022, we’re committed to providing reliable, affordable, and future-ready solar energy solutions that help households, offices, and remote workers save time and money on electricity bills.</p>
+                </div>`
 
             <div className="mt-10 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-5">
                 <div className='grid grid-cols-1 lg:grid-cols-2'>

@@ -10,7 +10,7 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 const CardOne = () => {
     return (
         <div className="
-      group flex flex-col justify-between overflow-hidden rounded-lg pt-4 px-4
+      group flex flex-col gap-3 justify-between overflow-hidden rounded-lg pt-4 px-4
       bg-white border border-transparent cursor-pointer
       transition-all duration-300
       hover:bg-[#EBFAEB] hover:border-[#058A05]
@@ -38,6 +38,7 @@ const CardOne = () => {
 
            <div className="
           relative h-72 lg:h-60
+          pt-5
           perspective-1000
         ">
                 <div

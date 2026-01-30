@@ -8,7 +8,7 @@ import CircularGreenCheck from '@/components/features/icons/CircularGreenCheck';
 
 const CardTwo = () => {
     return (
-        <div className=" group flex flex-col justify-between overflow-hidden rounded-lg pt-4 px-4 bg-white border border-transparent cursor-pointer transition-all duration-300  hover:bg-[#EBFAEB] hover:border-[#058A05]">
+        <div className=" group flex flex-col gap-3 justify-between overflow-hidden rounded-lg pt-4 px-4 bg-white border border-transparent cursor-pointer transition-all duration-300  hover:bg-[#EBFAEB] hover:border-[#058A05]">
             <div className="flex w-full justify-between items-center">
                 <p className="font-semibold text-lg">
                     5kva Home Solar Bundle
