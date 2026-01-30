@@ -2,8 +2,8 @@
 
 import React, { useMemo, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
-import html2pdf from "html2pdf.js";
 import PdfIcon from "@/components/features/icons/PdfIcon";
+import html2pdf from "html2pdf.js";
 import { Button } from "../button";
 
 const DEVICES = [
@@ -64,8 +64,41 @@ const CalculatorSectionTwo = () => {
 
   const downloadPdf = () => {
     if (!summaryRef.current) return;
-    html2pdf().from(summaryRef.current).save("energy-summary.pdf");
+
+    html2pdf()
+      .from(summaryRef.current)
+      .set({
+        margin: 10,
+        filename: "energy-summary.pdf",
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4" },
+      })
+      .save();
   };
+
+
+  // const downloadPdf = async () => {
+  //   if (!summaryRef.current) return;
+
+  //   try {
+  //     const html2pdf = (await import("html2pdf.js")).default;
+
+  //     await html2pdf()
+  //       .from(summaryRef.current)
+  //       .set({
+  //         margin: 10,
+  //         filename: "energy-summary.pdf",
+  //         html2canvas: { scale: 2 },
+  //       })
+  //       .save();
+  //   } finally {
+  //     document.body.style.pointerEvents = "auto";
+  //     document.body.style.overflow = "auto";
+  //   }
+  // };
+
+
+
 
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
@@ -131,6 +164,7 @@ const CalculatorSectionTwo = () => {
                     <div className="px-4 py-2 border-r flex items-center justify-between">
                       <input
                         type="number"
+                        min={0}
                         className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
                         value={row.watts}
                         onChange={e =>
@@ -148,6 +182,7 @@ const CalculatorSectionTwo = () => {
                     <div className="px-4 py-2 border-r flex items-center justify-between">
                       <input
                         type="number"
+                        min={0}
                         className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
                         value={row.hours}
                         onChange={e =>
@@ -194,7 +229,7 @@ const CalculatorSectionTwo = () => {
       </div>
 
 
-      <div ref={summaryRef} className="my-20 max-w-2xl">
+      <div ref={summaryRef} className="bg-white my-20 max-w-2xl">
         <p className="text-lg font-semibold mb-4 text-[#101828]">
           Your Custom System Recommendation
         </p>
@@ -218,7 +253,7 @@ const CalculatorSectionTwo = () => {
 
         <div className="flex gap-4 my-8">
           <Button className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6  hover:opacity-90">Get Quote →</Button>
-          <Button variant="outline" onClick={downloadPdf} className="cursor-pointer">
+          <Button disabled={totals.totalWh === 0} variant="outline" onClick={downloadPdf} className="cursor-pointer">
             <PdfIcon /> Download Summary & Save
           </Button>
         </div>
