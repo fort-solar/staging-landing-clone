@@ -20,6 +20,10 @@ import logo_footer from "./logo_footer.png";
 import Result from "./Result.png";
 import video_background from "./video_background.jpg";
 import double_solar_panels from "./double_solar_panels.png";
+import home_slider_trust from "./home_slider_trust.jpg";
+import home_slider_solar from "./home_slider_go_solar.jpg";
+import home_slider_installations from "./home_slider_installations.jpg"
+
 
 
 
@@ -48,5 +52,8 @@ export {
     logo_footer,
     Result,
     video_background,
-    double_solar_panels
+    double_solar_panels,
+    home_slider_installations,
+    home_slider_trust,
+    home_slider_solar
 }

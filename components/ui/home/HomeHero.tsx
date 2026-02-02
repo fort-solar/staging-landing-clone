@@ -7,7 +7,6 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { GreenTick } from "@/components/features/icons/Greentick";
 import Image from "next/image";
 import Link from "next/link";
-import { solar_installation_image } from "@/components/features/images";
 import { trusted_brands_1, trusted_brands_2, trusted_brands_3, trusted_brands_4 } from "@/components/features/images";
 
 
@@ -23,8 +22,8 @@ const HomeHero = () => {
         return () => clearInterval(timer);
     }, [current, setCurrent]);
 
-  
-    
+
+
 
     const scrollToTop = () => {
         if (!heroRef.current) return;
@@ -115,37 +114,38 @@ const HomeHero = () => {
                             </Link>
 
                         </div>
-                        <div className="lg:hidden block h-87.5 w-full overflow-hidden rounded-4xl border-white">
+                        <div className="lg:hidden block relative h-100 w-full overflow-hidden rounded-4xl border-white">
                             <Image
-                                width={300}
-                                height={300}
-                                alt="Solar panel installation on a rooftop"
-                                src={solar_installation_image}
-                                className="object-fit rounded-4xl w-full"
+                                fill
+                                alt="Residential solar installation"
+                                src={CAROUSEL_CONTENT[current].image}
+                                className="object-fill rounded-4xl inverted-radius-image-bottom"
                             />
-                        </div>
-                        <div className="lg:hidden flex gap-3 z-10 bg-white pb-2  rounded-tl-4xl rounded-br-4xl">
-                            <button
-                                onClick={() => {
+
+
+                            <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-2 rounded-tl-4xl rounded-br-4xl">
+                                <button
+                                    onClick={() => {
                                     setCurrent((prev) =>
                                         prev === 0 ? CAROUSEL_CONTENT.length - 1 : prev - 1
                                     );
                                     setTimeout(scrollToTop, 100);
                                 }}
-                                className="h-12 cursor-pointer w-12 rounded-xl bg-white flex items-center justify-center shadow"
-                            >
-                                ←
-                            </button>
-                            <button
-                                onClick={() => {
+                                    className="h-12 cursor-pointer w-12 rounded-xl bg-white flex items-center justify-center shadow"
+                                >
+                                    ←
+                                </button>
+                                <button
+                                     onClick={() => {
                                     setCurrent((prev) => (prev + 1) % CAROUSEL_CONTENT.length);
                                     setTimeout(scrollToTop, 100);
                                 }}
-                                className="h-12 w-12 cursor-pointer rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                                    className="h-12 w-12 cursor-pointer rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
     hover:opacity-90 text-white flex items-center justify-center shadow"
-                            >
-                                →
-                            </button>
+                                >
+                                    →
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -183,11 +183,11 @@ const HomeHero = () => {
                         fill
                         alt="Residential solar installation"
                         src={CAROUSEL_CONTENT[current].image}
-                        className="object-fill rounded-4xl"
+                        className="object-fill rounded-4xl inverted-radius-image-bottom"
                     />
 
 
-                    <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-7 rounded-tl-4xl rounded-br-4xl">
+                    <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-2 rounded-tl-4xl rounded-br-4xl">
                         <button
                             onClick={() =>
                                 setCurrent((prev) =>

@@ -1,4 +1,4 @@
-import { solar_installation_image_single_cut } from "../images";
+import {  home_slider_installations, home_slider_solar, home_slider_trust } from "../images";
 
 export const CAROUSEL_CONTENT = [
   {
@@ -9,7 +9,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Whether you’re powering a residence or a commercial space, our solar solutions deliver consistent performance, lower bills, and total peace of mind.",
     buttonName: "Get a Quote",
-    image: solar_installation_image_single_cut,
+    image: home_slider_trust,
   },
   {
     toast: "Solar Financing",
@@ -19,7 +19,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Enjoy clean, reliable energy without breaking the bank. Our flexible financing options let you install your system today and pay over time.",
     buttonName: "Apply for Financing",
-    image: solar_installation_image_single_cut,
+    image: home_slider_solar,
   },
   {
     toast: "Solar Products & Packages",
@@ -29,7 +29,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Explore our collection of verified solar panels, batteries, and inverters, all sourced from trusted manufacturers and built for lasting performance.",
     buttonName: "View Store",
-    image: solar_installation_image_single_cut,
+    image: home_slider_installations,
   },
 ];
 
