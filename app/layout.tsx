@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import {  Inter, Poppins } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const fontInter = Inter({
@@ -54,6 +55,14 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Fortsolar",
+  url: "https://fortsolar.com",
+  logo: "https://fortsolar.com/FortsolarLogo.png",
+};
+
 
 export default function RootLayout({
   children,
@@ -65,6 +74,14 @@ export default function RootLayout({
       <body
         className={`${fontInter.variable} ${fontPoppins.variable}  antialiased`}
       >
+        <Script
+          id="ld-org"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationStructuredData),
+          }}
+        />
         {children}
       </body>
     </html>

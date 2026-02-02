@@ -44,7 +44,7 @@ const CardTwo = () => {
                                 <Image
                                     fill
                                     src={our_packages_one}
-                                    alt="Campus Bundle"
+                                    alt="5kva home solar bundle package"
                                     className="object-cover rounded-t-lg"
                                 />
                             </div>

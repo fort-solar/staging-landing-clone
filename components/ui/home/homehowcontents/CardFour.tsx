@@ -29,7 +29,7 @@ const CardFour = () => {
                                 <div className="relative h-75 lg:h-50 mt-5">
                                     <Image
                                         fill
-                                        alt="how_it_works_four"
+                                        alt="Step 4: Monitor and maintain performance"
                                         src={how_it_works_four}
                                         className="object-fill rounded-t-lg"
                                     />

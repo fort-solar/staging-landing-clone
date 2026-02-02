@@ -29,7 +29,7 @@ const CardThree = () => {
                                     <div className="relative h-75 lg:h-50 mt-5">
                                         <Image
                                             fill
-                                            alt="how_it_works_three"
+                                            alt="Step 3: Install your solar system"
                                             src={how_it_works_three}
                                             className="object-fill rounded-t-lg"
                                         />

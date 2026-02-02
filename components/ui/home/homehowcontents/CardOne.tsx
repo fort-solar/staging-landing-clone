@@ -28,7 +28,7 @@ const CardOne = () => {
                     <div className="relative h-75 lg:h-50 mt-5">
                         <Image
                             fill
-                            alt="how_it_works_one"
+                            alt="Step 1: Assess your energy needs"
                             src={how_it_works_one}
                             className="object-fill rounded-t-lg"
                         />

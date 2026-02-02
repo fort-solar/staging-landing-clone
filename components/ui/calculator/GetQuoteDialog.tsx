@@ -22,18 +22,20 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LOCATION_OPTIONS = [
-    { label: "City", value: "city" },
-    { label: "Rural Area", value: "rural" },
+    { label: "Urban", value: "urban" },
+    { label: "Rural", value: "rural" },
 ];
 
 const INSTALLATION_TYPE_OPTIONS = [
     { label: "Commercial", value: "commercial" },
-    { label: "Personal", value: "personal" },
+    { label: "Industrial", value: "industrial" },
 ];
 
 const BUILDING_TYPE_OPTIONS = [
+    { label: "Appartment/Flat", value: "appartment" },
     { label: "Bungalow", value: "bungalow" },
     { label: "Duplex", value: "duplex" },
+    { label: "Mansion/High-Rise", value: "mansion" }
 ];
 
 type Totals = {

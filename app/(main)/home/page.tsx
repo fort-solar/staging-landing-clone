@@ -1,4 +1,4 @@
-
+import type { Metadata } from "next";
 import HomeHero from "@/components/ui/home/HomeHero";
 import HomeAbout from "@/components/ui/home/HomeAbout";
 import HomeExplore from "@/components/ui/home/HomeExplore";
@@ -13,9 +13,21 @@ import Faq from "@/components/features/global/Faq";
 import Newsletter from "@/components/features/global/Newsletter";
 import Footer from "@/components/features/global/Footer";
 
-
-
-
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Explore Fortsolar’s solar solutions for homes and businesses, plus financing, products, and expert installation services.",
+  alternates: {
+    canonical: "/home",
+  },
+  openGraph: {
+    title: "Fortsolar Home",
+    description:
+      "Clean, reliable solar power for homes and businesses with flexible financing and expert installation.",
+    url: "/home",
+    type: "website",
+  },
+};
 
 export default function Home() {
   return (

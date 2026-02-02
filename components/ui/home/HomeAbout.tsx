@@ -38,7 +38,7 @@ const HomeAbout = () => {
                         <div className='h-[50%] p-4 relative'>
                             <Image
                                 fill
-                                alt="solar cells image"
+                                alt="Solar cells close-up"
                                 src={solar_cells}
                                 className="object-fill rounded-4xl px-4 py-4"
                             />
@@ -50,7 +50,7 @@ const HomeAbout = () => {
                         <div className='h-[50%] p-4 relative'>
                             <Image
                                 fill
-                                alt="man_carrying_solar_panel"
+                                alt="Technician carrying a solar panel"
                                 src={man_carrying_solar_panel}
                                 className="object-fill rounded-4xl px-4 py-4"
                             />
@@ -69,7 +69,7 @@ const HomeAbout = () => {
                         <div className="w-full h-full">
                             <Image
                                 fill
-                                alt="solar installation image"
+                                alt="Solar installation with panel array"
                                 src={solar_installation_image_double_cut}
                                 className="object-fill w-full h-full"
                             />

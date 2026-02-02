@@ -30,7 +30,7 @@ const HomeWhy = () => {
                                 </button>
                             </div>
                             <div className='hidden lg:block absolute -bottom-12 -right-14 p-5 bg-[#DAF1FB] rounded-2xl'>
-                                <Image src={Result} alt="result" height={150} width={150} />
+                                <Image src={Result} alt="Solar performance chart result" height={150} width={150} />
                             </div>
                         </div>
 

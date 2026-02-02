@@ -93,9 +93,9 @@ const HomeHero = () => {
                                 {CAROUSEL_CONTENT[current].toast}
                             </div>
 
-                            <div className="text-4xl lg:text-6xl font-bold font-poppins mt-1 lg:mt-2    ">
+                            <h1 className="text-4xl lg:text-6xl font-bold font-poppins mt-1 lg:mt-2">
                                 {CAROUSEL_CONTENT[current].title}
-                            </div>
+                            </h1>
 
                             <div className="mt-1 lg:mt-2">
                                 {CAROUSEL_CONTENT[current].content}
@@ -129,7 +129,7 @@ const HomeHero = () => {
                             <Image
                                 width={300}
                                 height={300}
-                                alt="solar installation image"
+                                alt="Solar panel installation on a rooftop"
                                 src={solar_installation_image}
                                 className="object-fit rounded-4xl w-full"
                             />
@@ -165,22 +165,22 @@ const HomeHero = () => {
                         </div>
                         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mt-4">
                             <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="partners" src={trusted_brands_1} height={30} width={30} />
+                                <Image alt="Trusted brand logo 1" src={trusted_brands_1} height={30} width={30} />
                             </div>
                             <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="partners" src={trusted_brands_2} height={30} width={30} />
+                                <Image alt="Trusted brand logo 2" src={trusted_brands_2} height={30} width={30} />
                             </div>
                             <div className="border rounded-lg bg-black w-full py-5 flex justify-center items-center">
-                                <Image alt="partners" src={trusted_brands_3} height={30} width={30} />
+                                <Image alt="Trusted brand logo 3" src={trusted_brands_3} height={30} width={30} />
                             </div>
                             <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="partners" src={trusted_brands_1} height={30} width={30} />
+                                <Image alt="Trusted brand logo 1" src={trusted_brands_1} height={30} width={30} />
                             </div>
                             <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="partners" src={trusted_brands_4} height={30} width={30} />
+                                <Image alt="Trusted brand logo 4" src={trusted_brands_4} height={30} width={30} />
                             </div>
                             <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="partners" src={trusted_brands_4} height={30} width={30} />
+                                <Image alt="Trusted brand logo 4" src={trusted_brands_4} height={30} width={30} />
                             </div>
                         </div>
                     </div>
@@ -191,7 +191,7 @@ const HomeHero = () => {
                 <div className="hidden lg:block relative h-130 w-full overflow-hidden rounded-4xl border-white">
                     <Image
                         fill
-                        alt="solar installation image"
+                        alt="Residential solar installation"
                         src={CAROUSEL_CONTENT[current].image}
                         className="object-fill rounded-4xl"
                     />

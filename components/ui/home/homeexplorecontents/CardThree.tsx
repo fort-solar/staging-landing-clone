@@ -49,7 +49,7 @@ const CardThree = () => {
                     <Image
                         fill
                         src={our_packages_one}
-                        alt="Campus Bundle"
+                        alt="Campus solar bundle package"
                         className="object-cover rounded-t-lg"
                     />
                 </div>
