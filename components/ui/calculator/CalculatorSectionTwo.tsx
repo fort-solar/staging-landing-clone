@@ -129,29 +129,41 @@ const CalculatorSectionTwo = () => {
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
 
-      <div className="overflow-x-auto border border-gray-200">
-        <table className="min-w-225 w-full text-sm">
-          <thead>
+      <div className="border border-gray-200">
+        <table className="block w-full text-sm md:table">
+          <thead className="hidden md:table-header-group">
             <tr className="text-[#101828] font-semibold border-b">
               <th className="p-3 border-r text-start">Item</th>
               <th className="p-3 border-r text-start">Quantity</th>
-              <th className="p-3 border-r text-start">Watts <span className="font-normal">(Per Item)</span> </th>
-              <th className="p-3 border-r text-start">Hours <span className="font-normal">(Per Day)</span></th>
-              <th className="p-3 border-r text-start">Watt Hours <span className="font-normal">(W X Hrs)</span></th>
+              <th className="p-3 border-r text-start">
+                Watts <span className="font-normal">(Per Item)</span>
+              </th>
+              <th className="p-3 border-r text-start">
+                Hours <span className="font-normal">(Per Day)</span>
+              </th>
+              <th className="p-3 border-r text-start">
+                Watt Hours <span className="font-normal">(W X Hrs)</span>
+              </th>
               <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
 
-          <tbody>
+          <tbody className="block md:table-row-group">
             {rows.map(row => {
               const wattHours =
                 row.quantity * row.watts * row.hours;
 
               return (
-                <tr key={row.id} className="border-t">
-                  <td className="p-2 border-r">
+                <tr
+                  key={row.id}
+                  className="block border-b bg-white p-3 last:border-b-0 md:table-row md:border-t md:p-0"
+                >
+                  <td
+                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-2"
+                    data-label="Item"
+                  >
                     <select
-                      className="w-full border-none focus:ring-0 outline-0   rounded-md p-2"
+                      className="w-full rounded-md border-none p-2 outline-0 focus:ring-0"
                       value={row.item}
                       onChange={e => {
                         const value = e.target.value;
@@ -173,11 +185,16 @@ const CalculatorSectionTwo = () => {
                     </select>
                   </td>
 
-                  <td className="p-2 border-r">
+                  </td>
+
+                  <td
+                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-2"
+                    data-label="Quantity"
+                  >
                     <input
                       type="number"
                       min={1}
-                      className="w-20 border-none focus:ring-0 outline-0 rounded-md p-2"
+                      className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-20"
                       value={row.quantity}
                       onChange={e =>
                         updateRow(row.id, {
@@ -187,12 +204,15 @@ const CalculatorSectionTwo = () => {
                     />
                   </td>
 
-                  <td >
-                    <div className="px-4 py-2 border-r flex items-center justify-between">
+                  <td
+                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-0"
+                    data-label="Watts (Per Item)"
+                  >
+                    <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
                       <input
                         type="number"
                         min={0}
-                        className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
+                        className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-24"
                         value={row.watts}
                         onChange={e =>
                           updateRow(row.id, {
@@ -205,13 +225,16 @@ const CalculatorSectionTwo = () => {
 
                   </td>
 
-                  <td >
-                    <div className="px-4 py-2 border-r flex items-center justify-between">
+                  <td
+                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-0"
+                    data-label="Hours (Per Day)"
+                  >
+                    <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
                       <input
                         type="number"
                         min={0}
                         max={24}
-                        className="w-24 border-none focus:ring-0 outline-0 rounded-md p-2"
+                        className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-24"
                         value={row.hours}
                         onChange={e =>
                           updateRow(row.id, {
@@ -224,15 +247,21 @@ const CalculatorSectionTwo = () => {
 
                   </td>
 
-                  <td >
-                    <div className="px-4 py-2 border-r flex items-center justify-between">
-                      <p>  {wattHours}</p>
+                  <td
+                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-0"
+                    data-label="Watt Hours"
+                  >
+                    <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
+                      <p>{wattHours}</p>
                       <p className="font-medium text-sm bg-[#B8C0CC33] p-2 text-[#3B3B3BB2] rounded-sm">Wh</p>
                     </div>
 
                   </td>
 
-                  <td className="p-2 text-center bg-red-50">
+                  <td
+                    className="flex items-center justify-between gap-4 py-2 text-center md:table-cell md:bg-red-50 md:p-2"
+                    data-label="Actions"
+                  >
                     <button
                       onClick={() => removeRow(row.id)}
                       className="text-red-500"
