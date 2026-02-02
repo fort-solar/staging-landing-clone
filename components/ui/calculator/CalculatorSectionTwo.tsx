@@ -129,8 +129,8 @@ const CalculatorSectionTwo = () => {
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
 
-      <div className="border border-gray-200">
-        <table className="block w-full text-sm md:table">
+      <div className="border border-gray-200 overflow-x-hidden md:overflow-x-auto">
+        <table className="block w-full text-sm md:table md:min-w-225">
           <thead className="hidden md:table-header-group">
             <tr className="text-[#101828] font-semibold border-b">
               <th className="p-3 border-r text-start">Item</th>
@@ -159,7 +159,7 @@ const CalculatorSectionTwo = () => {
                   className="block border-b bg-white p-3 last:border-b-0 md:table-row md:border-t md:p-0"
                 >
                   <td
-                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-2"
+                    className="flex items-center justify-between gap-4 border-b py-2 before:mr-4 before:text-xs before:font-semibold before:text-[#667085] before:content-[attr(data-label)] md:table-cell md:border-b-0 md:border-r md:p-2 md:before:content-none"
                     data-label="Item"
                   >
                     <select
@@ -185,10 +185,8 @@ const CalculatorSectionTwo = () => {
                     </select>
                   </td>
 
-                  </td>
-
                   <td
-                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-2"
+                    className="flex items-center justify-between gap-4 border-b py-2 before:mr-4 before:text-xs before:font-semibold before:text-[#667085] before:content-[attr(data-label)] md:table-cell md:border-b-0 md:border-r md:p-2 md:before:content-none"
                     data-label="Quantity"
                   >
                     <input
@@ -205,7 +203,7 @@ const CalculatorSectionTwo = () => {
                   </td>
 
                   <td
-                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-0"
+                    className="flex items-center justify-between gap-4 border-b py-2 before:mr-4 before:text-xs before:font-semibold before:text-[#667085] before:content-[attr(data-label)] md:table-cell md:border-b-0 md:border-r md:p-0 md:before:content-none"
                     data-label="Watts (Per Item)"
                   >
                     <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
@@ -226,7 +224,7 @@ const CalculatorSectionTwo = () => {
                   </td>
 
                   <td
-                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-0"
+                    className="flex items-center justify-between gap-4 border-b py-2 before:mr-4 before:text-xs before:font-semibold before:text-[#667085] before:content-[attr(data-label)] md:table-cell md:border-b-0 md:border-r md:p-0 md:before:content-none"
                     data-label="Hours (Per Day)"
                   >
                     <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
@@ -248,7 +246,7 @@ const CalculatorSectionTwo = () => {
                   </td>
 
                   <td
-                    className="flex items-center justify-between gap-4 border-b py-2 md:table-cell md:border-b-0 md:border-r md:p-0"
+                    className="flex items-center justify-between gap-4 border-b py-2 before:mr-4 before:text-xs before:font-semibold before:text-[#667085] before:content-[attr(data-label)] md:table-cell md:border-b-0 md:border-r md:p-0 md:before:content-none"
                     data-label="Watt Hours"
                   >
                     <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
@@ -259,7 +257,7 @@ const CalculatorSectionTwo = () => {
                   </td>
 
                   <td
-                    className="flex items-center justify-between gap-4 py-2 text-center md:table-cell md:bg-red-50 md:p-2"
+                    className="flex items-center justify-between gap-4 py-2 text-center before:mr-4 before:text-xs before:font-semibold before:text-[#667085] before:content-[attr(data-label)] md:table-cell md:bg-red-50 md:p-2 md:before:content-none"
                     data-label="Actions"
                   >
                     <button
@@ -275,7 +273,6 @@ const CalculatorSectionTwo = () => {
           </tbody>
         </table>
       </div>
-
       <div className="flex justify-end">
         <Button
           onClick={() => setRows(r => [...r, createRow()])}
@@ -284,8 +281,6 @@ const CalculatorSectionTwo = () => {
           Add Item
         </Button>
       </div>
-
-
       <div ref={summaryRef} className="bg-white my-20 max-w-2xl">
         <p className="text-lg font-semibold mb-4 text-[#101828]">
           Your Custom System Recommendation

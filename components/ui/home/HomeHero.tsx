@@ -23,18 +23,8 @@ const HomeHero = () => {
         return () => clearInterval(timer);
     }, [current, setCurrent]);
 
-    // const scrollToTop = () => {
-    //     if (!heroRef.current) return;
-
-    //     const offset = 80; 
-    //     const elementTop =
-    //         heroRef.current.getBoundingClientRect().top + window.scrollY;
-
-    //     window.scrollTo({
-    //         top: elementTop - offset,
-    //         behavior: "smooth",
-    //     });
-    // };
+  
+    
 
     const scrollToTop = () => {
         if (!heroRef.current) return;
