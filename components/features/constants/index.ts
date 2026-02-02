@@ -9,7 +9,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Whether you’re powering a residence or a commercial space, our solar solutions deliver consistent performance, lower bills, and total peace of mind.",
     buttonName: "Get a Quote",
-    image: home_slider_trust,
+    image: home_slider_installations,
   },
   {
     toast: "Solar Financing",

@@ -239,5 +239,15 @@
   animation: fadeIn 2.0s ease-in-out;
 }
 
+.hero-slider .swiper-slide {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.hero-slider .swiper-slide-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 
 

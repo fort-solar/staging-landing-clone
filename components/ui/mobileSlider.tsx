@@ -7,9 +7,17 @@ import { motion } from "framer-motion";
 import { Pagination, Autoplay } from "swiper/modules";
 
 
-export const MobileSlider = ({ children, extra }: { children: React.ReactNode; extra?: boolean }) => {
+export const MobileSlider = ({
+  children,
+  extra,
+  className,
+}: {
+  children: React.ReactNode;
+  extra?: boolean;
+  className?: string;
+}) => {
   return (
-    <div className="md:hidden">
+    <div className={`md:hidden ${className ?? ""}`}>
       {extra && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
