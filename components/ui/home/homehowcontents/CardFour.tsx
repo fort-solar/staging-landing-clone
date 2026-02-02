@@ -20,7 +20,7 @@ const CardFour = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="font-semibold text-lg transition-all duration-300 text-[#3B3B3B] group-hover:text-[#058A05]">
+                                    <p className="pb-2 font-semibold text-lg transition-all duration-300 text-[#3B3B3B] group-hover:text-[#058A05]">
                                         Start Saving
                                     </p>
 

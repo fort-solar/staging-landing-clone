@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
-import { our_packages_one } from "@/components/features/images";
+import { our_packages_three } from "@/components/features/images";
 import BundleIcon from '@/components/features/icons/BundleIcon';
 import BoltIcon from '@/components/features/icons/BoltIcon';
 import CircularGreenCheck from '@/components/features/icons/CircularGreenCheck';
@@ -16,7 +16,7 @@ const CardThree = () => {
     ">
             <div className="flex w-full justify-between items-center">
                 <p className="font-semibold text-lg">
-                    Campus Bundle
+                    Campus Max Bundle
                 </p>
                 <div className="
           border p-3 rounded-lg border-[#CCCCCC]
@@ -48,7 +48,7 @@ const CardThree = () => {
                 >
                     <Image
                         fill
-                        src={our_packages_one}
+                        src={our_packages_three}
                         alt="Campus solar bundle package"
                         className="object-cover rounded-t-lg"
                     />

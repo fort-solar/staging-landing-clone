@@ -19,7 +19,7 @@ const Newsletter = () => {
     <div>
       <div className={`relative w-full max-w-6xl mx-auto px-4 ${pathname === "/energy-calculator" ? "lg:pt-0" : "lg:pt-20"}  dark:bg-black sm:items-start`}>
         <div className='grid grid-cols-1 lg:grid-cols-[3fr_6fr_3fr]'>
-          <div className="hidden lg:block bg-[url('/engineer.png')] bg-cover bg-center min-h-87.5">
+          <div className="hidden lg:block bg-[url('/engineer_updated.png')] bg-cover bg-center min-h-87.5">
 
           </div>
           <div className='lg:py-10 h-full lg:min-h-87.5'>

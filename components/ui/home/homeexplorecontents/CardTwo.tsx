@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
-import { our_packages_one } from "@/components/features/images";
+import { our_packages_two } from "@/components/features/images";
 import BundleIcon from '@/components/features/icons/BundleIcon';
 import BoltIcon from '@/components/features/icons/BoltIcon';
 import CircularGreenCheck from '@/components/features/icons/CircularGreenCheck';
@@ -43,7 +43,7 @@ const CardTwo = () => {
                             >
                                 <Image
                                     fill
-                                    src={our_packages_one}
+                                    src={our_packages_two}
                                     alt="5kva home solar bundle package"
                                     className="object-cover rounded-t-lg"
                                 />

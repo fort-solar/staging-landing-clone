@@ -9,7 +9,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Whether you’re powering a residence or a commercial space, our solar solutions deliver consistent performance, lower bills, and total peace of mind.",
     buttonName: "Get a Quote",
-    image: home_slider_installations,
+    image: home_slider_trust,
   },
   {
     toast: "Solar Financing",
@@ -29,7 +29,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Explore our collection of verified solar panels, batteries, and inverters, all sourced from trusted manufacturers and built for lasting performance.",
     buttonName: "View Store",
-    image: home_slider_installations,
+    image: home_slider_trust,
   },
 ];
 
