@@ -17,7 +17,7 @@ const fontPoppins = Poppins({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fortsolar.com"),
+  metadataBase: new URL("https://www.fortsolar.ng"),
 
   title: {
     default: "Fortsolar | Clean, Reliable Solar Power",
@@ -59,8 +59,8 @@ const organizationStructuredData = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Fortsolar",
-  url: "https://fortsolar.com",
-  logo: "https://fortsolar.com/FortsolarLogo.png",
+  url: "https://www.fortsolar.ng",
+  logo: "https://www.fortsolar.ng/FortsolarLogo.png",
 };
 
 
