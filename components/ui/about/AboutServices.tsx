@@ -60,7 +60,7 @@ const AboutServices = () => {
                                             </Link>
                                         </div>
                                         <div
-                                            className="relative w-full min-h-[30vh] bg-cover bg-center"
+                                            className="relative w-full min-h-[30vh] bg-cover bg-top"
                                             style={{ backgroundImage: `url(${image})` }}
                                         />
                                     </div>
@@ -121,7 +121,7 @@ const AboutServices = () => {
                                                 </Link>
 
                                             </div>
-                                            <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[60vh]  bg-cover bg-center`} style={{ backgroundImage: `url(${image})` }}>
+                                            <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[60vh]  bg-cover bg-top`} style={{ backgroundImage: `url(${image})` }}>
                                             </div>
 
                                         </div>
