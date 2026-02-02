@@ -121,7 +121,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                     <input
                         {...register("firstName")}
                         className="input"
-                        placeholder="John"
+                        placeholder="e.g. Idara"
                     />
                     {errors.firstName && (
                         <p className="text-sm text-red-500">{errors.firstName.message}</p>
@@ -133,7 +133,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                     <input
                         {...register("lastName")}
                         className="input"
-                        placeholder="Doe"
+                        placeholder="e.g. Umar"
                     />
                 </div>
 
@@ -143,7 +143,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                         {...register("email")}
                         type="email"
                         className="input"
-                        placeholder="you@email.com"
+                        placeholder="e.g. idaraemekaumar@email.com"
                     />
                 </div>
 
@@ -152,7 +152,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                     <input
                         {...register("phone")}
                         className="input"
-                        placeholder="+234 0901 262 4182"
+                        placeholder="+234"
                     />
                 </div>
 
@@ -171,6 +171,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                         {...register("message")}
                         rows={5}
                         className="input"
+                        placeholder="Message description"
                     />
                 </div>
 
