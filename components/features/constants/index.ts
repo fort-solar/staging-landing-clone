@@ -110,7 +110,10 @@ export const navItems = [
 
 export const NotDesigned = [
   {
-    name: "",
+    name: "nothing", 
+  },
+  {
+    name: "this is another change",
   },
 ];
 
