@@ -1,4 +1,4 @@
-import {  home_slider_installations, home_slider_solar, home_slider_trust } from "../images";
+import {   home_slider_solar, home_slider_trust } from "../images";
 
 export const CAROUSEL_CONTENT = [
   {
@@ -110,10 +110,7 @@ export const navItems = [
 
 export const NotDesigned = [
   {
-    name: "nothing", 
-  },
-  {
-    name: "this is another change",
+    name: "", 
   },
 ];
 
