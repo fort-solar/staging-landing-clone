@@ -55,7 +55,7 @@ const ContactHero = ({ formRef }: ContactHeroProps) => {
                     <h1 className="text-4xl lg:text-5xl font-bold font-poppins text-white max-w-4xl mx-auto">Start Your Solar Journey Today</h1>
                     <p className='max-w-2xl mx-auto text-white text-lg'>Have questions about our solar products, packages, or installations? Our support and sales team are always ready to help you make the switch to clean, reliable energy.</p>
                     <div className="flex gap-2 lg:gap-4">
-                        <Link href="/coming-soon">
+                        <Link href="/energy-calculator">
                             <Button
                                 className="
                             transition-all
