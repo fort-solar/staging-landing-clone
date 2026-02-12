@@ -7,7 +7,7 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { GreenTick } from "@/components/features/icons/Greentick";
 import Image from "next/image";
 import Link from "next/link";
-import { trusted_brands_1, trusted_brands_2, trusted_brands_3, trusted_brands_4 } from "@/components/features/images";
+import { trusted_brands_1, trusted_brands_2, trusted_brands_3, trusted_brands_4, trusted_brands_5 } from "@/components/features/images";
 import { MobileSliderHome } from "../mobileSliderHome";
 import { SwiperSlide } from "swiper/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -139,24 +139,21 @@ const HomeHero = () => {
                             <GreenTick className="w-4 h-4" />
                             <p className="text-[#058A05] text-xs lg:text-sm">Trusted by 100+ homeowners businesses and partners.</p>
                         </div>
-                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mt-4">
-                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 1" src={trusted_brands_1} height={30} width={30} />
+                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-2 mt-4">
+                            <div className="border rounded-lg bg-white w-full py-2 flex justify-center items-center">
+                                <Image alt="Trusted brand logo 1" src={trusted_brands_1} height={100} width={100} />
                             </div>
-                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 2" src={trusted_brands_2} height={30} width={30} />
+                            <div className="border rounded-lg bg-black  w-full py-2 flex justify-center items-center">
+                                <Image alt="Trusted brand logo 2" src={trusted_brands_2} height={100} width={100} />
                             </div>
-                            <div className="border rounded-lg bg-black w-full py-5 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 3" src={trusted_brands_3} height={30} width={30} />
+                            <div className="border rounded-lg  w-full py-2 bg-white flex justify-center items-center">
+                                <Image alt="Trusted brand logo 3" src={trusted_brands_3} height={100} width={100} />
                             </div>
-                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 1" src={trusted_brands_1} height={30} width={30} />
+                            <div className="border rounded-lg bg-white w-full py-2 flex justify-center items-center">
+                                <Image alt="Trusted brand logo 1" src={trusted_brands_4} height={100} width={100} />
                             </div>
-                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 4" src={trusted_brands_4} height={30} width={30} />
-                            </div>
-                            <div className="border rounded-lg bg-white w-full py-5 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 4" src={trusted_brands_4} height={30} width={30} />
+                            <div className="border rounded-lg bg-white w-full py-2 flex justify-center items-center">
+                                <Image alt="Trusted brand logo 5" src={trusted_brands_5} height={100} width={100} />
                             </div>
                         </div>
                     </div>

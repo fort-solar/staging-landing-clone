@@ -5,6 +5,7 @@ import trusted_brands_1 from "./trusted_brands_1.png";
 import trusted_brands_2 from "./trusted_brands_2.png";
 import trusted_brands_3 from "./trusted_brands_3.png";
 import trusted_brands_4 from "./trusted_brands_4.png";
+import trusted_brands_5 from "./trusted_brands_5.png";
 import man_carrying_solar_panel from "./Mission_.jpg";
 import solar_cells from "./Vision_.jpg";
 import our_packages_one from "./our_packages_one.png";
@@ -22,7 +23,14 @@ import video_background from "./video_background.jpg";
 import double_solar_panels from "./double_solar_panels.png";
 import home_slider_trust from "./home_slider_trust.jpg";
 import home_slider_solar from "./home_slider_go_solar.jpg";
-import home_slider_installations from "./home_slider_installations.jpg"
+import home_slider_installations from "./home_slider_installations.jpg";
+import brand_1 from "./brand_1.png";
+import brand_2 from "./brand_2.png";
+import brand_3 from "./brand_3.png";
+import brand_4 from "./brand_4.png";
+import brand_5 from "./brand_5.png";
+import brand_6 from "./brand_6.png";
+import brand_7 from "./brand_7.png";
 
 
 
@@ -38,6 +46,7 @@ export {
     trusted_brands_2,
     trusted_brands_3,
     trusted_brands_4,
+    trusted_brands_5,
     man_carrying_solar_panel,
     solar_cells,
     our_packages_one,
@@ -55,5 +64,12 @@ export {
     double_solar_panels,
     home_slider_installations,
     home_slider_trust,
-    home_slider_solar
+    home_slider_solar,
+    brand_1,
+    brand_2,
+    brand_3,
+    brand_4,
+    brand_5,
+    brand_6,
+    brand_7
 }
