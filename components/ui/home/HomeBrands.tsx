@@ -36,10 +36,6 @@ const HomeBrands = () => {
                             <Image alt="brand logo 7" src={brand_7} height={100} width={100} />
                         </div>
                     </div>
-                    {/* <div className="flex items-center gap-8 lg:gap-20 justify-center">
-                        <CrossedPlayIcon />
-                        <MatomoIcon />
-                    </div> */}
                     <div className="border-t border-t-white mt-10 pt-7 lg:mt-20 flex items-center justify-center gap-10 lg:gap-20">
                         <div className="w-fit pt-1">
                             <Image alt="brand logo 3" src={brand_3} height={200} width={200} />
