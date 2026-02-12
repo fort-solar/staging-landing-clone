@@ -40,8 +40,8 @@ const HomeBrands = () => {
                         <CrossedPlayIcon />
                         <MatomoIcon />
                     </div> */}
-                    <div className="border-t border-t-white mt-4 pt-7 lg:mt-30 flex items-center justify-center gap-10 lg:gap-20">
-                        <div className="w-fit">
+                    <div className="border-t border-t-white mt-10 pt-7 lg:mt-20 flex items-center justify-center gap-10 lg:gap-20">
+                        <div className="w-fit pt-1">
                             <Image alt="brand logo 3" src={brand_3} height={200} width={200} />
                         </div>
                         <div className='space-y-2'>
