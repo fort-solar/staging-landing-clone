@@ -21,7 +21,7 @@ const CallToActionTwo = () => {
                 <div className="hidden lg:block relative w-full h-full bg-[url('/man_carrying_solar_panel.png')] bg-cover bg-center">
                     <div className="absolute inset-0 bg-linear-to-l from-[rgba(1,50,1,0)] to-[#013203] z-0" />
                 </div>
-                <div className="block lg:hidden relative bg-[url('/contact_hero_image.png')] bg-cover bg-center ">
+                <div className="block lg:hidden relative bg-[url('/man_carrying_solar_panel.png')] bg-cover bg-center ">
                     <div className='absolute px-4 py-8 inset-0 z-10 h-full w-full flex flex-col justify-between items-center space-y-5'>
                         <div>
                             <p className='text-white leading-16 text-2xl lg:text-5xl font-bold font-poppins'>Join Our Installer Network</p>
