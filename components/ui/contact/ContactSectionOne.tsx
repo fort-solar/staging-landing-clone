@@ -17,10 +17,10 @@ const ContactSectionOne = () => {
                     </div>
                     <div className='border grid grid-cols-1 lg:grid-cols-3'>
                         <div className="p-7 border-r border-b">
-                            <Mail className='text-[#058A05] w-5 h-5 mb-5' />
-                            <div className='mt-2 flex flex-col gap-1'>
-                                <p className='text-[#101828] text-lg font-semibold'>Email Address</p>
-                                <Link href={"mailto:enquiry@fortsolar.ng"} className='text-[#667085] text-sm'>enquiry@fortsolar.ng</Link>
+                            <MapPin className='text-[#058A05] w-5 h-5 mb-5' />
+                            <div className='mt-2'>
+
+                                <p className='text-[#667085] text-sm'>Suite D1 038 HFP Eastline Shopping Complex Abraham Adesanya Axis, Lekki-Epe Expressway, Lagos</p>
                             </div>
                         </div>
                         <div className="p-7 border-r border-b">
@@ -32,10 +32,10 @@ const ContactSectionOne = () => {
                             </div>
                         </div>
                         <div className="p-7 border-r border-b">
-                            <MapPin className='text-[#058A05] w-5 h-5 mb-5' />
-                            <div className='mt-2'>
-
-                                <p className='text-[#667085] text-sm'>Suite D1 038 HFP Eastline Shopping Complex Abraham Adesanya Axis, Lekki-Epe Expressway, Lagos</p>
+                            <Mail className='text-[#058A05] w-5 h-5 mb-5' />
+                            <div className='mt-2 flex flex-col gap-1'>
+                                <p className='text-[#101828] text-lg font-semibold'>Email Address</p>
+                                <Link href={"mailto:enquiry@fortsolar.ng"} className='text-[#667085] text-sm'>enquiry@fortsolar.ng</Link>
                             </div>
                         </div>
                     </div>
@@ -46,10 +46,10 @@ const ContactSectionOne = () => {
                     </div>
                     <div className='border grid grid-cols-1 lg:grid-cols-3'>
                         <div className="p-7 border-r border-b">
-                            <Mail className='text-[#058A05] w-5 h-5 mb-5' />
-                            <div className='mt-2 flex flex-col gap-1'>
-                                <p className='text-[#101828] text-lg font-semibold'>Email Address</p>
-                                <Link href={"mailto:enquiry@fortsolar.ng"} className='text-[#667085] text-sm'>enquiry@fortsolar.ng</Link>
+                            <MapPin className='text-[#058A05] w-5 h-5 mb-5' />
+                            <div className='mt-2'>
+
+                                <p className='text-[#667085] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
                             </div>
                         </div>
                         <div className="p-7 border-r border-b">
@@ -61,10 +61,10 @@ const ContactSectionOne = () => {
                             </div>
                         </div>
                         <div className="p-7 border-r border-b">
-                            <MapPin className='text-[#058A05] w-5 h-5 mb-5' />
-                            <div className='mt-2'>
-                               
-                                <p className='text-[#667085] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
+                            <Mail className='text-[#058A05] w-5 h-5 mb-5' />
+                            <div className='mt-2 flex flex-col gap-1'>
+                                <p className='text-[#101828] text-lg font-semibold'>Email Address</p>
+                                <Link href={"mailto:enquiry@fortsolar.ng"} className='text-[#667085] text-sm'>enquiry@fortsolar.ng</Link>
                             </div>
                         </div>
                     </div>
