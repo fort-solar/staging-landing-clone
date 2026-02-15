@@ -23,9 +23,9 @@ const Faq = () => {
                         </div>
                         {
                             pathname !== "/contact" && (
-                                <div>
-                                    <Link href="/contact">
-                                        <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
+                                <div className="w-full lg:w-fit">
+                                    <Link href="/contact" className="w-full lg:w-fit">
+                                        <Button variant="outline" className="w-full lg:w-fit py-6 border-[#0000004D] cursor-pointer">
                                             Learn More
                                         </Button>
                                     </Link>
@@ -44,8 +44,8 @@ const Faq = () => {
                                 <p className="text-sm">
                                     Reach out to our team directly and we&apos;ll get back to you.
                                 </p>
-                                <Link href={pathname === "/contact" ? "" : "/contact"}>
-                                    <Button className="w-fit bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
+                                <Link href={pathname === "/contact" ? "" : "/contact"} className="w-full lg:w-fit">
+                                    <Button className="w-full py-6 lg:w-fit bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
                                         Get in Touch
                                     </Button>
                                 </Link>
