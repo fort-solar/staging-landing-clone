@@ -250,4 +250,40 @@
   transform: translateY(0) scale(1);
 }
 
+@keyframes trustedBrandsScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
 
+.trusted-brands-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.trusted-brands-track {
+  display: flex;
+  width: max-content;
+  animation: trustedBrandsScroll 18s linear infinite;
+  will-change: transform;
+}
+
+.trusted-brands-item {
+  flex: 0 0 auto;
+  width: 8rem;
+}
+
+@media (min-width: 768px) {
+  .trusted-brands-item {
+    width: 9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .trusted-brands-item {
+    width: 10rem;
+  }
+}
