@@ -165,7 +165,7 @@ export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Pr
             }}
         >
             <DialogTrigger asChild>
-                <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 hover:opacity-90">
+                <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 py-6 hover:opacity-90">
                     Get Quote →
                 </Button>
             </DialogTrigger>
