@@ -29,12 +29,12 @@ const HomeWhy = () => {
                                     <PlayIcon className="w-14 h-14 text-[#168ABD]" />
                                 </button>
                             </div>
-                            <div className='hidden lg:block absolute -bottom-12 -right-14 p-5 bg-[#DAF1FB] rounded-2xl'>
+                            <div className='absolute -bottom-12 right-0 lg:-right-14 p-5 bg-[#DAF1FB] rounded-2xl'>
                                 <Image src={Result} alt="Solar performance chart result" height={150} width={150} />
                             </div>
                         </div>
 
-                        <div className='flex flex-col gap-6'>
+                        <div className='flex flex-col gap-6 mt-10 lg:mt-0'>
                             <div className='justify-end w-full flex'>
                                 <div className="max-w-[90%] lg:max-w-[85%] grid grid-cols-[1fr_11fr] gap-4 bg-gray-50 p-4 rounded-xl">
                                     <FreeInstallationIcon className='w-8 h-8' />
