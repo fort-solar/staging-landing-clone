@@ -87,7 +87,7 @@ const Footer = () => {
       </div>
       <div className="bg-gray-50 py-6">
         <div className="flex flex-col-reverse gap-5 lg:flex-row items-center justify-center lg:justify-between w-full max-w-6xl mx-auto px-4  dark:bg-black sm:items-start">
-          <p className='text-xs'>© 2022 - {new Date().getFullYear()}. All rights reserved.</p>
+          <p className='text-[10px] lg:text-xs'>Fort Energy Solar Ltd (RC: 1997466) © 2022 - {new Date().getFullYear()}. All rights reserved.</p>
            <div className='flex gap-7 items-center'>
                     <Link href="https://facebook.com/fortsolar.ng/">
                         <FaFacebook className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
