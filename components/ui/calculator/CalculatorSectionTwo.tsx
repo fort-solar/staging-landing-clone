@@ -303,12 +303,12 @@ const CalculatorSectionTwo = () => {
           <p className="italic">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
         </div>
 
-        <div className="flex gap-4 my-8">
+        <div className="flex flex-col lg:flex-row gap-4 w-full my-8">
           <GetQuoteDialog totals={totals} selectedDevices={selectedDevices} onSubmit={async (payload) => {
             console.log("Quote payload:", payload);
             // call your API here (POST /quote)
           }} />
-          <Button disabled={totals.totalWh === 0} variant="outline" onClick={downloadPdf} className="cursor-pointer">
+          <Button disabled={totals.totalWh === 0} variant="outline" onClick={downloadPdf} className="cursor-pointer w-full lg:w-fit py-6">
             <PdfIcon /> Download Summary & Save
           </Button>
         </div>
