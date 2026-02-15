@@ -54,8 +54,8 @@ const ContactHero = ({ formRef }: ContactHeroProps) => {
                 <div className='absolute px-4 inset-0 z-10  flex flex-col items-center space-y-5 text-center justify-center '>
                     <h1 className="text-4xl lg:text-5xl font-bold font-poppins text-white max-w-4xl mx-auto">Start Your Solar Journey Today</h1>
                     <p className='max-w-2xl mx-auto text-white text-lg'>Have questions about our solar products, packages, or installations? Our support and sales team are always ready to help you make the switch to clean, reliable energy.</p>
-                    <div className="flex gap-2 lg:gap-4">
-                        <Link href="/energy-calculator">
+                    <div className="flex flex-col lg:flex-row gap-4 w-full justify-center">
+                        <Link href="/energy-calculator" className='w-full lg:w-fit'>
                             <Button
                                 className="
                             transition-all
@@ -63,6 +63,8 @@ const ContactHero = ({ formRef }: ContactHeroProps) => {
                       cursor-pointer
                       text-sm
                       flex 
+                      py-6
+w-full lg:w-fit
                       items-center 
                       justify-center 
                       gap-3
@@ -81,6 +83,8 @@ const ContactHero = ({ formRef }: ContactHeroProps) => {
                             border-white
                             text-white
                             bg-transparent
+                            w-full lg:w-fit
+                            py-6
                       cursor-pointer
                       text-sm
                       hover:opacity-90
