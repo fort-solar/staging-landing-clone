@@ -49,7 +49,7 @@ export const MobileSliderHome = ({
       </Swiper>
 
       {pathName !== "/about" && (
-        <div className="flex gap-3">
+        <div className="flex gap-3 mt-5">
           <button
             className="hero-slider-prev h-12 w-12 rounded-xl bg-white flex items-center justify-center shadow"
             aria-label="Previous slide"
