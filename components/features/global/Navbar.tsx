@@ -10,6 +10,7 @@ import { navItems, NotDesigned } from "../constants";
 import Link from "next/link";
 import { Search } from "lucide-react"
 import { Logo } from "../icons/Logo"
+import { Logo_half } from "../icons/Logo_half";
 
 
 
@@ -29,13 +30,14 @@ export default function Navbar() {
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   return (
-    <header className="sticky top-0 z-50 w-full  bg-background">
-      <div className="flex items-center justify-between  px-2 py-5 max-w-6xl mx-auto">
+    <header className="sticky top-0 z-50 w-full  bg-background border-b">
+      <div className="flex items-center justify-between px-4 lg:px-2 py-5 max-w-6xl mx-auto">
         <div
           className="font-bold  text-2xl text-fbp-primary-quiet font-poppins cursor-pointer w-fit"
         >
           <Link href={"/home"} className="flex gap-2 items-center">
-            <Logo className="h-8 w-auto" />
+            <Logo className="h-8 w-auto hidden lg:block" />
+            <Logo_half className="h-10 w-auto block lg:hidden" />
           </Link>
         </div>
 
@@ -111,7 +113,8 @@ export default function Navbar() {
 
       {menuOpen && (
         <div className="fixed inset-0 bg-white z-40 lg:hidden animate-fadeIn">
-          <div className="flex justify-end p-7">
+          <div className="flex justify-between items-center p-7">
+            <Logo_half className="h-10 w-auto block lg:hidden" />
             <FaTimes size={20} onClick={toggleMenu} className="text-fbp-primary-quiet" />
           </div>
           <div className="flex flex-col mt-20 px-14">
@@ -134,9 +137,36 @@ export default function Navbar() {
                 </button>
               );
             })}
-            <Link href="/energy-calculator">
-              <Button className=" cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
-            </Link>
+            <div className="border-t border-[#3E45501A] mt-5 mb-10">
+              <div
+                className={`relative mt-5 flex items-center overflow-hidden transition-all duration-300 ease-out
+    border rounded-lg py-4 bg-white
+    ${searchOpen ? "w-64 px-3" : "w-full px-0"}
+  `}
+              >
+
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className={`absolute left-2 transition-all flex items-center gap-3 duration-200
+      ${searchOpen ? "opacity-0 scale-75" : "opacity-100"}
+    `}
+                >
+                  <Search className="w-4 h-4" /> Search
+                </button>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  autoFocus={searchOpen}
+                  onBlur={() => setSearchOpen(false)}
+                  className={`w-full bg-transparent text-sm outline-none transition-all duration-300
+      ${searchOpen ? "opacity-100 pl-8" : "opacity-0 pointer-events-none"}
+    `}
+                />
+              </div>
+              <Link href="/energy-calculator" onClick={() => setMenuOpen(false)}>
+                <Button className="w-full mt-4 cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90 py-6"> Energy Calculator </Button>
+              </Link>
+            </div>
           </div>
 
 
