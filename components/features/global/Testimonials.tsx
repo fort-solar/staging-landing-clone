@@ -67,7 +67,7 @@ const Testimonials = () => {
                         className="grid grid-cols-1 lg:grid-cols-3 gap-10"
                         animate={{ y: ["0%", "-50%"] }}
                         transition={{
-                            duration: 35,
+                            duration: 45,
                             ease: "linear",
                             repeat: Infinity,
                         }}
