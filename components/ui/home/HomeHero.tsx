@@ -7,11 +7,18 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { GreenTick } from "@/components/features/icons/Greentick";
 import Image from "next/image";
 import Link from "next/link";
-import { trusted_brands_1, trusted_brands_2, trusted_brands_3, trusted_brands_4, trusted_brands_5 } from "@/components/features/images";
+import {  brand_6, trusted_brands_2, trusted_brands_3, trusted_brands_4, trusted_brands_5 } from "@/components/features/images";
 import { MobileSliderHome } from "../mobileSliderHome";
 import { SwiperSlide } from "swiper/react";
 import { AnimatePresence, motion } from "framer-motion";
 
+const TRUSTED_BRANDS = [
+    { src: brand_6, alt: "Trusted brand logo 1", cardClassName: "bg-white" },
+    { src: trusted_brands_2, alt: "Trusted brand logo 2", cardClassName: "bg-black" },
+    { src: trusted_brands_3, alt: "Trusted brand logo 3", cardClassName: "bg-white" },
+    { src: trusted_brands_4, alt: "Trusted brand logo 4", cardClassName: "bg-white" },
+    { src: trusted_brands_5, alt: "Trusted brand logo 5", cardClassName: "bg-white" },
+];
 
 const HomeHero = () => {
     const [current, setCurrent] = useState(0);
@@ -83,7 +90,7 @@ const HomeHero = () => {
                             <MobileSliderHome className="md:block lg:hidden">
                                 {CAROUSEL_CONTENT.map((item, index) => (
                                     <SwiperSlide key={`${item.title}-${index}`}>
-                                        <div className="space-y-4">
+                                        <div className="space-y-4 px-3">
                                             <div
                                                 className="p-2 text-xs w-fit rounded-lg font-medium"
                                                 style={{
@@ -108,6 +115,8 @@ const HomeHero = () => {
                       cursor-pointer
                       text-sm
                       flex 
+                      w-full
+                      py-6
                       items-center 
                       justify-center 
                       gap-3
@@ -139,21 +148,19 @@ const HomeHero = () => {
                             <GreenTick className="w-4 h-4" />
                             <p className="text-[#058A05] text-xs lg:text-sm">Trusted by 100+ homeowners businesses and partners.</p>
                         </div>
-                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-2 mt-4">
-                            <div className="border rounded-lg bg-white w-full py-2 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 1" src={trusted_brands_1} height={100} width={100} />
-                            </div>
-                            <div className="border rounded-lg bg-black  w-full py-2 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 2" src={trusted_brands_2} height={100} width={100} />
-                            </div>
-                            <div className="border rounded-lg  w-full py-2 bg-white flex justify-center items-center">
-                                <Image alt="Trusted brand logo 3" src={trusted_brands_3} height={100} width={100} />
-                            </div>
-                            <div className="border rounded-lg bg-white w-full py-2 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 1" src={trusted_brands_4} height={100} width={100} />
-                            </div>
-                            <div className="border rounded-lg bg-white w-full py-2 flex justify-center items-center">
-                                <Image alt="Trusted brand logo 5" src={trusted_brands_5} height={100} width={100} />
+                        <div className="trusted-brands-marquee mt-4">
+                            <div className="trusted-brands-track">
+                                {[...TRUSTED_BRANDS, ...TRUSTED_BRANDS].map((brand, index) => (
+                                    <div
+                                        key={`${brand.alt}-${index}`}
+                                        className="trusted-brands-item px-1"
+                                        aria-hidden={index >= TRUSTED_BRANDS.length}
+                                    >
+                                        <div className={`border rounded-lg w-full py-2 flex justify-center items-center ${brand.cardClassName}`}>
+                                            <Image alt={brand.alt} src={brand.src} height={100} width={100} />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
