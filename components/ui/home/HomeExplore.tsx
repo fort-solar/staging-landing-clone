@@ -19,13 +19,12 @@ const HomeExplore = () => {
     const [activeSection, setActiveSection] = useState("Packages")
     return (
         <div className="bg-[#B8C0CC1A]">
-            <div className=" min-h-screen w-full max-w-6xl mx-auto px-4 py-10 space-y-10  dark:bg-black sm:items-start">
-                <div className="mt-6 flex flex-col items-center text-center gap-3">
-                    <p className="text-3xl lg:text-5xl font-bold font-poppins">
+            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-10 space-y-10  dark:bg-black sm:items-start">
+                <div className="mt-6 flex flex-col items-center text-center gap-1 lg:gap-3">
+                    <p className="text-2xl lg:text-5xl font-bold font-poppins">
                         Explore Our Solar
                     </p>
-
-                    <div className="text-3xl lg:text-5xl font-bold font-poppins flex ">
+                    <div className="text-2xl lg:text-5xl font-bold font-poppins flex ">
                         <p className="relative inline-flex items-center px-2 py-1 lg:py-4 cursor-pointer" onClick={() => setActiveSection("Packages")}>
                             {activeSection === "Packages" && (<GreenMarkIcon className="absolute inset-0 w-full h-full z-0" />)}
                             <span className={`relative z-10 ${activeSection === "Products" ? "opacity-60" : ""}`}>Packages </span>
@@ -39,7 +38,7 @@ const HomeExplore = () => {
                            
                         </p>
                     </div>
-                    <p className="mt-2 font-medium max-w-xl">
+                    <p className="mt-2 font-medium max-w-xl hidden lg:block">
                         Affordable and efficient solutions tailored to your needs.
                     </p>
                 </div>
@@ -79,8 +78,8 @@ const HomeExplore = () => {
 
 
 
-                <div className="flex items-center justify-center py-4">
-                    <Link href={"/coming-soon"}>
+                <div className="flex items-center justify-center py-4 w-full">
+                    <Link href={"/coming-soon"} className="w-full lg:w-fit">
                         <Button
                             className="
                             transition-all
@@ -88,6 +87,9 @@ const HomeExplore = () => {
                       cursor-pointer
                       text-sm
                       flex 
+                      w-full
+                      lg:w-fit
+                      py-6
                       items-center 
                       justify-center 
                       gap-3
