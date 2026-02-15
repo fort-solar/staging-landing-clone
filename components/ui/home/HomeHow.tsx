@@ -14,20 +14,23 @@ const HomeHow = () => {
     return (
         <div className="bg-[#B8C0CC1A]">
             <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-20 space-y-10  dark:bg-black sm:items-start">
-                <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
+                <div className='flex flex-col lg:flex-row justify-center text-start gap-6 lg:gap-2 lg:justify-between w-full items-start mt-5'>
                     <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
                         How It Works
                     </div>
-                    <div>
-                        <Link href="/coming-soon">
-                            <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
+                    <div className='max-w-4xl mb-2 block lg:hidden'>
+                        <p>Get started with solar energy in these easy steps.</p>
+                    </div>
+                    <div className="w-full lg:w-fit">
+                        <Link href="/coming-soon" className="w-full lg:w-fit">
+                            <Button variant="outline" className="w-full py-6 lg:w-fit border-[#0000004D] cursor-pointer">
                                 Get Started
                             </Button>
                         </Link>
 
                     </div>
                 </div>
-                <div className='max-w-4xl mt-7'>
+                <div className='max-w-4xl mt-7 hidden lg:block'>
                     <p>Get started with solar energy in these easy steps.</p>
                 </div>
                 <div>
