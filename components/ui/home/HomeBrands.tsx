@@ -1,20 +1,21 @@
 import React from 'react'
 import { StarIcon } from '@/components/features/icons/StarIcon'
 import Image from 'next/image'
-import { brand_1, brand_2, brand_3, brand_4, brand_5, brand_6, brand_7 } from '@/components/features/images'
+import { trusted_brands_1,brand_1, brand_2, brand_3, brand_4, brand_5, brand_6, brand_7 } from '@/components/features/images'
 
 const HomeBrands = () => {
     return (
         <div className="my-10">
             <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-10 space-y-10  dark:bg-black sm:items-start">
                 <div className="mt-6 flex flex-col items-center text-center gap-3">
-                    <p className='font-poppins'>Popular brands trust  Fortsolar</p>
+                    <p className='font-poppins'>Our Partner Brands</p>
                 </div>
                 <div className="relative space-y-5 lg:space-y-8 bg-[url('/center_gradient.png')] bg-contain bg-center py-10">
                     <div className="flex items-center gap-10 lg:gap-20 justify-center">
                         <div className="w-fit">
-                            <Image alt="brand logo 1" src={brand_1} height={100} width={100} />
+                            <Image alt="brand logo 6" src={trusted_brands_1} height={100} width={100} />
                         </div>
+                       
                         <div className="w-fit">
                             <Image alt="brand logo 2" src={brand_2} height={100} width={100} />
                         </div>
@@ -30,15 +31,15 @@ const HomeBrands = () => {
                             <Image alt="brand logo 5" src={brand_5} height={100} width={100} />
                         </div>
                         <div className="w-fit">
-                            <Image alt="brand logo 6" src={brand_6} height={100} width={100} />
+                            <Image alt="brand logo 1" src={brand_1} height={100} width={100} />
                         </div>
                         <div className="w-fit">
                             <Image alt="brand logo 7" src={brand_7} height={100} width={100} />
                         </div>
                     </div>
-                    <div className="border-t border-t-white mt-10 pt-7 lg:mt-20 flex items-center justify-center gap-10 lg:gap-20">
+                    <div className="border-t border-t-white mt-10 pt-7 lg:mt-20 flex items-center justify-center gap-6 lg:gap-16">
                         <div className="w-fit pt-1">
-                            <Image alt="brand logo 3" src={brand_3} height={200} width={200} />
+                            <Image alt="brand logo 3" src={brand_6} height={200} width={200} />
                         </div>
                         <div className='space-y-2'>
                             <div className='flex gap-1'>
