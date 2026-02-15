@@ -13,8 +13,11 @@ const Blog = () => {
                     <div className="max-w-3xl leading-10 lg:leading-16 text-3xl lg:text-5xl font-bold font-poppins mt-2">
                         Insights and Updates from Fortsolar
                     </div>
-                    <div>
-                        <Link href="/coming-soon"
+                    <div className='block lg:hidden max-w-4xl mt-4 mb-7'>
+                        <p>Stay informed with the latest in solar technology, energy trends, expert tips, and project highlights.</p>
+                    </div>
+                    <div className="w-full lg:w-fit">
+                        <Link href="/coming-soon" className="w-full lg:w-fit"
                         >     <Button
                             className="
                                                transition-all
@@ -22,6 +25,8 @@ const Blog = () => {
                                          cursor-pointer
                                          text-sm
                                          flex 
+                                         w-full lg:w-fit
+                                         py-6
                                          items-center 
                                          justify-center 
                                          gap-3
@@ -35,7 +40,7 @@ const Blog = () => {
                     </div>
                 </div>
 
-                <div className='max-w-4xl mt-4 mb-7'>
+                <div className='hidden lg:block max-w-4xl mt-4 mb-7'>
                     <p>Stay informed with the latest in solar technology, energy trends, expert tips, and project highlights.</p>
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-10 mt-10'>
