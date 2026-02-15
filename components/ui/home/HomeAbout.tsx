@@ -7,13 +7,13 @@ import { solar_cells, man_carrying_solar_panel, solar_installation_image_double_
 const HomeAbout = () => {
     return (
         <div>
-            <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
+            <div className='flex flex-col lg:flex-row justify-center text-start gap-6 lg:gap-2 lg:justify-between w-full items-start mt-5'>
                 <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
                     About Fortsolar
                 </div>
-                <div>
-                    <Link href="/coming-soon">
-                        <Button variant="outline" className="w-fit border-[#0000004D] cursor-pointer">
+                <div className="w-full lg:w-fit">
+                    <Link href="/coming-soon" className="w-full lg:w-fit">
+                        <Button variant="outline" className="w-full py-6 lg:w-fit border-[#0000004D] cursor-pointer">
                             Get a Free Quote
                         </Button>
                     </Link>
@@ -84,9 +84,9 @@ const HomeAbout = () => {
                         </div>
                     </div>
 
-                    <div className='lg:hidden block'>
+                    <div className='lg:hidden block w-full'>
                         <Link href="/about">
-                            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                            <Button className="w-full mt-4 py-6 cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
                                 Learn More
                             </Button>
                         </Link>
