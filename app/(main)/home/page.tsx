@@ -42,9 +42,8 @@ export default function Home() {
       <HomeBrands />
       <Testimonials />
       <Blog />
-      <CallToActionOne />
-    
       <CallToActionTwo />
+      <CallToActionOne />
       <Faq />
       <Newsletter />
       <Footer />
