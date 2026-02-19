@@ -7,7 +7,7 @@ const CalculatorHero = () => {
     return (
         <div className='h-[35vh]'>
             <div className="relative bg-[url('/calculator_hero_image.jpg')] bg-cover bg-center h-full z-10">
-            <div className='absolute px-4 inset-0 z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center text-center lg:text-start gap-5 lg:gap-0 justify-center lg:justify-between'>
+            <div className='absolute px-4 inset-0 z-10 w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center text-start gap-5 lg:gap-0 justify-start lg:justify-between'>
                 <h1 className="max-w-2xl text-4xl lg:text-5xl font-bold font-poppins text-white leading-10 lg:leading-16 ">Find Out How Much Energy You Really Need</h1>
                  <Link href="" className="w-full lg:w-fit">
                             <Button

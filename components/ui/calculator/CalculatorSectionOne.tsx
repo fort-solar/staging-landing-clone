@@ -12,7 +12,7 @@ const CalculatorSectionOne = () => {
     return (
         <div>
             <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10  dark:bg-black sm:items-start">
-                <div className='flex flex-col lg:flex-row justify-center text-center  gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
+                <div className='flex flex-col lg:flex-row justify-start text-start  gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
                     <div className="max-w-3xl leading-10 lg:leading-16 text-3xl lg:text-5xl font-bold font-poppins mt-2">
                         How to Use the Energy Calculator
                     </div>
@@ -24,10 +24,10 @@ const CalculatorSectionOne = () => {
                 </div>
                 <div>
                     <MobileSlider>
-                        <SwiperSlide><CardOne /></SwiperSlide>
-                        <SwiperSlide><CardTwo /></SwiperSlide>
-                        <SwiperSlide><CardThree /></SwiperSlide>
-                        <SwiperSlide><CardFour /></SwiperSlide>
+                        <SwiperSlide className='border'><CardOne/></SwiperSlide>
+                        <SwiperSlide className='border'><CardTwo /></SwiperSlide>
+                        <SwiperSlide className='border'><CardThree /></SwiperSlide>
+                        <SwiperSlide className='border'><CardFour /></SwiperSlide>
                     </MobileSlider>
                 </div>
                 <div className='hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-[#CCCCCC]'>

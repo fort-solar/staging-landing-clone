@@ -2,7 +2,7 @@ import React from 'react';
 
 const CardFour = () => {
     return (
-        <div className=' p-2 border-[#CCCCCC]'>
+        <div className='p-2 border-[#CCCCCC]'>
             <div className='bg-white p-4 rounded-lg group'>
                 <div className='space-y-4 flex flex-col justify-between'>
                     <div className='flex justify-between items-center'>
