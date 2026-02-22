@@ -9,10 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${baseUrl}/home`,
-      lastModified: new Date(),
-    },
-    {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
     },
