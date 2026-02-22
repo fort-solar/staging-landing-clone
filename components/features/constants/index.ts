@@ -100,7 +100,7 @@ export const BLOG_CONTENT = [
 ];
 
 export const navItems = [
-  { label: "Home", path: "/home" },
+  { label: "Home", path: "/" },
   { label: "About", path: "/about" },
   { label: "Store", path: "/coming-soon" },
   { label: "Projects", path: "/coming-soon" },
