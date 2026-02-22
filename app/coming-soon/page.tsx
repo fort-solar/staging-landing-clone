@@ -36,7 +36,7 @@ export default function ComingSoon() {
           </div>
           <p className="mt-3 text-sm text-white/70">65% Complete</p>
           <Link
-            href="/home"
+            href="/"
             className="inline-flex mt-8 items-center justify-center rounded-full bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-3 text-white font-semibold hover:bg-green-700 transition"
           >
             Go Back Home
