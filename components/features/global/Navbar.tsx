@@ -35,7 +35,7 @@ export default function Navbar() {
         <div
           className="font-bold  text-2xl text-fbp-primary-quiet font-poppins cursor-pointer w-fit"
         >
-          <Link href={"/home"} className="flex gap-2 items-center">
+          <Link href={"/"} className="flex gap-2 items-center">
             <Logo className="h-8 w-auto hidden lg:block" />
             <Logo_half className="h-10 w-auto block lg:hidden" />
           </Link>
@@ -175,4 +175,3 @@ export default function Navbar() {
     </header>
   );
 }
-
