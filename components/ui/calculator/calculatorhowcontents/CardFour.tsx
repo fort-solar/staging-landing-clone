@@ -17,11 +17,11 @@ const CardFour = () => {
                         </div>
                     </div>
                     <div>
-                        <p className="group-hover:text-[#058A05] pb-2 font-semibold text-lg transition-all duration-300 text-[#3B3B3B]">
+                        <p className="group-hover:text-[#058A05] pb-2 font-semibold text-lg min-h-16  transition-all duration-300 text-[#3B3B3B]">
                           Get a Perfect Solar Match
                         </p>
 
-                        <p className='text-sm'>See the best solar Packages for your energy needs, all with free installation included.</p>
+                        <p className='text-sm min-h-16'>See the best solar Packages for your energy needs, all with free installation included.</p>
                     </div>
                 </div>
             </div>

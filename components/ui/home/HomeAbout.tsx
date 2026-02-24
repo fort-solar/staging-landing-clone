@@ -74,13 +74,12 @@ const HomeAbout = () => {
                                 className="object-fill w-full h-full"
                             />
                         </div>
-                        <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-7 rounded-tl-4xl rounded-br-4xl">
+                        <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-transparent pb-2 px-4 rounded-tl-4xl rounded-br-4xl">
                             <Link href="/about">
-                                <Button className="cursor-pointer px-6 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                                <Button className="cursor-pointer px-9 py-5 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
                                     Learn More
                                 </Button>
                             </Link>
-
                         </div>
                     </div>
 

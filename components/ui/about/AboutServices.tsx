@@ -49,8 +49,9 @@ const AboutServices = () => {
                                    text-white
                                    cursor-pointer
                                    w-full lg:w-fit
-                                   py-6
+                                   py-7
                                    text-sm
+                                   rounded-xl
                                    flex 
                                    items-center 
                                    justify-center 
