@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Button } from "../button";
 import GetQuoteDialog from "./GetQuoteDialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const DEVICES = [
   { label: "Laptop", watts: 65 },
@@ -129,51 +130,78 @@ const CalculatorSectionTwo = () => {
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
 
-      <div className="border border-gray-200 overflow-x-hidden">
+      <div className="border border-gray-200 overflow-x-auto">
         <table className="w-full text-[10px] md:text-sm table">
           <thead className="table-header-group">
             <tr className="text-[#101828] font-medium md:font-semibold border-b">
-              <th className="p-2 md:p-3 border-r text-start">Item</th>
+              <th className="p-2 md:p-3 border-r text-start">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-pointer">Item</span>
+                  </TooltipTrigger>
+                  <TooltipContent>Device or appliance</TooltipContent>
+                </Tooltip>
+              </th>
               <th className="p-2 md:p-3 border-r text-start ">
-                <p className="hidden md:block">
-                  Quantity
-                </p>
-                <p className="block md:hidden">
-                  Qty
-                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-pointer">
+                      <p className="hidden md:block">Quantity</p>
+                      <p className="block md:hidden">Qty</p>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Number of items</TooltipContent>
+                </Tooltip>
               </th>
               <th className="p-2 md:p-3 border-r text-start">
-                <p className="hidden md:block">
-                  Watts <span className="font-normal">(Per Item)</span>
-                </p>
-                <p className="block md:hidden">
-                  Watts
-                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-pointer">
+                      <p className="hidden md:block">
+                        Watts <span className="font-normal">(Per Item)</span>
+                      </p>
+                      <p className="block md:hidden">Watts</p>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Power per item</TooltipContent>
+                </Tooltip>
               </th>
               <th className="p-2 md:p-3 border-r text-start">
-                <p className="hidden md:block">
-                  Hours <span className="font-normal">(Per Day)</span>
-                </p>
-                <p className="block md:hidden">
-                  Hrs
-                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-pointer">
+                      <p className="hidden md:block">
+                        Hours <span className="font-normal">(Per Day)</span>
+                      </p>
+                      <p className="block md:hidden">Hrs</p>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Hours used per day</TooltipContent>
+                </Tooltip>
               </th>
-              <th className="p-2 md:p-3 border-r text-start">
-                <p className="hidden md:block">
-                  Watt Hours <span className="font-normal">(W X Hrs)</span>
-                </p>
-                <p className="block md:hidden">
-                  W X Hrs
-                </p>
-
+              <th className="p-2 md:p-3 border-r text-start whitespace-nowrap">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-pointer whitespace-nowrap">
+                      <p className="hidden md:block whitespace-nowrap">
+                        Energy Consumed
+                      </p>
+                      <p className="block md:hidden whitespace-nowrap">Energy(Wh)</p>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Total Watt Hours</TooltipContent>
+                </Tooltip>
               </th>
               <th className="p-2 md:p-3 text-center">
-                <p className="hidden md:block">
-                  Actions
-                </p>
-                <p className="flex items-center justify-center md:hidden">
-                  ...
-                </p>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex items-center justify-center cursor-pointer w-full">
+                      <p className="hidden md:block">Actions</p>
+                      <p className="flex items-center justify-center md:hidden">...</p>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Remove row</TooltipContent>
+                </Tooltip>
               </th>
             </tr>
           </thead>
@@ -189,10 +217,10 @@ const CalculatorSectionTwo = () => {
                   className=" border-b bg-white p-3 last:border-b-0 table-row md:border-t md:p-0"
                 >
                   <td
-                    className="table-cell border-b-0 border-r md:p-2"
+                    className="table-cell border-b-0 border-r md:p-2 w-fit whitespace-nowrap min-w-22"
                   >
                     <select
-                      className="w-full text-[10px] md:text-sm rounded-md border-none p-2 outline-0 focus:ring-0"
+                      className="w-full text-[10px] md:text-sm rounded-md border-none p-2 outline-0 focus:ring-0 whitespace-nowrap"
                       value={row.item}
                       onChange={e => {
                         const value = e.target.value;
@@ -205,8 +233,7 @@ const CalculatorSectionTwo = () => {
                         });
                       }}
                     >
-                      <option value="" className="hidden md:block text-sm">Select item</option>
-                      <option value="" className="block md:hidden text-sm">select</option>
+                      <option value="" className="text-sm">Select item</option>
                       {DEVICES.map(d => (
                         <option key={d.label} value={d.label} className="text-sm">
                           {d.label}
@@ -218,23 +245,26 @@ const CalculatorSectionTwo = () => {
                   <td
                     className="table-cell border-b-0 border-r md:p-2"
                   >
-                    <input
-                      type="number"
-                      min={1}
-                      className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-20"
-                      value={row.quantity}
-                      onChange={e =>
-                        updateRow(row.id, {
-                          quantity: Number(e.target.value),
-                        })
-                      }
-                    />
+                    <div className="flex w-full items-center justify-center gap-3 px-2 lg:px-4 py-2">
+                      <input
+                        type="number"
+                        min={1}
+                        className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-20"
+                        value={row.quantity}
+                        onChange={e =>
+                          updateRow(row.id, {
+                            quantity: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+
                   </td>
 
                   <td
                     className="table-cell border-b-0 border-r md:p-2"
                   >
-                    <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
+                    <div className="flex w-full items-center justify-between gap-3 px-2 lg:px-4 py-2">
                       <input
                         type="number"
                         min={0}
@@ -246,7 +276,7 @@ const CalculatorSectionTwo = () => {
                           })
                         }
                       />
-                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm">W</p>
+                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm hidden md:block">W</p>
                     </div>
 
                   </td>
@@ -254,7 +284,7 @@ const CalculatorSectionTwo = () => {
                   <td
                     className="table-cell border-b-0 border-r md:p-2"
                   >
-                    <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
+                    <div className="flex w-full items-center justify-center lg:justify-between gap-3 px-2 lg:px-4 py-2">
                       <input
                         type="number"
                         min={0}
@@ -267,7 +297,7 @@ const CalculatorSectionTwo = () => {
                           })
                         }
                       />
-                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm">Hrs</p>
+                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm hidden md:block">Hrs</p>
                     </div>
 
                   </td>
@@ -275,7 +305,7 @@ const CalculatorSectionTwo = () => {
                   <td
                     className="table-cell border-b-0 border-r md:p-2"
                   >
-                    <div className="flex w-full items-center justify-between gap-3 px-4 py-2 md:border-r">
+                    <div className="flex w-full items-center justify-center lg:justify-between gap-3 px-2 lg:px-4 py-2">
                       <p>{wattHours}</p>
                       <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm">Wh</p>
                     </div>
@@ -301,24 +331,12 @@ const CalculatorSectionTwo = () => {
       <div className="flex justify-end">
         <Button
           onClick={() => setRows(r => [...r, createRow()])}
-          className="text-[10px] md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
+          className="w-full md:w-fit text-[10px] md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
         >
           Add Item
         </Button>
       </div>
-      <div className="block md:hidden py-5">
-        <p className="text-xs font-semibold">
-          Selected Items:{" "}
-          <span>
-            {rows.some(r => r.selected) ? "" : "Nil"}
-          </span>
-        </p>
-        <ul >
-          {rows.map((r, i) => (
-            <li key={i} className="text-xs">{r.selected ? i + 1 : ""}{"."}{" "}{r.selected ? r.item : ""}</li>
-          ))}
-        </ul>
-      </div>
+
       <div ref={summaryRef} className="bg-white my-20 max-w-2xl">
         <p className="text-lg font-semibold mb-4 text-[#101828]">
           Your Custom System Recommendation

@@ -21,7 +21,7 @@ const CardFour = () => {
                           Get a Perfect Solar Match
                         </p>
 
-                        <p className='text-sm'>See the best solar Packages for your load, with free installation included.</p>
+                        <p className='text-sm'>See the best solar Packages for your energy needs, all with free installation included.</p>
                     </div>
                 </div>
             </div>

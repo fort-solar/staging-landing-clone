@@ -37,7 +37,7 @@ const CalculatorSectionOne = () => {
                     <CardFour />
                 </div>
                 <div>
-                    <p className="italic">Note: <span>Start by typing the item and it will suggest an appliance and wattage, you can then adjust as desired. </span> </p>
+                    <p className="italic">Note: <span>Start by typing the item and we will suggest an appliance and wattage, you can then adjust as desired.</span> </p>
                 </div>
             </div>
         </div>

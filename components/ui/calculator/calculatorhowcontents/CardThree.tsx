@@ -18,10 +18,10 @@ const CardThree = () => {
                     </div>
                     <div>
                         <p className="group-hover:text-[#058A05] pb-2 font-semibold text-lg transition-all duration-300 text-[#3B3B3B]">
-                          View Your Total Load
+                          View Your Total Energy Consumption
                         </p>
 
-                        <p className='text-sm'>We’ll instantly calculate your total energy usage in watts or kilowatts.</p>
+                        <p className='text-sm'>We will instantly calculate your total energy usage per item and for all your items populated in the table.</p>
                     </div>
                 </div>
             </div>

@@ -21,7 +21,7 @@ const CardTwo = () => {
                           Enter Quantity & Usage Time
                         </p>
 
-                        <p className='text-sm'>Tell us how many and how long you use them each day.</p>
+                        <p className='text-sm'>Tell us how many units of the appliance you want to use, the power rating and how long you use them each day.</p>
                     </div>
                 </div>
             </div>
