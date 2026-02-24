@@ -27,6 +27,7 @@ const Blog = () => {
                                          flex 
                                          w-full lg:w-fit
                                          py-6
+                                         rounded-xl
                                          items-center 
                                          justify-center 
                                          gap-3

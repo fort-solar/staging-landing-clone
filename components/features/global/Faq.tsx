@@ -18,14 +18,14 @@ const Faq = () => {
             <div className='relative overflow-hidden bg-transparent'>
                 <div className="relative min-h-screen w-full max-w-6xl mx-auto px-4 py-20 space-y-10  dark:bg-black sm:items-start">
                     <div className='flex flex-col lg:flex-row justify-center text-center gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
-                        <div className="leading-10 lg:leading-16 max-w-2xl text-3xl lg:text-5xl font-bold font-poppins mt-2">
+                        <div className="leading-10 lg:leading-16 rounded-xl max-w-2xl text-3xl lg:text-5xl font-bold font-poppins mt-2">
                             Frequently Asked Questions
                         </div>
                         {
                             pathname !== "/contact" && (
                                 <div className="w-full lg:w-fit">
                                     <Link href="/contact" className="w-full lg:w-fit">
-                                        <Button variant="outline" className="w-full lg:w-fit py-6 border-[#0000004D] cursor-pointer">
+                                        <Button variant="outline" className="w-full lg:w-fit rounded-xl py-6 border-[#0000004D] cursor-pointer">
                                             Learn More
                                         </Button>
                                     </Link>
@@ -45,7 +45,7 @@ const Faq = () => {
                                     Reach out to our team directly and we&apos;ll get back to you.
                                 </p>
                                 <Link href={pathname === "/contact" ? "" : "/contact"} className="w-full lg:w-fit">
-                                    <Button className="w-full py-6 lg:w-fit bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
+                                    <Button className="w-full py-6 lg:w-fit rounded-xl bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
                                         Get in Touch
                                     </Button>
                                 </Link>

@@ -28,7 +28,7 @@ const CallToActionTwo = () => {
                             <p className=' text-white '>Are you a certified installer? Reach more customers and grow your business with Fortsolar</p>
                         </div>
                         <Link href={"/coming-soon"} className="w-full">
-                            <Button className="w-full py-6 bg-transparent border-white border hover:bg-transparent cursor-pointer">
+                            <Button className="w-full py-6 bg-transparent rounded-xl border-white border hover:bg-transparent cursor-pointer">
                                 Become an Installer
                             </Button>
                         </Link>

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FaTimes } from "react-icons/fa";
@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Search } from "lucide-react"
 import { Logo } from "../icons/Logo"
 import { Logo_half } from "../icons/Logo_half";
+import { LogoMobile } from "../icons/LogoMobile";
 
 
 
@@ -22,26 +23,48 @@ export default function Navbar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 0);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = originalOverflow;
+    }
 
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [menuOpen]);
 
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   return (
-    <header className="sticky top-0 z-50 w-full  bg-background border-b">
-      <div className="flex items-center justify-between px-4 lg:px-2 py-5 max-w-6xl mx-auto">
+    <header className="sticky top-0 z-50 w-full  bg-background p-4 lg:p-0 ">
+      <div className="bg-[#FFFFFF0D] border lg:border-none rounded-lg lg:rounded-none lg:bg-white flex items-center justify-between px-4 lg:px-2 py-2 lg:py-5 max-w-6xl mx-auto">
         <div
           className="font-bold  text-2xl text-fbp-primary-quiet font-poppins cursor-pointer w-fit"
         >
-          <Link href={"/"} className="flex gap-2 items-center">
-            <Logo className="h-8 w-auto hidden lg:block" />
-            <Logo_half className="h-10 w-auto block lg:hidden" />
+          <Link href={"/"} className="gap-2 items-center hidden lg:flex">
+            <Logo className="h-7 w-auto" />
           </Link>
+          <Link href={"/"} className="gap-2 items-center flex lg:hidden">
+            <LogoMobile className={`h-7 w-auto  ${isScrolled ? "hidden" : "block"}`} />
+          </Link>
+          <Link href={"/"} className="gap-2 items-center flex lg:hidden">
+            <Logo_half className={`h-8 w-auto ${isScrolled ? "block" : "hidden"}`} />
+          </Link>
+
         </div>
-
-
         <nav className="hidden lg:flex space-x-1">
           {navItems.map((item) => {
             const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
@@ -50,7 +73,7 @@ export default function Navbar() {
                 href={isPartOfNotDesigned ? "" : item.path}
                 key={item.path}
                 className={`flex gap-1 items-center transition-colors py-2 px-4 rounded-md  ${pathname === item.path
-                  ? "text-fbp-primary  cursor-pointer bg-gray-50"
+                  ? "text-[#000000] font-semibold  cursor-pointer bg-gray-50"
                   : isPartOfNotDesigned ? "opacity-30 cursor-not-allowed"
                     : "text-fbp-primary-quiet  hover:text-fbp-primary-quiet hover:bg-gray-50 cursor-pointer"
                   }`}
@@ -60,8 +83,6 @@ export default function Navbar() {
             );
           })}
         </nav>
-
-
         <div className="hidden lg:flex items-center justify-end gap-3">
           <div
             className={`relative flex items-center overflow-hidden transition-all duration-300 ease-out
@@ -112,12 +133,12 @@ export default function Navbar() {
 
 
       {menuOpen && (
-        <div className="fixed inset-0 bg-white z-40 lg:hidden animate-fadeIn">
+        <div className="fixed inset-0 z-40 lg:hidden animate-fadeIn bg-white/75 backdrop-blur-2xl">
           <div className="flex justify-between items-center p-7">
             <Logo_half className="h-10 w-auto block lg:hidden" />
-            <FaTimes size={20} onClick={toggleMenu} className="text-fbp-primary-quiet" />
+            <FaTimes size={20} onClick={toggleMenu} className="" />
           </div>
-          <div className="flex flex-col mt-20 px-14">
+          <div className="flex flex-col mt-6 px-6">
             {navItems.map((item) => {
               const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
               return (
@@ -127,10 +148,10 @@ export default function Navbar() {
                     router.push(item.path);
                     setMenuOpen(false);
                   }}
-                  className={`flex items-center gap-3 text-lg mb-4 ${pathname === item.path
-                    ? "text-fbp-secondary"
+                  className={`flex items-center gap-3 text-lg font-medium mb-4 ${pathname === item.path
+                    ? "text-[#036d03]"
                     : isPartOfNotDesigned ? "opacity-50 cursor-not-allowed"
-                      : "text-fbp-primary-quiet hover:text-fbp-secondary"
+                      : ""
                     }`}
                 >
                   {item.label}
