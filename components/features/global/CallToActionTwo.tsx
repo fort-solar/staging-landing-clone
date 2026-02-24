@@ -12,7 +12,7 @@ const CallToActionTwo = () => {
                     <p className='text-white leading-16 text-3xl md:text-4xl lg:text-5xl font-bold font-poppins'>Join Our Installer Network</p>
                     <p className=' text-white '>Are you a certified installer? Reach more customers and grow your business with Fortsolar</p>
                     <Link href={"/coming-soon"}>
-                        <Button className="w-fit bg-transparent py-6 border-white border hover:bg-transparent cursor-pointer">
+                        <Button className="w-fit bg-transparent py-6 rounded-xl border-white border hover:bg-transparent cursor-pointer">
                             Become an Installer
                         </Button>
                     </Link>

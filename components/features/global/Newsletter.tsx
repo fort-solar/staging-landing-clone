@@ -45,8 +45,8 @@ const Newsletter = () => {
               <InputGroupAddon align="inline-end">
                 <InputGroupButton className='py-4 px-6 rounded-lg cursor-pointer
     text-white
-    bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
-    hover:opacity-90'>Subscribe →</InputGroupButton>
+    bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white
+    hover:opacity-80'>Subscribe →</InputGroupButton>
               </InputGroupAddon>
             </InputGroup>
           </div>

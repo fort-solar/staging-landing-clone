@@ -49,8 +49,8 @@ export default function Navbar() {
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   return (
-    <header className="sticky top-0 z-50 w-full  bg-background p-4 lg:p-0 ">
-      <div className="bg-[#FFFFFF0D] border lg:border-none rounded-lg lg:rounded-none lg:bg-white flex items-center justify-between px-4 lg:px-2 py-2 lg:py-5 max-w-6xl mx-auto">
+    <header className="sticky top-0 z-50 w-full  lg:bg-background p-3 lg:p-0 bg-transparent ">
+      <div className="bg-white border lg:border-none rounded-lg lg:rounded-none lg:bg-white flex items-center justify-between px-4 lg:px-2 py-2 lg:py-5 max-w-6xl mx-auto">
         <div
           className="font-bold  text-2xl text-fbp-primary-quiet font-poppins cursor-pointer w-fit"
         >
