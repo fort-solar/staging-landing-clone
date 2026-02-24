@@ -23,7 +23,7 @@ const HomeHow = () => {
                     </div>
                     <div className="w-full lg:w-fit">
                         <Link href="/coming-soon" className="w-full lg:w-fit">
-                            <Button variant="outline" className="w-full py-6 lg:w-fit border-[#0000004D] cursor-pointer">
+                            <Button variant="outline" className="w-full rounded-xl py-6 lg:w-fit border-[#0000004D] cursor-pointer">
                                 Get Started
                             </Button>
                         </Link>

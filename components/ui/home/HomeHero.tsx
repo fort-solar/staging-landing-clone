@@ -7,7 +7,7 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { GreenTick } from "@/components/features/icons/Greentick";
 import Image from "next/image";
 import Link from "next/link";
-import {  brand_6, trusted_brands_2, trusted_brands_3, trusted_brands_4, trusted_brands_5 } from "@/components/features/images";
+import { brand_6, trusted_brands_2, trusted_brands_3, trusted_brands_4, trusted_brands_5 } from "@/components/features/images";
 import { MobileSliderHome } from "../mobileSliderHome";
 import { SwiperSlide } from "swiper/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -53,24 +53,26 @@ const HomeHero = () => {
                                     {CAROUSEL_CONTENT[current].toast}
                                 </div>
 
-                                <h1 className="text-4xl lg:text-6xl font-bold font-poppins mt-1 lg:mt-2">
+                                <h1 className="text-4xl lg:text-6xl font-bold font-poppins mt-1 lg:mt-2 min-h-30">
                                     {CAROUSEL_CONTENT[current].title}
                                 </h1>
 
-                                <div className="mt-1 lg:mt-2">
+                                <div className="mt-1 lg:mt-2 font-medium min-h-24">
                                     {CAROUSEL_CONTENT[current].content}
                                 </div>
                             </div>
 
                             <div className="mt-0 lg:mt-2 animate-fade">
-                                <Link href="/coming-soon">
+                                <Link href="/coming-soon" className="flex gap-10 items-center">
                                     <Button
                                         className="
                             transition-all
                       text-white
                       cursor-pointer
-                      text-sm
                       flex 
+                       py-5
+                      font-medium
+                      rounded-xl
                       items-center 
                       justify-center 
                       gap-3
@@ -79,7 +81,7 @@ const HomeHero = () => {
                     "
                                     >
                                         {CAROUSEL_CONTENT[current].buttonName}
-                                        <SlantedArrow className='h-1 w-1 arrow' />
+                                        <SlantedArrow className='h-1 w-1 ' />
                                     </Button>
                                 </Link>
 
@@ -90,52 +92,60 @@ const HomeHero = () => {
                             <MobileSliderHome className="md:block lg:hidden">
                                 {CAROUSEL_CONTENT.map((item, index) => (
                                     <SwiperSlide key={`${item.title}-${index}`}>
-                                        <div className="space-y-4 px-3">
-                                            <div
-                                                className="p-2 text-xs w-fit rounded-lg font-medium"
-                                                style={{
-                                                    backgroundColor: item.toast_background_color,
-                                                    color: item.toast_color,
-                                                }}
-                                            >
-                                                {item.toast}
-                                            </div>
+                                        <div className="px-3">
+                                            <div className="flex flex-col gap-4">
+                                                <div
+                                                    className="p-2 text-xs w-fit rounded-lg font-medium"
+                                                    style={{
+                                                        backgroundColor: item.toast_background_color,
+                                                        color: item.toast_color,
+                                                    }}
+                                                >
+                                                    {item.toast}
+                                                </div>
 
-                                            <h1 className="text-3xl font-bold font-poppins">
-                                                {item.title}
-                                            </h1>
+                                                <div className="min-h-26 flex items-start">
+                                                    <h1 className="text-3xl font-bold font-poppins leading-tight">
+                                                        {item.title}
+                                                    </h1>
+                                                </div>
 
-                                            <div>{item.content}</div>
+                                                <div className="min-h-30 leading-6">
+                                                    {item.content}
+                                                </div>
 
-                                            <Link href="/coming-soon">
-                                                <Button
-                                                    className="
+                                                <Link href="/coming-soon" className="flex gap-10 items-center">
+                                                    <Button
+                                                        className="
                             transition-all
                       text-white
                       cursor-pointer
-                      text-sm
+                      text-[16px]
+                      font-medium
                       flex 
                       w-full
-                      py-6
+                      py-7
+                      rounded-xl
                       items-center 
                       justify-center 
                       gap-3
                       bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
                       hover:opacity-90
                     "
-                                                >
-                                                    {item.buttonName}
-                                                    <SlantedArrow className='h-1 w-1 arrow' />
-                                                </Button>
-                                            </Link>
+                                                    >
+                                                        {item.buttonName}
+                                                        <SlantedArrow className='h-3 w-3 text-sm' />
+                                                    </Button>
+                                                </Link>
 
-                                            <div className="relative h-100 mt-10 w-full overflow-hidden rounded-4xl border-white">
-                                                <Image
-                                                    fill
-                                                    alt="Residential solar installation"
-                                                    src={item.image}
-                                                    className="object-fill rounded-4xl"
-                                                />
+                                                <div className="relative h-100 mt-10 w-full overflow-hidden rounded-4xl border-white">
+                                                    <Image
+                                                        fill
+                                                        alt="Residential solar installation"
+                                                        src={item.image}
+                                                        className="object-fill rounded-4xl"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </SwiperSlide>
@@ -144,7 +154,7 @@ const HomeHero = () => {
                         </div>
                     </div>
                     <div>
-                        <div className="mt-10 py-1 px-2 rounded-lg bg-[#058a0525] flex gap-2 items-center">
+                        <div className="mt-10 py-1 px-2 rounded-lg bg-[#058a0525] border border-[#058A0580] flex gap-2 items-center">
                             <GreenTick className="w-4 h-4" />
                             <p className="text-[#058A05] text-xs lg:text-sm">Trusted by 100+ homeowners businesses and partners.</p>
                         </div>
@@ -168,11 +178,11 @@ const HomeHero = () => {
                 </div>
 
 
-                <div className="hidden lg:block relative h-130 w-full overflow-hidden rounded-4xl border-white">
+                <div className="hidden lg:block relative h-140 w-full overflow-hidden rounded-4xl border-white ">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={current}
-                            className="absolute inset-0"
+                            className="absolute inset-0 "
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -182,7 +192,7 @@ const HomeHero = () => {
                                 fill
                                 alt="Residential solar installation"
                                 src={CAROUSEL_CONTENT[current].image}
-                                className="object-fill rounded-4xl inverted-radius-image-bottom"
+                                className="object-fill rounded-4xl inverted-radius-image-bottom "
                             />
                         </motion.div>
                     </AnimatePresence>

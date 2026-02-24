@@ -89,6 +89,7 @@ const HomeExplore = () => {
                       flex 
                       w-full
                       lg:w-fit
+                      rounded-xl
                       py-6
                       items-center 
                       justify-center 

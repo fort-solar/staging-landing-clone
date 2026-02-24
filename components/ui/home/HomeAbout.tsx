@@ -13,7 +13,7 @@ const HomeAbout = () => {
                 </div>
                 <div className="w-full lg:w-fit">
                     <Link href="/coming-soon" className="w-full lg:w-fit">
-                        <Button variant="outline" className="w-full py-6 lg:w-fit border-[#0000004D] cursor-pointer">
+                        <Button variant="outline" className="w-full py-6 lg:w-fit border-[#0000004D] cursor-pointer rounded-xl">
                             Get a Free Quote
                         </Button>
                     </Link>
@@ -76,7 +76,7 @@ const HomeAbout = () => {
                         </div>
                         <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-white pb-2 px-7 rounded-tl-4xl rounded-br-4xl">
                             <Link href="/about">
-                                <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                                <Button className="cursor-pointer px-6 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
                                     Learn More
                                 </Button>
                             </Link>
@@ -86,7 +86,7 @@ const HomeAbout = () => {
 
                     <div className='lg:hidden block w-full'>
                         <Link href="/about">
-                            <Button className="w-full mt-4 py-6 cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                            <Button className="w-full mt-4  py-6 cursor-pointer text-white rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
                                 Learn More
                             </Button>
                         </Link>
