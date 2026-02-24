@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const fontInter = Inter({
   variable: "--font-inter",
@@ -82,7 +83,9 @@ export default function RootLayout({
             __html: JSON.stringify(organizationStructuredData),
           }}
         />
-        {children}
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );
