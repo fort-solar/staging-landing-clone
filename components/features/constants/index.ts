@@ -103,7 +103,7 @@ export const navItems = [
   { label: "Home", path: "/" },
   { label: "About", path: "/about" },
   { label: "Store", path: "/coming-soon" },
-  { label: "Projects", path: "/coming-soon" },
+  { label: "Projects", path: "/projects" },
   { label: "Blog", path: "/coming-soon" },
   { label: "Contact", path: "/contact" },
 ];

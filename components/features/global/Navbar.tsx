@@ -68,11 +68,14 @@ export default function Navbar() {
         <nav className="hidden lg:flex space-x-1">
           {navItems.map((item) => {
             const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
+            const isActive =
+              pathname === item.path ||
+              (item.path === "/projects" && pathname.startsWith("/projects/"));
             return (
               <Link
                 href={isPartOfNotDesigned ? "" : item.path}
                 key={item.path}
-                className={`flex gap-1 items-center transition-colors py-2 px-4 rounded-md  ${pathname === item.path
+                className={`flex gap-1 items-center transition-colors py-2 px-4 rounded-md  ${isActive
                   ? "text-[#000000] font-semibold  cursor-pointer bg-gray-50"
                   : isPartOfNotDesigned ? "opacity-30 cursor-not-allowed"
                     : "text-fbp-primary-quiet  hover:text-fbp-primary-quiet hover:bg-gray-50 cursor-pointer"
@@ -141,6 +144,9 @@ export default function Navbar() {
           <div className="flex flex-col mt-6 px-6">
             {navItems.map((item) => {
               const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
+              const isActive =
+                pathname === item.path ||
+                (item.path === "/projects" && pathname.startsWith("/projects/"));
               return (
                 <button
                   key={item.path}
@@ -148,7 +154,7 @@ export default function Navbar() {
                     router.push(item.path);
                     setMenuOpen(false);
                   }}
-                  className={`flex items-center gap-3 text-lg font-medium mb-4 ${pathname === item.path
+                  className={`flex items-center gap-3 text-lg font-medium mb-4 ${isActive
                     ? "text-[#036d03]"
                     : isPartOfNotDesigned ? "opacity-50 cursor-not-allowed"
                       : ""
