@@ -81,8 +81,7 @@ const ContactSectionOne = () => {
                     <Link href="https://www.linkedin.com/company/fortsolar/">
                         <FaLinkedin className='w-6 h-6 hover:text-[#058A05] cursor-pointer' />
                     </Link>
-
-                    {/* #3B3B3B */}
+                    
                     <Link href="https://www.tiktok.com/@fortsolar">
                         <FaTiktok className="w-6 h-6 hover:text-[#058A05] cursor-pointer" />
                     </Link>

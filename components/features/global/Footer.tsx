@@ -19,9 +19,7 @@ const Footer = () => {
               <p className='text-sm text-[#3B3B3B] font-semibold'>Store</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Products</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Packages</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>App</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Pricing</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>New Bundles</p>
+              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>App <span className="bg-[#F2F4F7] p-1 rounded-sm text-xs">Coming soon</span></p>
             </div>
           </div>
 
@@ -39,8 +37,6 @@ const Footer = () => {
                   <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Contact</p>
                 </Link>
               </div>
-
-
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Become an installer</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>News</p>
             </div>
@@ -52,7 +48,6 @@ const Footer = () => {
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Blog</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>FAQs</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Newsletter</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Help center</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Support </p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Events</p>
             </div>
@@ -61,11 +56,36 @@ const Footer = () => {
           <div className="flex justify-start lg:justify-end">
             <div className='space-y-3'>
               <p className='text-sm text-[#3B3B3B] font-semibold'>Social</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Twitter</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Linkedin</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Facebook</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Instagram</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>TikTok</p>
+                <div>
+                <Link href="https://x.com/Fortsolar">
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Twitter</p>
+                </Link>
+              </div>
+                <div>
+                <Link href="https://www.linkedin.com/company/fortsolar/">
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Linkedin</p>
+                </Link>
+              </div>
+                <div>
+                <Link href="https://facebook.com/fortsolar.ng/">
+                   <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Facebook</p>
+                </Link>
+              </div>
+                <div>
+                <Link href="https://www.instagram.com/fortsolar.ng/">
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Instagram</p>
+                </Link>
+              </div>
+                <div>
+                <Link href="https://www.tiktok.com/@fortsolar">
+                 <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>TikTok</p>
+                </Link>
+              </div>
+              
+              
+           
+              
+             
             </div>
           </div>
 
@@ -75,7 +95,6 @@ const Footer = () => {
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Terms</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Privacy</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Cookies</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Contact</p>
             </div>
           </div>
 
