@@ -141,7 +141,7 @@ export default async function ProjectDetailPage({
 
               <Button
                 variant="outline"
-                className="mt-8 h-11 rounded-xl border-[#0000004D] bg-transparent px-6 text-[#111827] hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white"
+                className="mt-8 h-11 rounded-xl w-full lg:w-fit border-[#0000004D] bg-transparent px-6 text-[#111827] hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white"
               >
                 Get Quote
               </Button>
@@ -188,20 +188,25 @@ export default async function ProjectDetailPage({
               </p>
 
               <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <Link href="/coming-soon">
-                  <Button className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+
+                <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                  <Link href="/coming-soon" className="w-full">
                     Get Package
                     <SlantedArrow className="h-3.5 w-3.5" />
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button
-                    variant="outline"
-                    className="h-11 rounded-xl border-[#0000004D] bg-transparent px-6 text-[#111827] hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white"
-                  >
+                  </Link>
+                </Button>
+
+
+                <Button
+                  asChild
+                  variant="outline"
+                  className="h-11 rounded-xl border-[#0000004D] bg-transparent px-6 text-[#111827] hover:opacity-90 hover:text-[#111827]"
+                >
+                  <Link href="/contact" className="w-full">
                     Talk to an Expert
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
+
 
               </div>
             </div>
@@ -218,8 +223,8 @@ export default async function ProjectDetailPage({
             <ProjectCard key={relatedProject.slug} project={relatedProject} compact />
           ))}
         </div>
-        <div className="mt-8 flex justify-center">
-          <Button asChild variant="outline" className="rounded-xl px-5">
+        <div className="mt-10 flex justify-center">
+          <Button asChild variant="outline"  className="h-11 w-full lg:w-fit rounded-xl border-[#0000004D] bg-transparent px-6 text-[#111827] hover:opacity-90 hover:text-[#111827]">
             <Link href="/projects">View all projects</Link>
           </Button>
         </div>
