@@ -6,7 +6,7 @@ export const Logo = ({className}:{className: string}) => {
     const imageId = `${id}-image`;
 
     return (
-        <svg c width="179" height="40" viewBox="0 0 179 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <svg className={className} width="179" height="40" viewBox="0 0 179 40" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
             <rect width="179" height="40" fill={`url(#${patternId})`} />
             <defs>
                 <pattern id={patternId} patternContentUnits="objectBoundingBox" width="1" height="1">
