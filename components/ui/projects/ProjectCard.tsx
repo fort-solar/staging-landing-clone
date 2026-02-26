@@ -100,7 +100,7 @@ export default function ProjectCard({
           <Button
             asChild
             variant="outline"
-            className="h-10 rounded-xl border-white/70 bg-transparent px-5 text-white hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white"
+            className="h-10 w-full lg:w-fit rounded-xl border-white/70 bg-transparent px-5 text-white hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white"
           >
             <Link href={`/projects/${project.slug}`}>Get This Plan</Link>
           </Button>
