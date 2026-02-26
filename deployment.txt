@@ -1,2 +1,2 @@
 changes
-new changes 1.5
+new changes 1.6
