@@ -70,7 +70,8 @@ export default function Navbar() {
             const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
             const isActive =
               pathname === item.path ||
-              (item.path === "/projects" && pathname.startsWith("/projects/"));
+              (item.path === "/projects" && pathname.startsWith("/projects/")) ||
+              (item.path === "/blog" && pathname.startsWith("/blog/"));
             return (
               <Link
                 href={isPartOfNotDesigned ? "" : item.path}
@@ -146,7 +147,8 @@ export default function Navbar() {
               const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
               const isActive =
                 pathname === item.path ||
-                (item.path === "/projects" && pathname.startsWith("/projects/"));
+                (item.path === "/projects" && pathname.startsWith("/projects/")) ||
+                (item.path === "/blog" && pathname.startsWith("/blog/"));
               return (
                 <button
                   key={item.path}

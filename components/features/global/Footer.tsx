@@ -45,7 +45,9 @@ const Footer = () => {
           <div className="flex justify-start lg:justify-end">
             <div className='space-y-3'>
               <p className='text-sm text-[#3B3B3B] font-semibold'>Resources</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Blog</p>
+              <Link href="/blog">
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Blog</p>
+              </Link>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>FAQs</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Newsletter</p>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Support </p>
