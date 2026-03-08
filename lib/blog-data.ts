@@ -25,7 +25,7 @@ export const blogPosts: BlogPost[] = [
     title: "How Solar Energy Can Save You Money Every Month",
     excerpt:
       "Electricity bills keep rising, but solar power offers a sustainable and cost-effective solution for homes and businesses.",
-    publishedAt: "October 13, 2025",
+    publishedAt: "March 6, 2026",
     readTime: "8 min read",
     coverImage: "/panels_on_a_roof.jpg",
     sections: [
@@ -69,7 +69,7 @@ export const blogPosts: BlogPost[] = [
     title: "5 Reasons Now Is the Best Time to Switch to Solar Energy",
     excerpt:
       "From rising tariffs to improved financing options, there has never been a better time to start your solar journey.",
-    publishedAt: "September 2, 2025",
+    publishedAt: "March 8, 2026",
     readTime: "6 min read",
     coverImage: "/double_solar_panels.png",
     sections: [
@@ -110,7 +110,7 @@ export const blogPosts: BlogPost[] = [
     title: "How to Choose the Right Inverter and Battery Size",
     excerpt:
       "Sizing mistakes can be expensive. Use your daily load profile to choose a system that truly fits your needs.",
-    publishedAt: "August 15, 2025",
+    publishedAt: "March 7, 2026",
     readTime: "7 min read",
     coverImage: "/about_services_two.png",
     sections: [
