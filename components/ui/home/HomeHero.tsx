@@ -57,7 +57,7 @@ const HomeHero = () => {
                                     {CAROUSEL_CONTENT[current].title}
                                 </h1>
 
-                                <div className="mt-1 lg:mt-2 font-medium min-h-24">
+                                <div className="mt-1 lg:mt-2  min-h-24">
                                     {CAROUSEL_CONTENT[current].content}
                                 </div>
                             </div>
