@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
+import { blogPosts } from "@/lib/blog-data";
+import { projects } from "@/lib/projects-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://www.fortsolar.ng";
 
-  return [
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/`,
       lastModified: new Date(),
@@ -24,5 +26,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/coming-soon`,
       lastModified: new Date(),
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${baseUrl}/projects`,
+      lastModified: new Date(),
+    },
+  ];
+
+  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(),
+  }));
+
+  const projectPages: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${baseUrl}/projects/${project.slug}`,
+    lastModified: new Date(),
+  }));
+
+  return [
+    ...staticPages,
+    ...blogPages,
+    ...projectPages,
   ];
 }
