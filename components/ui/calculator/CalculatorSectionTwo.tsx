@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Trash2 } from "lucide-react";
 import PdfIcon from "@/components/features/icons/PdfIcon";
 import jsPDF from "jspdf";
@@ -9,12 +10,23 @@ import { Button } from "../button";
 import GetQuoteDialog from "./GetQuoteDialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-const DEVICES = [
-  { label: "Laptop", watts: 65 },
-  { label: "TV", watts: 120 },
-  { label: "Fan", watts: 75 },
-  { label: "Refrigerator", watts: 150 },
-  { label: "Air Conditioner", watts: 1500 },
+type DeviceOption = {
+  label: string;
+  watts: number;
+  hours: number;
+};
+
+const DEVICE_LIBRARY: DeviceOption[] = [
+  { label: "Fan - ceiling on low speed", watts: 60, hours: 5 },
+  { label: "Fan - small desk", watts: 70, hours: 5 },
+  { label: "Fan - ceiling", watts: 120, hours: 5 },
+  { label: "Fan - floor standing large", watts: 150, hours: 3 },
+  { label: "Laptop - ultrabook", watts: 65, hours: 6 },
+  { label: "Laptop - gaming", watts: 150, hours: 4 },
+  { label: "TV - 32 inch LED", watts: 60, hours: 5 },
+  { label: "TV - 55 inch LED", watts: 120, hours: 5 },
+  { label: "Refrigerator - small", watts: 150, hours: 8 },
+  { label: "Air Conditioner - 1.5HP", watts: 1500, hours: 6 },
 ];
 
 type Row = {
@@ -25,8 +37,18 @@ type Row = {
   hours: number;
   selected: boolean;
 };
+const generateRowId = () => {
+  if (typeof globalThis !== "undefined" && "crypto" in globalThis) {
+    const cryptoObj = globalThis.crypto as Crypto | undefined;
+    if (cryptoObj?.randomUUID) {
+      return cryptoObj.randomUUID();
+    }
+  }
+
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+};
 const createRow = (): Row => ({
-  id: crypto.randomUUID(),
+  id: generateRowId(),
   item: "",
   quantity: 1,
   watts: 0,
@@ -37,6 +59,10 @@ const createRow = (): Row => ({
 const CalculatorSectionTwo = () => {
   const [rows, setRows] = useState<Row[]>([createRow()]);
   const summaryRef = useRef<HTMLDivElement>(null);
+  const [activeRowId, setActiveRowId] = useState<string | null>(null);
+  const activeInputRef = useRef<HTMLInputElement | null>(null);
+  const tableScrollRef = useRef<HTMLDivElement>(null);
+  const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
 
   const updateRow = (id: string, updates: Partial<Row>) => {
     setRows(rows =>
@@ -68,6 +94,35 @@ const CalculatorSectionTwo = () => {
     };
   }, [rows]);
 
+  useEffect(() => {
+    const updateRect = () => {
+      if (!activeInputRef.current) return;
+      setDropdownRect(activeInputRef.current.getBoundingClientRect());
+    };
+
+    updateRect();
+
+    const handleScroll = () => updateRect();
+    window.addEventListener("resize", handleScroll);
+    window.addEventListener("scroll", handleScroll, true);
+    tableScrollRef.current?.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("resize", handleScroll);
+      window.removeEventListener("scroll", handleScroll, true);
+      tableScrollRef.current?.removeEventListener("scroll", handleScroll);
+    };
+  }, [activeRowId]);
+
+  const getMatches = (query: string) => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return [];
+    return DEVICE_LIBRARY.filter(device =>
+      device.label.toLowerCase().includes(normalized)
+    ).slice(0, 8);
+  };
 
   const selectedDevices = useMemo(() => {
     return rows
@@ -130,7 +185,7 @@ const CalculatorSectionTwo = () => {
   return (
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
 
-      <div className="border border-gray-200 overflow-x-auto">
+      <div ref={tableScrollRef} className="border border-gray-200 overflow-x-auto">
         <table className="w-full text-[10px] md:text-sm table">
           <thead className="table-header-group">
             <tr className="text-[#101828] font-medium md:font-semibold border-b">
@@ -210,6 +265,7 @@ const CalculatorSectionTwo = () => {
             {rows.map(row => {
               const wattHours =
                 row.quantity * row.watts * row.hours;
+              const matches = activeRowId === row.id ? getMatches(row.item) : [];
 
               return (
                 <tr
@@ -219,27 +275,46 @@ const CalculatorSectionTwo = () => {
                   <td
                     className="table-cell border-b-0 border-r md:p-2 w-fit whitespace-nowrap min-w-22"
                   >
-                    <select
-                      className="w-full text-[10px] md:text-sm rounded-md border-none p-2 outline-0 focus:ring-0 whitespace-nowrap"
-                      value={row.item}
-                      onChange={e => {
-                        const value = e.target.value;
-                        const device = DEVICES.find(d => d.label === value);
-
-                        updateRow(row.id, {
-                          item: value,
-                          watts: device?.watts || 0,
-                          selected: Boolean(device),
-                        });
-                      }}
-                    >
-                      <option value="" className="text-sm">Select item</option>
-                      {DEVICES.map(d => (
-                        <option key={d.label} value={d.label} className="text-sm">
-                          {d.label}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        className="w-full text-[10px] md:text-sm rounded-md border-none p-2 outline-0 focus:ring-0 whitespace-nowrap"
+                        placeholder="Search or type item"
+                        value={row.item}
+                        onFocus={e => {
+                          activeInputRef.current = e.currentTarget;
+                          setDropdownRect(e.currentTarget.getBoundingClientRect());
+                          setActiveRowId(row.id);
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                          }
+                        }}
+                        onBlur={() =>
+                          setActiveRowId(prev => {
+                            if (prev === row.id) {
+                              activeInputRef.current = null;
+                              setDropdownRect(null);
+                              return null;
+                            }
+                            return prev;
+                          })
+                        }
+                        onChange={e => {
+                          const value = e.target.value;
+                          if (activeRowId !== row.id) {
+                            activeInputRef.current = e.currentTarget;
+                            setDropdownRect(e.currentTarget.getBoundingClientRect());
+                            setActiveRowId(row.id);
+                          }
+                          updateRow(row.id, {
+                            item: value,
+                            selected: value.trim().length > 0,
+                          });
+                        }}
+                      />
+                    </div>
                   </td>
 
                   <td
@@ -328,6 +403,53 @@ const CalculatorSectionTwo = () => {
           </tbody>
         </table>
       </div>
+      {activeRowId && dropdownRect && typeof window !== "undefined" && (() => {
+        const dropdownMaxHeight = 192;
+        const spaceBelow = window.innerHeight - dropdownRect.bottom;
+        const openUp = spaceBelow < dropdownMaxHeight && dropdownRect.top > dropdownMaxHeight;
+        const top = openUp ? dropdownRect.top - dropdownMaxHeight - 4 : dropdownRect.bottom + 4;
+        const left = Math.max(8, dropdownRect.left);
+        const width = Math.min(dropdownRect.width, window.innerWidth - left - 8);
+
+        const activeRow = rows.find(r => r.id === activeRowId);
+        const matches = activeRow ? getMatches(activeRow.item) : [];
+
+        if (!matches.length) return null;
+
+        return createPortal(
+          <div
+            className="fixed z-50 max-h-48 overflow-auto rounded-md border border-gray-200 bg-white shadow-md"
+            style={{ top, left, width }}
+          >
+            {matches.map(device => (
+              <button
+                key={device.label}
+                type="button"
+                className="w-full text-left text-[10px] md:text-sm px-3 py-2 hover:bg-gray-50"
+                onMouseDown={event => {
+                  event.preventDefault();
+                  if (!activeRow) return;
+                  updateRow(activeRow.id, {
+                    item: device.label,
+                    watts: device.watts,
+                    hours: device.hours,
+                    quantity: 1,
+                    selected: true,
+                  });
+                  setActiveRowId(null);
+                }}
+              >
+                <span className="font-medium">{device.label}</span>
+                <span className="text-[#667085]">
+                  {" "}
+                  - {device.watts}W - {device.hours.toFixed(1)}hrs
+                </span>
+              </button>
+            ))}
+          </div>,
+          document.body
+        );
+      })()}
       <div className="flex justify-end">
         <Button
           onClick={() => setRows(r => [...r, createRow()])}
