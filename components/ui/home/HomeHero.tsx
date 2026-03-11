@@ -143,7 +143,8 @@ const HomeHero = () => {
                                                         fill
                                                         alt="Residential solar installation"
                                                         src={item.image}
-                                                        className="object-fill rounded-4xl"
+                                                        sizes="(min-width: 1024px) 50vw, 100vw"
+                                                        className="object-cover rounded-4xl"
                                                     />
                                                 </div>
                                             </div>
@@ -192,7 +193,8 @@ const HomeHero = () => {
                                 fill
                                 alt="Residential solar installation"
                                 src={CAROUSEL_CONTENT[current].image}
-                                className="object-fill rounded-4xl inverted-radius-image-bottom "
+                                sizes="(min-width: 1024px) 50vw, 100vw"
+                                className="object-cover rounded-4xl inverted-radius-image-bottom "
                             />
                         </motion.div>
                     </AnimatePresence>

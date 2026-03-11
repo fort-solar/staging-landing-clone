@@ -31,7 +31,8 @@ const CardFour = () => {
                                         fill
                                         alt="Step 4: Monitor and maintain performance"
                                         src={how_it_works_four}
-                                        className="object-fill rounded-t-lg"
+                                        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                                        className="object-cover rounded-t-lg"
                                     />
                                 </div>
                             </div>

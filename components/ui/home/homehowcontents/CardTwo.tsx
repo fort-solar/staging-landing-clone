@@ -31,7 +31,8 @@ const CardTwo = () => {
                             fill
                             alt="Step 2: Design your solar solution"
                             src={how_it_works_two}
-                            className="object-fill rounded-t-lg"
+                            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                            className="object-cover rounded-t-lg"
                         />
                     </div>
                 </div>

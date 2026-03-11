@@ -30,7 +30,8 @@ const CardOne = () => {
                             fill
                             alt="Step 1: Assess your energy needs"
                             src={how_it_works_one}
-                            className="object-fill rounded-t-lg"
+                            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                            className="object-cover rounded-t-lg"
                         />
                     </div>
                 </div>

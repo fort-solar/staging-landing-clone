@@ -31,7 +31,8 @@ const CardThree = () => {
                             fill
                             alt="Step 3: Install your solar system"
                             src={how_it_works_three}
-                            className="object-fill rounded-t-lg"
+                            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                            className="object-cover rounded-t-lg"
                         />
                     </div>
                 </div>
