@@ -55,6 +55,8 @@ type SelectedDevice = {
 type Props = {
     totals: Totals;
     selectedDevices: SelectedDevice[];
+    disabled?: boolean;
+    isSubmitting?: boolean;
     onSubmit?: (payload: {
         name: string;
         email: string;
@@ -73,9 +75,14 @@ type Props = {
     }) => Promise<void> | void;
 };
 
-export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Props) {
+export default function GetQuoteDialog({
+    totals,
+    selectedDevices,
+    disabled = false,
+    isSubmitting = false,
+    onSubmit,
+}: Props) {
     const [open, setOpen] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
 
 
     const [name, setName] = useState("");
@@ -101,7 +108,8 @@ export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Pr
     }, [selectedDevices]);
 
     const canSubmit =
-        !submitting &&
+        !isSubmitting &&
+        !disabled &&
         totals.totalWh > 0 &&
         name.trim().length > 1 &&
         email.trim().length > 3 &&
@@ -127,8 +135,6 @@ export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Pr
 
     const handleSubmit = async () => {
         try {
-            setSubmitting(true);
-
             const payload = {
                 name,
                 email,
@@ -148,11 +154,10 @@ export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Pr
 
             await onSubmit?.(payload);
 
-            // close + reset (you can keep open if you want to show success state)
             setOpen(false);
             resetForm();
-        } finally {
-            setSubmitting(false);
+        } catch {
+            // Handled by parent via toast.
         }
     };
 
@@ -165,7 +170,10 @@ export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Pr
             }}
         >
             <DialogTrigger asChild>
-                <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 py-6 hover:opacity-90">
+                <Button
+                    disabled={disabled || isSubmitting}
+                    className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 py-6 hover:opacity-90 disabled:opacity-50"
+                >
                     Get Quote →
                 </Button>
             </DialogTrigger>
@@ -351,7 +359,7 @@ export default function GetQuoteDialog({ totals, selectedDevices, onSubmit }: Pr
                             disabled={!canSubmit}
                             className="rounded-xl px-6 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90 disabled:opacity-50"
                         >
-                            {submitting ? "Submitting..." : "Get My Final Quote →"}
+                            {isSubmitting ? "Submitting..." : "Get My Final Quote →"}
                         </Button>
                     </div>
                 </div>
