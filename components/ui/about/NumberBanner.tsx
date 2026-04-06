@@ -61,10 +61,7 @@ const NumberBanner = () => {
     }, []);
 
     useEffect(() => {
-        if (!isInView) {
-            setValues(STATS.map((stat) => stat.start));
-            return;
-        }
+        if (!isInView) return;
 
         const duration = 1800;
         const startTime = performance.now();
@@ -89,6 +86,8 @@ const NumberBanner = () => {
         return () => cancelAnimationFrame(frameId);
     }, [isInView]);
 
+    const displayValues = isInView ? values : STATS.map((stat) => stat.start);
+
     return (
         <div className="h-50" ref={sectionRef}>
             <div className="relative bg-[url('/panels_on_a_roof.jpg')] bg-cover bg-center h-full z-10">
@@ -97,7 +96,7 @@ const NumberBanner = () => {
                         <div key={stat.label} className="flex flex-col gap-2 justify-center items-center">
                             <p className="text-4xl lg:text-6xl font-semibold font-poppins text-white">
                                 {stat.prefix ?? ""}
-                                {values[index]}
+                                {displayValues[index]}
                                 {stat.suffix ?? ""}
                             </p>
                             <p className="text-lg text-white">{stat.label}</p>
