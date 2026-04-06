@@ -78,12 +78,11 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                         setIsSubmitting(false);
                         return "Your message has been sent successfully";
                     },
-                    error: (err) => err?.error ?? "Something went wrong",
+                    error: (err) => (err instanceof Error ? err.message : "Something went wrong"),
                 }
             );
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (err) {
-            // toast.promise 
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
