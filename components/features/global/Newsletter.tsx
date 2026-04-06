@@ -10,13 +10,48 @@ import {
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { usePathname } from "next/navigation";
 import Link from 'next/link';
+import { submitForm } from "@/actions/SubmitForm";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const Newsletter = () => {
   const pathname = usePathname();
+  const [email, setEmail] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleSubscribe = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address", { position: "top-center" });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await toast.promise(
+        submitForm({
+          endpoint: "newsletter/subscribe",
+          method: "POST",
+          values: { email: email.trim() },
+        }),
+        {
+          loading: "Subscribing...",
+          position: "top-center",
+          success: "You have been subscribed successfully.",
+          error: err => (err instanceof Error ? err.message : "Unable to subscribe right now"),
+        }
+      );
+      setEmail("");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 
   return (
     <div>
+      <Toaster />
       <div className={`relative w-full max-w-6xl mx-auto px-4 ${pathname === "/energy-calculator" ? "lg:pt-0" : "lg:pt-20"}  dark:bg-black sm:items-start`}>
         <div className='grid grid-cols-1 lg:grid-cols-[3fr_6fr_3fr]'>
           <div className="hidden lg:block bg-[url('/engineer_updated.png')] bg-cover bg-center min-h-87.5">
@@ -40,15 +75,28 @@ const Newsletter = () => {
 
           </div>
           <div className='h-full px-2'>
-            <InputGroup className='rounded-xl'>
-              <InputGroupInput placeholder="Enter Email Address..." />
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton className='py-4 px-6 rounded-lg cursor-pointer
+            <form onSubmit={handleSubscribe}>
+              <InputGroup className='rounded-xl'>
+                <InputGroupInput
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="Enter Email Address..."
+                />
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    className='py-4 px-6 rounded-lg cursor-pointer
     text-white
     bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white
-    hover:opacity-80'>Subscribe →</InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
+    hover:opacity-80 disabled:opacity-50'
+                  >
+                    {isSubmitting ? "Subscribing..." : "Subscribe →"}
+                  </InputGroupButton>
+                </InputGroupAddon>
+              </InputGroup>
+            </form>
           </div>
 
           <div className="">
@@ -58,31 +106,31 @@ const Newsletter = () => {
         {pathname !== "/contact" && (
           <div className="grid grid-cols-2 gap-5 lg:gap-2 lg:grid-cols-4 mt-10">
             <div className='flex flex-col items-start gap-2'>
-              <Phone className='text-[#B8C0CC] w-5 h-5' />
+              <Phone className='text-[#55565B] w-5 h-5' />
               <div className='flex flex-col gap-1'>
-                <p className='text-[#B8C0CC] text-sm'>Tel</p>
+                <p className='text-[#55565B] text-sm'>Tel</p>
                 <Link href={"tel:+2347066524793"} className='text-[#058A05] text-sm'>+234 706 652 4793</Link>
                 <Link href={"tel:+2342013309043"} className='text-[#058A05] text-sm'>+234 201 330 9043</Link>
               </div>
             </div>
             <div className='flex flex-col items-start gap-2'>
-              <Mail className='text-[#B8C0CC] w-5 h-5' />
+              <Mail className='text-[#55565B] w-5 h-5' />
               <div>
-                <p className='text-[#B8C0CC] text-sm'>Mail</p>
+                <p className='text-[#55565B] text-sm'>Mail</p>
                 <Link href="mailto:enquiry@fortsolar.ng" className='text-[#058A05] text-sm'>enquiry@fortsolar.ng</Link>
               </div>
             </div>
             <div className='flex flex-col items-start gap-2'>
-              <MapPin className='text-[#B8C0CC] w-5 h-5' />
+              <MapPin className='text-[#55565B] w-5 h-5' />
               <div>
-                <p className='text-[#B8C0CC] text-sm'>Lagos Address</p>
+                <p className='text-[#55565B] text-sm'>Lagos Address</p>
                 <p className='text-[#058A05] text-sm'>Suite D1 038 HFP East Line Complex Abraham Adesanya</p>
               </div>
             </div>
             <div className='flex flex-wrap items-start gap-2'>
-              <MapPin className='text-[#B8C0CC] w-5 h-5' />
+              <MapPin className='text-[#55565B] w-5 h-5' />
               <div>
-                <p className='text-[#B8C0CC] text-sm'>Uyo Address</p>
+                <p className='text-[#55565B] text-sm'>Uyo Address</p>
                 <p className='text-[#058A05] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
               </div>
             </div>
