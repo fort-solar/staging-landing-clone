@@ -1,45 +1,37 @@
 import { BASE_URL } from "@/components/features/constants";
-import { FormProps, FetchResponseType } from "@/types/api.types";
+import { FormProps } from "@/types/api.types";
 
 export const submitForm = async ({
   endpoint,
   method,
   values,
-}: FormProps): Promise<FetchResponseType> => {
-  try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
-      method: method ?? "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+}: FormProps): Promise<unknown> => {
+  const base = (BASE_URL ?? "").replace(/\/$/, "");
+  const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const url = `${base}${normalizedEndpoint}`;
 
-    if (!response.ok) {
-      const isJson = response.headers
-        .get("content-type")
-        ?.includes("application/json");
+  const response = await fetch(url, {
+    method: method ?? "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    ...(values !== undefined ? { body: JSON.stringify(values) } : {}),
+  });
 
-      const errorResponse = isJson
-        ? await response.json().catch(() => null)
-        : null;
+  const isJson = response.headers.get("content-type")?.includes("application/json");
+  const responseBody = isJson ? await response.json().catch(() => null) : null;
 
-      const errorMessage =
-        errorResponse && typeof errorResponse === "object"
-          ? Object.values(errorResponse).flat().join(" | ")
-          : response.statusText;
-
-      throw new Error(errorMessage);
-    }
-
-    const data = await response.json();
-    return { data };
-  } catch (error) {
-    return {
-      error: error instanceof Error
-        ? error.message
-        : "Something went wrong",
-    };
+  if (!response.ok) {
+    const fallback = response.statusText || "Something went wrong";
+    const message =
+      responseBody && typeof responseBody === "object"
+        ? (responseBody as { message?: string }).message ??
+          Object.values(responseBody).flat().join(" | ") ??
+          fallback
+        : fallback;
+    throw new Error(message);
   }
+
+  return responseBody;
 };
  
