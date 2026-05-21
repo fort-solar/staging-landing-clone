@@ -3,31 +3,26 @@ name: Mirror to Personal Repo
 on:
   push:
     branches:
-      - main
+      - '**'
+    tags:
       - '**'
 
 jobs:
-  mirror:
+  git-mirror:
     runs-on: ubuntu-latest
+    # 💡 CRITICAL: Only run this job if it is executing inside the core organization repository
+    if: github.repository == 'fortsolar/fortsolar-landing-webapp-frontend'
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Setup SSH
+          persist-credentials: false
+
+      - name: Mirror Push to Personal Repository
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-      
-      - name: Remove workflow file before mirroring
-        run: |
-          rm -rf .github/workflows/mirror.yml
-          git add .github/workflows/mirror.yml
-          git commit -m "Remove mirror workflow for personal repo" || true
-      
-      - name: Mirror to personal repo
-        run: |
-          git remote add personal git@github.com:fort-solar/fortsolar-landing-webapp-clone.git
-          git push --force personal
+          TARGET_URL="https://${{ secrets.PERSONAL_REPO_TOKEN }}@github.com/fort-solar/fortsolar-landing-webapp-clone.git"
+
+          # Push everything cleanly
+          git push --prune --force "$TARGET_URL" "+refs/remotes/origin/*:refs/heads/*" "+refs/tags/*:refs/tags/*"
