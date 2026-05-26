@@ -46,7 +46,7 @@ function SectionContent({
           {section.image_urls.slice(0, section.number_of_images ?? section.image_urls.length).map((imageUrl, index) => (
             <div
               key={`${imageUrl}-${index}`}
-              className="min-h-[240px] rounded-[24px] bg-cover bg-center"
+              className="min-h-60 rounded-[24px] bg-cover bg-center"
               style={{ backgroundImage: `url(${imageUrl})` }}
             />
           ))}
