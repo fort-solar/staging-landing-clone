@@ -7,13 +7,13 @@ import { Button } from '../button'
 import { SlantedArrow } from '@/components/features/icons/SlantedArrow'
 
 interface ContactHeroProps {
-    formRef: React.RefObject<HTMLFormElement | null>;
+    formRef?: React.RefObject<HTMLFormElement | null>;
 }
 
 const ContactHero = ({ formRef }: ContactHeroProps) => {
 
     const scrollToForm = () => {
-        if (!formRef.current) return;
+        if (!formRef?.current) return;
 
         const offset = 80;
         const startY = window.scrollY;
@@ -99,7 +99,9 @@ w-full lg:w-fit
                       hover:opacity-90
                     "
                             onClick={() => {
-                                setTimeout(scrollToForm, 100);
+                                if (formRef?.current) {
+                                    setTimeout(scrollToForm, 100);
+                                }
                             }}
                         >
                             Send Us a Message

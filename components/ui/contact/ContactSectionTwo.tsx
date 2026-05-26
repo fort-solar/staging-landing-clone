@@ -3,7 +3,7 @@ import ContactForm from './ContactForm'
 import ContactMap from './ContactMap'
 
 interface ContactHeroProps {
-  formRef: React.RefObject<HTMLFormElement | null>;
+  formRef?: React.RefObject<HTMLFormElement | null>;
 }
 
 const ContactSectionTwo = ({ formRef }: ContactHeroProps) => {

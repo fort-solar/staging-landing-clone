@@ -12,7 +12,7 @@ import { ContactFormData, ContactFormSchema } from "@/types/api.types";
 
 
 interface ContactHeroProps {
-    formRef: React.RefObject<HTMLFormElement | null>;
+    formRef?: React.RefObject<HTMLFormElement | null>;
 }
 
 const ContactForm = ({ formRef }: ContactHeroProps) => {

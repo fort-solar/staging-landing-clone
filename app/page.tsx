@@ -13,6 +13,8 @@ import CallToActionTwo from "@/components/features/global/CallToActionTwo";
 import Faq from "@/components/features/global/Faq";
 import Newsletter from "@/components/features/global/Newsletter";
 import Footer from "@/components/features/global/Footer";
+import { resolveSitePageOrFallback } from "@/lib/site-pages";
+import SitePageRenderer from "@/components/site-pages/SitePageRenderer";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -30,7 +32,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const { page, hasDynamicContent } = await resolveSitePageOrFallback("home");
+
+  if (page && hasDynamicContent) {
+    return (
+      <>
+        <Navbar />
+        <SitePageRenderer page={page} />
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
