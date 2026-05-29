@@ -300,10 +300,11 @@ function normalizeProjectRecord(record: unknown): ProjectItem | null {
   const createdAt = readString(record, ["created_at", "updated_at"]);
   const dateLabel = formatProjectDateLabel(createdAt || new Date().toISOString());
   const systemDetailsRecord = isRecord(record.system_details) ? record.system_details : null;
+  const address = readString(record, ["address", "community"]);
   const city = readString(record, ["city"]);
   const state = readString(record, ["state"]);
   const country = readString(record, ["country"]);
-  const locationLabel = [city, state, country].filter(Boolean).join(", ") || readString(record, ["location"], "Nigeria");
+  const locationLabel = [city, state, country].filter(Boolean).join(", ") || readString(record, ["location"], address || "Nigeria");
   const summary = readString(record, ["summary", "overview", "description"], "Project details coming soon.");
   const overview = readString(record, ["overview", "description", "summary"], summary);
 
@@ -319,7 +320,7 @@ function normalizeProjectRecord(record: unknown): ProjectItem | null {
     heroImages: images.slice(0, 4),
     galleryImages: images.length ? images : placeholderImages,
     overview,
-    community: readString(record, ["community", "address"], locationLabel),
+    community: address || locationLabel,
     highlights: toStringList(record, ["highlights"]).length ? toStringList(record, ["highlights"]) : ["Project highlights will be added here."],
     systemDetails: {
       inverterSize: readString(systemDetailsRecord ?? {}, ["inverter_label", "inverter_size"], readString(record, ["inverter_type"], "N/A")),
