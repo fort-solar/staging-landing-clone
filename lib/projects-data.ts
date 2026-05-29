@@ -22,6 +22,11 @@ export type ProjectItem = {
   whatItCanPower: string[];
 };
 
+const API_BASE_URL =
+  process.env.FORTSOLAR_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_FORTSOLAR_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_BASE_URL;
+
 const placeholderImages = [
   "/contact_hero_image.png",
   "/contact_hero_image.png",
@@ -175,6 +180,173 @@ export const projects: ProjectItem[] = [
   },
 ];
 
-export function getProjectBySlug(slug: string) {
-  return projects.find((project) => project.slug === slug);
+function buildApiUrl(path: string) {
+  if (!API_BASE_URL) {
+    return null;
+  }
+
+  return new URL(path, API_BASE_URL).toString();
+}
+
+async function fetchJson<T>(path: string) {
+  const url = buildApiUrl(path);
+
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return (await response.json().catch(() => null)) as T | null;
+  } catch {
+    return null;
+  }
+}
+
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function readString(record: Record<string, unknown>, keys: string[], fallback = "") {
+  for (const key of keys) {
+    const value = record[key];
+
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return fallback;
+}
+
+function readArray(record: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = record[key];
+
+    if (Array.isArray(value)) {
+      return value;
+    }
+  }
+
+  return [];
+}
+
+function toImageArray(raw: Record<string, unknown>) {
+  const mediaRecord = isRecord(raw.media) ? raw.media : null;
+  const mediaImages = mediaRecord
+    ? readArray(mediaRecord, ["image_urls"])
+        .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+        .map((value) => value.trim())
+    : [];
+  const topLevelImages = readArray(raw, ["image_urls", "product_images", "images"])
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .map((value) => value.trim());
+  const fallbackImage = readString(raw, ["image_url", "product_image_url", "image"]);
+
+  return [...topLevelImages, ...mediaImages, fallbackImage]
+    .filter(Boolean)
+    .filter((value, index, all) => all.indexOf(value) === index);
+}
+
+function toStringList(raw: Record<string, unknown>, keys: string[]) {
+  return readArray(raw, keys)
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .map((value) => value.trim());
+}
+
+function formatProjectDateLabel(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return { short: "Recent", long: "Recent project" };
+  }
+
+  return {
+    short: new Intl.DateTimeFormat("en-NG", { month: "short", year: "numeric" }).format(date),
+    long: new Intl.DateTimeFormat("en-NG", { month: "long", year: "numeric" }).format(date),
+  };
+}
+
+function normalizeProjectRecord(record: unknown): ProjectItem | null {
+  if (!isRecord(record)) {
+    return null;
+  }
+
+  const title = readString(record, ["title", "name", "listing_title", "project_title"]);
+
+  if (!title) {
+    return null;
+  }
+
+  const images = toImageArray(record);
+  const createdAt = readString(record, ["created_at", "updated_at"]);
+  const dateLabel = formatProjectDateLabel(createdAt || new Date().toISOString());
+  const systemDetailsRecord = isRecord(record.system_details) ? record.system_details : null;
+  const city = readString(record, ["city"]);
+  const state = readString(record, ["state"]);
+  const country = readString(record, ["country"]);
+  const locationLabel = [city, state, country].filter(Boolean).join(", ") || readString(record, ["location"], "Nigeria");
+  const summary = readString(record, ["summary", "overview", "description"], "Project details coming soon.");
+  const overview = readString(record, ["overview", "description", "summary"], summary);
+
+  return {
+    slug: readString(record, ["slug"], slugify(title)),
+    title,
+    listingTitle: readString(record, ["listing_title", "title", "name"], title),
+    summary,
+    location: locationLabel,
+    locationLabel,
+    dateLabel: dateLabel.short,
+    detailDateLabel: dateLabel.long,
+    heroImages: images.slice(0, 4),
+    galleryImages: images.length ? images : placeholderImages,
+    overview,
+    community: readString(record, ["community", "address"], locationLabel),
+    highlights: toStringList(record, ["highlights"]).length ? toStringList(record, ["highlights"]) : ["Project highlights will be added here."],
+    systemDetails: {
+      inverterSize: readString(systemDetailsRecord ?? {}, ["inverter_label", "inverter_size"], readString(record, ["inverter_type"], "N/A")),
+      pvSize: readString(systemDetailsRecord ?? {}, ["pv_label", "pv_size"], readString(record, ["system_size_kw"], "N/A")),
+      batterySize: readString(systemDetailsRecord ?? {}, ["battery_label", "battery_size"], "N/A"),
+    },
+    whatItCanPower: toStringList(record, ["what_it_powers"]).length ? toStringList(record, ["what_it_powers"]) : ["Project load coverage details coming soon."],
+  };
+}
+
+export async function getProjects() {
+  const [projectsPayload, installationsPayload] = await Promise.all([
+    fetchJson<{ success?: boolean; data?: unknown[] }>("/api/v1/projects"),
+    fetchJson<{ success?: boolean; data?: unknown[] }>("/api/v1/installations"),
+  ]);
+
+  const records = [
+    ...(projectsPayload?.data ?? []),
+    ...(installationsPayload?.data ?? []),
+  ]
+    .map((record) => normalizeProjectRecord(record))
+    .filter((record): record is ProjectItem => Boolean(record));
+
+  return records.length ? records : projects;
+}
+
+export async function getProjectBySlug(slug: string) {
+  const dynamicProjects = await getProjects();
+  return dynamicProjects.find((project) => project.slug === slug) ?? projects.find((project) => project.slug === slug) ?? null;
 }

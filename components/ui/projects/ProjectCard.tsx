@@ -23,7 +23,7 @@ export default function ProjectCard({
   compact = false,
 }: ProjectCardProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const slides = project.heroImages.length ? project.heroImages : ["/contact_hero_image.png"];
+  const slides = (project.heroImages.length ? project.heroImages : ["/contact_hero_image.png"]).slice(0, 4);
 
   return (
     <Link href={`/projects/${project.slug}`} className={cn("group block", className)}>
@@ -91,11 +91,6 @@ export default function ProjectCard({
             {project.listingTitle}
           </h3>
           <p className="mt-2 line-clamp-2 text-sm text-white/85">{project.summary}</p>
-          <div className="mt-4">
-            <span className="inline-flex h-10 w-full items-center justify-center rounded-xl border border-white/70 bg-transparent px-5 text-sm text-white transition-colors group-hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] lg:w-fit">
-              Get This Plan
-            </span>
-          </div>
         </div>
       </article>
     </Link>

@@ -6,7 +6,7 @@ import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
-import { projects } from "@/lib/projects-data";
+import { getProjects } from "@/lib/projects-data";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 
 export const metadata: Metadata = {
@@ -18,7 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
+
   return (
     <div className="bg-white">
       <section className="relative overflow-hidden">
@@ -72,4 +74,3 @@ export default function ProjectsPage() {
     </div>
   );
 }
-

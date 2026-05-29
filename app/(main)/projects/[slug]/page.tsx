@@ -10,13 +10,14 @@ import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
-import { getProjectBySlug, projects } from "@/lib/projects-data";
+import { getProjectBySlug, getProjects, projects as fallbackProjects } from "@/lib/projects-data";
 
 type ProjectDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
+  const projects = await getProjects();
   return projects.map((project) => ({ slug: project.slug }));
 }
 
@@ -24,7 +25,7 @@ export async function generateMetadata({
   params,
 }: ProjectDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return {
@@ -45,13 +46,14 @@ export default async function ProjectDetailPage({
   params,
 }: ProjectDetailPageProps) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
   }
 
-  const relatedProjects = projects.filter((item) => item.slug !== project.slug).slice(0, 2);
+  const projects = await getProjects();
+  const relatedProjects = (projects.length ? projects : fallbackProjects).filter((item) => item.slug !== project.slug).slice(0, 2);
 
   return (
     <div className="bg-white">
@@ -235,4 +237,3 @@ export default async function ProjectDetailPage({
     </div>
   );
 }
-
