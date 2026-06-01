@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowDown } from "lucide-react";
 
 import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
-import { getProjects } from "@/lib/projects-data";
+import PublicPagination from "@/components/ui/public/PublicPagination";
+import { parsePageParam } from "@/lib/public-content";
+import { getProjectsPage } from "@/lib/projects-data";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 
 export const metadata: Metadata = {
@@ -18,8 +19,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ProjectsPage() {
-  const projects = await getProjects();
+type ProjectsPageProps = {
+  searchParams: Promise<{ page?: string | string[] }>;
+};
+
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const page = parsePageParam(resolvedSearchParams.page);
+  const { data: projects, pagination } = await getProjectsPage(page);
 
   return (
     <div className="bg-white">
@@ -52,20 +59,26 @@ export default async function ProjectsPage() {
       </section>
 
       <main className="mx-auto max-w-7xl px-4 py-10 lg:pt-14">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {projects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
-        </div>
+        <div className="flex min-h-[70vh] flex-col justify-between gap-10">
+          {projects.length ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {projects.map((project) => (
+                <ProjectCard key={project.slug} project={project} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-[#D0D5DD] bg-[#F9FAFB] px-6 text-center text-[#667085]">
+              No projects have been published yet.
+            </div>
+          )}
 
-        <div className="mt-10 flex justify-center">
-          <Button
-            variant="outline"
-            className="h-11 rounded-xl border-[#D6EED6] bg-[#ECF8EC] px-5 text-[#058A05] hover:bg-[#e3f3e3] cursor-pointer hover:text-[#058A05]"
-          >
-            <ArrowDown className="h-4 w-4" />
-            Load more
-          </Button>
+          {pagination.total > 0 ? (
+            <PublicPagination
+              basePath="/projects"
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+            />
+          ) : null}
         </div>
       </main>
 

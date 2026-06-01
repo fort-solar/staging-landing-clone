@@ -24,6 +24,10 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const slides = (project.heroImages.length ? project.heroImages : ["/contact_hero_image.png"]).slice(0, 4);
+  const cardMediaClass = compact ? "aspect-[4/3]" : "aspect-[4/5] sm:aspect-[3/4]";
+  const imageSizes = compact
+    ? "(max-width: 768px) 100vw, 50vw"
+    : "(max-width: 768px) 100vw, (max-width: 1279px) 50vw, 33vw";
 
   return (
     <Link href={`/projects/${project.slug}`} className={cn("group block", className)}>
@@ -52,7 +56,7 @@ export default function ProjectCard({
           ))}
         </div>
 
-        <div className={cn("relative h-80 w-full", compact && "h-65")}>
+        <div className={cn("relative w-full", cardMediaClass)}>
           <Swiper
             modules={[Autoplay]}
             slidesPerView={1}
@@ -78,7 +82,7 @@ export default function ProjectCard({
                     alt={project.title}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes={imageSizes}
                   />
                 </div>
               </SwiperSlide>

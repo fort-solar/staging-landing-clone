@@ -1,28 +1,31 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CalendarDays, Clock3 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaLinkedin, FaShare } from "react-icons/fa";
 
 import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
-import { Button } from "@/components/ui/button";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
+import { Button } from "@/components/ui/button";
 import BlogToc from "@/components/ui/blog/BlogToc";
-import { blogPosts, getBlogBySlug } from "@/lib/blog-data";
-import { FaInstagram, FaFacebook, FaLinkedin, FaShare } from 'react-icons/fa';
+import { getAllBlogPosts, getBlogBySlug } from "@/lib/blog-data";
 
 type BlogDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  const posts = await getAllBlogPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({ params }: BlogDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: BlogDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogBySlug(slug);
+  const post = await getBlogBySlug(slug);
 
   if (!post) {
     return {
@@ -31,8 +34,8 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
   }
 
   return {
-    title: `${post.title} | Fortsolar Blog`,
-    description: post.excerpt,
+    title: `${post.seoTitle} | Fortsolar Blog`,
+    description: post.metaDescription,
     alternates: {
       canonical: `/blog/${post.slug}`,
     },
@@ -41,15 +44,20 @@ export async function generateMetadata({ params }: BlogDetailPageProps): Promise
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params;
-  const post = getBlogBySlug(slug);
+  const post = await getBlogBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
+  const allPosts = await getAllBlogPosts();
+  const relatedPosts = allPosts
+    .filter((item) => item.slug !== post.slug)
+    .slice(0, 3);
+
   return (
     <div className="bg-white">
-      <main className="mx-auto max-w-7xl px-4 pb-10 pt-8 lg:pb-16 lg:pt-12">
+      <main className="mx-auto min-h-[70vh] max-w-7xl px-4 pb-10 pt-8 lg:pb-16 lg:pt-12">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.65fr_0.8fr] lg:gap-8">
           <article>
             <div className="space-y-4">
@@ -66,6 +74,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               <h1 className="max-w-3xl text-4xl font-bold leading-tight font-poppins text-[#333333] lg:text-6xl">
                 {post.title}
               </h1>
+              <p className="max-w-3xl text-base leading-7 text-[#475467]">{post.summary}</p>
             </div>
 
             <div className="relative mt-8 h-70 overflow-hidden rounded-[28px] lg:h-115">
@@ -78,36 +87,27 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               />
             </div>
 
-            <div className="mt-9 space-y-10">
-              {post.sections.map((section) => (
-                <section key={section.id} id={section.id} className="scroll-mt-28">
-                  <h2 className="text-2xl font-semibold font-poppins text-[#111827]">{section.heading}</h2>
-                  <div className="mt-4 space-y-5 text-base leading-relaxed text-[#3F3F46]">
-                    {section.paragraphs.map((paragraph, index) => (
-                      <p key={`${section.id}-${index}`} className={section.italic ? "italic" : ""}>
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </section>
-              ))}
-
-              <section id="conclusion" className="scroll-mt-28">
-                <h2 className="text-2xl font-semibold font-poppins text-[#111827]">Conclusion</h2>
-                <div className="mt-4 space-y-5 text-base leading-relaxed text-[#3F3F46]">
-                  {post.conclusion.map((paragraph, index) => (
-                    <p key={`conclusion-${index}`}>{paragraph}</p>
-                  ))}
-                </div>
+            {post.bodyHtml ? (
+              <section className="blog-rich-content mt-9" dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
+            ) : (
+              <section className="mt-9 rounded-3xl border border-dashed border-[#D0D5DD] bg-[#F9FAFB] p-8 text-[#667085]">
+                This article does not have published body content yet.
               </section>
-
-            </div>
+            )}
           </article>
 
           <aside className="h-fit lg:sticky lg:top-24">
             <div className="rounded-3xl border border-black/5 bg-[#F9FAFB] p-6">
-              <p className="text-base font-semibold text-[#98A2B3]">ON THIS PAGE</p>
-              <BlogToc sections={post.sections.map(({ id, heading }) => ({ id, heading }))} />
+              {post.headings.length ? (
+                <>
+                  <p className="text-base font-semibold text-[#98A2B3]">ON THIS PAGE</p>
+                  <BlogToc sections={post.headings} />
+                </>
+              ) : (
+                <p className="text-sm text-[#667085]">
+                  This article does not have section headings yet.
+                </p>
+              )}
 
               <div className="mt-4 flex items-center gap-3 text-[#5A646B]">
                 <FaInstagram />
@@ -120,17 +120,14 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         </div>
       </main>
 
-
-
-
-      <section className="mx-auto max-w-7xl px-4 pb-8 lg:pb-12">
-        <div className="rounded-3xl  bg-white">
-          <h2 className="text-3xl font-bold font-poppins text-[#101828] lg:text-4xl">Continue Reading</h2>
-          <div className="mt-5 flex flex-wrap gap-3">
-            {blogPosts
-              .filter((item) => item.slug !== post.slug)
-              .slice(0, 3)
-              .map((item) => (
+      {relatedPosts.length ? (
+        <section className="mx-auto max-w-7xl px-4 pb-8 lg:pb-12">
+          <div className="rounded-3xl bg-white">
+            <h2 className="text-3xl font-bold font-poppins text-[#101828] lg:text-4xl">
+              Continue Reading
+            </h2>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {relatedPosts.map((item) => (
                 <Link
                   key={item.slug}
                   href={`/blog/${item.slug}`}
@@ -140,12 +137,13 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                   <SlantedArrow className="h-3.5 w-3.5" />
                 </Link>
               ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-7xl px-4 pb-5 lg:pb-8">
-        <div className="rounded-3xl  bg-white">
+        <div className="rounded-3xl bg-white">
           <h3 className="text-3xl font-bold font-poppins text-[#101828] lg:text-4xl">
             Ready to Start Saving with Solar?
           </h3>
@@ -153,7 +151,10 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             Get a free energy audit and customized quote from our experts today.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild className="h-11 rounded-2xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 text-white hover:opacity-90">
+            <Button
+              asChild
+              className="h-11 rounded-2xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 text-white hover:opacity-90"
+            >
               <Link href="/coming-soon">Explore Packages</Link>
             </Button>
             <Button
@@ -165,7 +166,6 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             </Button>
           </div>
         </div>
-
       </section>
 
       <Newsletter />

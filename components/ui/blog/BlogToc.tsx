@@ -14,13 +14,13 @@ type BlogTocProps = {
 };
 
 export default function BlogToc({ sections }: BlogTocProps) {
-  const sectionIds = useMemo(() => [...sections.map((section) => section.id), "conclusion"], [sections]);
-  const [activeId, setActiveId] = useState(sectionIds[0] ?? "conclusion");
+  const sectionIds = useMemo(() => sections.map((section) => section.id), [sections]);
+  const [activeId, setActiveId] = useState(sectionIds[0] ?? "");
 
   useEffect(() => {
     const updateActiveFromScroll = () => {
       const offset = 180;
-      let currentId = sectionIds[0] ?? "conclusion";
+      let currentId = sectionIds[0] ?? "";
 
       for (const id of sectionIds) {
         const section = document.getElementById(id);
@@ -69,18 +69,6 @@ export default function BlogToc({ sections }: BlogTocProps) {
           </a>
         </li>
       ))}
-      <li>
-        <a
-          href="#conclusion"
-          onClick={() => setActiveId("conclusion")}
-          className={cn(
-            "font-semibold transition-colors hover:text-[#111827]",
-            activeId === "conclusion" && "text-[#111827]",
-          )}
-        >
-          Conclusion
-        </a>
-      </li>
     </ul>
   );
 }

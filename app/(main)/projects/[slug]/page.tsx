@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, MapPin, Play } from "lucide-react";
+import { CalendarDays, MapPin } from "lucide-react";
 
 import CircularGreenCheck from "@/components/features/icons/CircularGreenCheck";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
@@ -10,7 +10,7 @@ import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
-import { getProjectBySlug, getProjects, projects as fallbackProjects } from "@/lib/projects-data";
+import { getProjectBySlug, getProjects } from "@/lib/projects-data";
 
 type ProjectDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -53,11 +53,16 @@ export default async function ProjectDetailPage({
   }
 
   const projects = await getProjects();
-  const relatedProjects = (projects.length ? projects : fallbackProjects).filter((item) => item.slug !== project.slug).slice(0, 2);
+  const relatedProjects = projects
+    .filter((item) => item.slug !== project.slug)
+    .slice(0, 2);
+  const detailImages = project.galleryImages.length ? project.galleryImages : project.heroImages;
+  const primaryImage = detailImages[0] ?? "/contact_hero_image.png";
+  const supportingImages = detailImages.slice(1, 5);
 
   return (
     <div className="bg-white">
-      <main className="mx-auto max-w-7xl px-4 pb-10 pt-6 lg:pb-20 lg:pt-10">
+      <main className="mx-auto min-h-[70vh] max-w-7xl px-4 pb-10 pt-6 lg:pb-20 lg:pt-10">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
@@ -82,41 +87,40 @@ export default async function ProjectDetailPage({
 
           <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.65fr_1.05fr]">
             <div className="relative overflow-hidden rounded-2xl border border-black/5 bg-black">
-              <div className="relative aspect-video">
+              <div className="relative aspect-[4/5] sm:aspect-[4/3]">
                 <Image
-                  src={project.heroImages[0] ?? "/contact_hero_image.png"}
-                  alt={`${project.title} video preview`}
+                  src={primaryImage}
+                  alt={project.title}
                   fill
                   className="object-cover opacity-85"
                   sizes="(max-width: 1024px) 100vw, 70vw"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 to-black/20" />
-                <button
-                  type="button"
-                  aria-label="Play project video"
-                  className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/80 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/15"
-                >
-                  <Play className="ml-1 h-7 w-7 fill-current" />
-                </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 h-fit">
-              {project.galleryImages.map((image, index) => (
-                <div
-                  key={`${project.slug}-gallery-${index}`}
-                  className="relative aspect-square overflow-hidden rounded-xl border border-black/5 bg-[#F2F4F7]"
-                >
-                  <Image
-                    src={image}
-                    alt={`${project.title} gallery image ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 33vw, 20vw"
-                  />
-                </div>
-              ))}
-            </div>
+            {supportingImages.length ? (
+              <div className="grid h-fit grid-cols-2 gap-2">
+                {supportingImages.map((image, index) => (
+                  <div
+                    key={`${project.slug}-gallery-${index + 1}`}
+                    className="relative aspect-[4/5] overflow-hidden rounded-xl border border-black/5 bg-[#F2F4F7]"
+                  >
+                    <Image
+                      src={image}
+                      alt={`${project.title} gallery image ${index + 2}`}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 50vw, 24vw"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-50 items-center justify-center rounded-2xl border border-dashed border-[#D0D5DD] bg-[#F9FAFB] px-6 text-center text-sm text-[#667085]">
+                No additional project images available yet.
+              </div>
+            )}
           </section>
 
           <section className="grid grid-cols-1 gap-5 pt-2 lg:grid-cols-[1fr_1fr]">
@@ -132,14 +136,20 @@ export default async function ProjectDetailPage({
               <h3 className="mt-7 text-2xl font-semibold font-poppins text-[#1F2937]">
                 Highlights:
               </h3>
-              <ul className="mt-4 space-y-2 text-sm text-[#4B5563]">
-                {project.highlights.map((highlight) => (
-                  <li key={highlight} className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#4B5563]" />
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
+              {project.highlights.length ? (
+                <ul className="mt-4 space-y-2 text-sm text-[#4B5563]">
+                  {project.highlights.map((highlight) => (
+                    <li key={highlight} className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-[#4B5563]" />
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-4 text-sm text-[#6B7280]">
+                  Project highlights have not been added yet.
+                </p>
+              )}
 
               <Button
                 variant="outline"
@@ -174,16 +184,22 @@ export default async function ProjectDetailPage({
               <h3 className="mt-7 text-2xl font-semibold font-poppins text-[#1F2937]">
                 What It Can Power
               </h3>
-              <ul className="mt-4 space-y-3">
-                {project.whatItCanPower.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-[#4B5563]">
-                    <span className="mt-0.5 shrink-0">
-                      <CircularGreenCheck />
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              {project.whatItCanPower.length ? (
+                <ul className="mt-4 space-y-3">
+                  {project.whatItCanPower.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-sm text-[#4B5563]">
+                      <span className="mt-0.5 shrink-0">
+                        <CircularGreenCheck />
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-4 text-sm text-[#6B7280]">
+                  Load coverage details have not been added yet.
+                </p>
+              )}
 
               <p className="mt-4 text-xs italic text-[#6B7280]">
                 <span className="font-medium">Note:</span>  Actual usage may vary depending on load and battery capacity.
@@ -216,21 +232,27 @@ export default async function ProjectDetailPage({
         </div>
       </main>
 
-      <section className="mx-auto max-w-7xl px-4 pb-12 lg:pb-20">
-        <h2 className="text-center text-3xl font-bold font-poppins text-[#333333] lg:text-5xl">
-          Explore More Projects
-        </h2>
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {relatedProjects.map((relatedProject) => (
-            <ProjectCard key={relatedProject.slug} project={relatedProject} compact />
-          ))}
-        </div>
-        <div className="mt-10 flex justify-center">
-          <Button asChild variant="outline"  className="h-11 w-full lg:w-fit rounded-xl border-[#0000004D] bg-transparent px-6 text-[#111827] hover:opacity-90 hover:text-[#111827]">
-            <Link href="/projects">View all projects</Link>
-          </Button>
-        </div>
-      </section>
+      {relatedProjects.length ? (
+        <section className="mx-auto max-w-7xl px-4 pb-12 lg:pb-20">
+          <h2 className="text-center text-3xl font-bold font-poppins text-[#333333] lg:text-5xl">
+            Explore More Projects
+          </h2>
+          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {relatedProjects.map((relatedProject) => (
+              <ProjectCard key={relatedProject.slug} project={relatedProject} compact />
+            ))}
+          </div>
+          <div className="mt-10 flex justify-center">
+            <Button
+              asChild
+              variant="outline"
+              className="h-11 w-full rounded-xl border-[#0000004D] bg-transparent px-6 text-[#111827] hover:opacity-90 hover:text-[#111827] lg:w-fit"
+            >
+              <Link href="/projects">View all projects</Link>
+            </Button>
+          </div>
+        </section>
+      ) : null}
 
       <Newsletter />
       <Footer />

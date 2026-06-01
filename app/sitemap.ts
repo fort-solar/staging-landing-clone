@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/lib/blog-data";
-import { projects } from "@/lib/projects-data";
+import { getAllBlogPosts } from "@/lib/blog-data";
+import { getProjects } from "@/lib/projects-data";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://www.fortsolar.ng";
+  const [blogPosts, projects] = await Promise.all([getAllBlogPosts(), getProjects()]);
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -38,12 +39,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(post.publishedAtIso),
   }));
 
   const projectPages: MetadataRoute.Sitemap = projects.map((project) => ({
     url: `${baseUrl}/projects/${project.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date(project.createdAt),
   }));
 
   return [

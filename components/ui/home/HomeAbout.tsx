@@ -74,7 +74,7 @@ const HomeAbout = () => {
                                 alt="Solar installation with panel array"
                                 src={solar_installation_image_double_cut}
                                 sizes="(min-width: 1024px) 40vw, 100vw"
-                                className="object-cover w-full h-full"
+                                className="object-fit w-full h-full"
                             />
                         </div>
                         <div className="absolute bottom-0 right-0 flex gap-3 z-10 bg-transparent pb-2 px-4 rounded-tl-4xl rounded-br-4xl">
