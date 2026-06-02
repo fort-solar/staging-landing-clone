@@ -63,7 +63,7 @@ const HomeHero = () => {
                             </div>
 
                             <div className="mt-0 lg:mt-2 animate-fade">
-                                <Link href="/coming-soon" className="flex gap-10 items-center">
+                                <Link href={CAROUSEL_CONTENT[current].href} className="flex gap-10 items-center">
                                     <Button
                                         className="
                             transition-all
@@ -114,7 +114,7 @@ const HomeHero = () => {
                                                     {item.content}
                                                 </div>
 
-                                                <Link href="/coming-soon" className="flex gap-10 items-center">
+                                                <Link href={item.href} className="flex gap-10 items-center">
                                                     <Button
                                                         className="
                             transition-all

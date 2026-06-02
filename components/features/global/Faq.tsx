@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { STORE_PRODUCTS_URL } from "@/lib/store-links";
 
 const Faq = () => {
     const pathname = usePathname();
@@ -69,7 +70,7 @@ const Faq = () => {
                                     <AccordionContent className="text-[16px] opacity-80 leading-relaxed">
                                         Fortsolar provides reliable solar energy solutions, including solar installations, inverters, batteries, solar
                                         products such as solar fans and solar streetlights, and solar system design. Fortsolar offers the best after-
-                                        sales services for homes and businesses in Nigeria. <Link className="underline text-black" href="/coming-soon">Explore our products</Link>
+                                        sales services for homes and businesses in Nigeria. <Link className="underline text-black" href={STORE_PRODUCTS_URL}>Explore our products</Link>
                                     </AccordionContent>
                                 </AccordionItem>
                                 <AccordionItem
@@ -101,7 +102,7 @@ const Faq = () => {
                                     <AccordionContent className="text-[16px] opacity-80 leading-relaxed">
                                         Solar system costs vary based on energy needs, battery size, and inverter capacity. Fortsolar offers a free
                                         energy audit that assesses your power consumption, appliances, usage patterns, and budget to
-                                        recommend the best solar solution tailored to your energy needs. <Link className="underline text-black" href="/coming-soon">Book a free energy audit</Link>
+                                        recommend the best solar solution tailored to your energy needs. <Link className="underline text-black" href="/energy-calculator">Book a free energy audit</Link>
                                     </AccordionContent>
                                 </AccordionItem>
                                 <AccordionItem

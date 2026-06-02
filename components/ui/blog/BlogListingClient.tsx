@@ -1,6 +1,7 @@
 import type { BlogPost } from "@/lib/blog-data";
 import type { PaginationMeta } from "@/lib/public-content";
 import BlogCard from "@/components/ui/blog/BlogCard";
+import PublicEmptyState from "@/components/ui/public/PublicEmptyState";
 import PublicPagination from "@/components/ui/public/PublicPagination";
 
 type BlogListingClientProps = {
@@ -38,9 +39,11 @@ export default function BlogListingClient({
               ))}
             </div>
           ) : (
-            <div className="flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-[#D0D5DD] bg-[#F9FAFB] px-6 text-center text-[#667085]">
-              No blog posts have been published yet.
-            </div>
+            <PublicEmptyState
+              title="No blog content published yet"
+              description="There are no live Fortsolar articles right now. New solar insights, product updates, and project stories will appear here once they are published."
+              className="min-h-72"
+            />
           )}
 
           {pagination.total > 0 ? (

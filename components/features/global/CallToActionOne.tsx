@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { STORE_PACKAGES_URL } from "@/lib/store-links";
 
 const CallToActionOne = () => {
     return (
@@ -14,7 +15,7 @@ const CallToActionOne = () => {
                 </div>
                 <div className='flex flex-col lg:flex-row gap-5 mt-8 lg:mt-0 items-center justify-center w-full lg:max-w-xl mx-auto'>
                     <div className='w-full lg:w-fit'>
-                        <Link href={"/coming-soon"} className="w-full lg:w-fit">
+                        <Link href="/energy-calculator" className="w-full lg:w-fit">
                             <Button className="w-full lg:w-fit py-6 rounded-xl bg-transparent border-white border hover:bg-transparent cursor-pointer">
                                 Get a Free Quote
                             </Button>
@@ -22,7 +23,7 @@ const CallToActionOne = () => {
 
                     </div>
                     <div className='w-full lg:w-fit'>
-                        <Link href="/coming-soon" className="w-full lg:w-fit">
+                        <Link href={STORE_PACKAGES_URL} className="w-full lg:w-fit">
                             <Button className="w-full lg:w-fit py-6 rounded-xl bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
                                 Explore Packages
                             </Button>

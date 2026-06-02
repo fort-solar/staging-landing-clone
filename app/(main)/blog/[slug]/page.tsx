@@ -11,6 +11,7 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { Button } from "@/components/ui/button";
 import BlogToc from "@/components/ui/blog/BlogToc";
 import { getAllBlogPosts, getBlogBySlug } from "@/lib/blog-data";
+import { STORE_PACKAGES_URL } from "@/lib/store-links";
 
 type BlogDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -155,7 +156,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               asChild
               className="h-11 rounded-2xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 text-white hover:opacity-90"
             >
-              <Link href="/coming-soon">Explore Packages</Link>
+              <Link href={STORE_PACKAGES_URL}>Explore Packages</Link>
             </Button>
             <Button
               asChild

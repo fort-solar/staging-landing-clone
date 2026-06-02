@@ -153,7 +153,11 @@ export default function Navbar() {
                 <button
                   key={item.path}
                   onClick={() => {
-                    router.push(item.path);
+                    if (item.path.startsWith("http")) {
+                      window.location.assign(item.path);
+                    } else {
+                      router.push(item.path);
+                    }
                     setMenuOpen(false);
                   }}
                   className={`flex items-center gap-3 text-lg font-medium mb-4 ${isActive

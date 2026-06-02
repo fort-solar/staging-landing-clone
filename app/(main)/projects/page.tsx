@@ -4,11 +4,13 @@ import Link from "next/link";
 import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
+import PublicEmptyState from "@/components/ui/public/PublicEmptyState";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
 import PublicPagination from "@/components/ui/public/PublicPagination";
 import { parsePageParam } from "@/lib/public-content";
 import { getProjectsPage } from "@/lib/projects-data";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
+import { STORE_PACKAGES_URL } from "@/lib/store-links";
 
 export const metadata: Metadata = {
   title: "Projects | Fortsolar",
@@ -49,7 +51,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
               asChild
               className="mt-8 h-12 rounded-2xl px-8 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90"
             >
-              <Link href="/coming-soon" className="gap-3 font-medium w-full lg:w-fit">
+              <Link href={STORE_PACKAGES_URL} className="gap-3 font-medium w-full lg:w-fit">
                 View Available Packages
                 <SlantedArrow className="h-3.5 w-3.5" />
               </Link>
@@ -67,9 +69,11 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
               ))}
             </div>
           ) : (
-            <div className="flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-[#D0D5DD] bg-[#F9FAFB] px-6 text-center text-[#667085]">
-              No projects have been published yet.
-            </div>
+            <PublicEmptyState
+              title="No projects published yet"
+              description="Completed Fortsolar installations will be listed here once project case studies are published."
+              className="min-h-64"
+            />
           )}
 
           {pagination.total > 0 ? (

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { INSTALLER_SIGNUP_URL } from "@/lib/store-links";
 
 const CallToActionTwo = () => {
     return (
@@ -11,7 +12,7 @@ const CallToActionTwo = () => {
     gap-4 px-6 py-10 lg:px-16">
                     <p className='text-white leading-16 text-3xl md:text-4xl lg:text-5xl font-bold font-poppins'>Join Our Installer Network</p>
                     <p className=' text-white '>Are you a certified installer? Reach more customers and grow your business with Fortsolar</p>
-                    <Link href={"/coming-soon"}>
+                    <Link href={INSTALLER_SIGNUP_URL}>
                         <Button className="w-fit bg-transparent py-6 rounded-xl border-white border hover:bg-transparent cursor-pointer">
                             Become an Installer
                         </Button>
@@ -27,7 +28,7 @@ const CallToActionTwo = () => {
                             <p className='text-white leading-16 text-2xl lg:text-5xl font-bold font-poppins'>Join Our Installer Network</p>
                             <p className=' text-white '>Are you a certified installer? Reach more customers and grow your business with Fortsolar</p>
                         </div>
-                        <Link href={"/coming-soon"} className="w-full">
+                        <Link href={INSTALLER_SIGNUP_URL} className="w-full">
                             <Button className="w-full py-6 bg-transparent rounded-xl border-white border hover:bg-transparent cursor-pointer">
                                 Become an Installer
                             </Button>

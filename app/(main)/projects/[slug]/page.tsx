@@ -9,8 +9,10 @@ import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import Footer from "@/components/features/global/Footer";
 import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
+import PublicEmptyState from "@/components/ui/public/PublicEmptyState";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
 import { getProjectBySlug, getProjects } from "@/lib/projects-data";
+import { STORE_PACKAGES_URL } from "@/lib/store-links";
 
 type ProjectDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -117,9 +119,11 @@ export default async function ProjectDetailPage({
                 ))}
               </div>
             ) : (
-              <div className="flex min-h-50 items-center justify-center rounded-2xl border border-dashed border-[#D0D5DD] bg-[#F9FAFB] px-6 text-center text-sm text-[#667085]">
-                No additional project images available yet.
-              </div>
+              <PublicEmptyState
+                title="No additional project media yet"
+                description="This installation does not have any extra published gallery images right now."
+                className="min-h-50 rounded-2xl px-5 py-8"
+              />
             )}
           </section>
 
@@ -147,7 +151,7 @@ export default async function ProjectDetailPage({
                 </ul>
               ) : (
                 <p className="mt-4 text-sm text-[#6B7280]">
-                  Project highlights have not been added yet.
+                  No project highlights have been published for this installation yet.
                 </p>
               )}
 
@@ -208,7 +212,7 @@ export default async function ProjectDetailPage({
               <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
                 <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
-                  <Link href="/coming-soon" className="w-full">
+                  <Link href={STORE_PACKAGES_URL} className="w-full">
                     Get Package
                     <SlantedArrow className="h-3.5 w-3.5" />
                   </Link>

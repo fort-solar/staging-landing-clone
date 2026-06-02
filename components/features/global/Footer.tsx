@@ -4,6 +4,7 @@ import { logo_footer } from '../images';
 import Link from 'next/link';
 import { TwitterIcon } from '@/components/features/icons/TwitterIcon';
 import { FaTiktok, FaYoutube, FaInstagram, FaFacebook, FaLinkedin } from 'react-icons/fa';
+import { INSTALLER_SIGNUP_URL, STORE_PACKAGES_URL, STORE_PRODUCTS_URL, STORE_ROOT_URL } from "@/lib/store-links";
 
 const Footer = () => {
   return (
@@ -17,9 +18,15 @@ const Footer = () => {
           <div className="flex justify-start lg:justify-center">
             <div className='space-y-3'>
               <p className='text-sm text-[#3B3B3B] font-semibold'>Store</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Products</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Packages</p>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>App <span className="bg-[#F2F4F7] p-1 rounded-sm text-xs">Coming soon</span></p>
+              <Link href={STORE_PRODUCTS_URL}>
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Products</p>
+              </Link>
+              <Link href={STORE_PACKAGES_URL}>
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Packages</p>
+              </Link>
+              <Link href={STORE_ROOT_URL}>
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Store Home</p>
+              </Link>
             </div>
           </div>
 
@@ -37,7 +44,9 @@ const Footer = () => {
                   <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Contact</p>
                 </Link>
               </div>
-              <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Become an installer</p>
+              <Link href={INSTALLER_SIGNUP_URL}>
+                <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>Become an installer</p>
+              </Link>
               <p className='text-sm text-[#3B3B3B] hover:underline cursor-pointer'>News</p>
             </div>
           </div>

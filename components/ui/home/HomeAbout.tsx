@@ -12,7 +12,7 @@ const HomeAbout = () => {
                     About Fortsolar
                 </div>
                 <div className="w-full lg:w-fit">
-                    <Link href="/coming-soon" className="w-full lg:w-fit">
+                    <Link href="/energy-calculator" className="w-full lg:w-fit">
                         <Button variant="outline" className="w-full py-6 lg:w-fit border-[#0000004D] cursor-pointer rounded-xl">
                             Get a Free Quote
                         </Button>
@@ -21,9 +21,9 @@ const HomeAbout = () => {
                 </div>
             </div>
 
-           `     <div className='max-w-4xl mt-7'>
+                <div className='max-w-4xl mt-7'>
                     <p>We transform how people power their homes and businesses across Nigeria. Established in 2022, we’re committed to providing reliable, affordable, and future-ready solar energy solutions that help households, offices, and remote workers save time and money on electricity bills.</p>
-                </div>`
+                </div>
 
             <div className="mt-10 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-5">
                 <div className='grid grid-cols-1 lg:grid-cols-2'>

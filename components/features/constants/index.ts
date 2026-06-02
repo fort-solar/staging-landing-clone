@@ -1,4 +1,5 @@
-import {   home_slider_solar, home_slider_trust } from "../images";
+import { home_slider_solar, home_slider_trust } from "../images";
+import { STORE_PRODUCTS_URL, STORE_ROOT_URL } from "@/lib/store-links";
 
 export const CAROUSEL_CONTENT = [
   {
@@ -9,6 +10,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Whether you’re powering a residence or a commercial space, our solar solutions deliver consistent performance, lower bills, and total peace of mind.",
     buttonName: "Get a Quote",
+    href: "/energy-calculator",
     image: home_slider_trust,
   },
   {
@@ -19,6 +21,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Enjoy clean, reliable energy without breaking the bank. Our flexible financing options let you install your system today and pay over time.",
     buttonName: "Apply for Financing",
+    href: "/contact",
     image: home_slider_solar,
   },
   {
@@ -29,6 +32,7 @@ export const CAROUSEL_CONTENT = [
     content:
       "Explore our collection of verified solar panels, batteries, and inverters, all sourced from trusted manufacturers and built for lasting performance.",
     buttonName: "View Store",
+    href: STORE_ROOT_URL,
     image: home_slider_trust,
   },
 ];
@@ -102,7 +106,7 @@ export const BLOG_CONTENT = [
 export const navItems = [
   { label: "Home", path: "/" },
   { label: "About", path: "/about" },
-  { label: "Store", path: "/coming-soon" },
+  { label: "Store", path: STORE_ROOT_URL },
   { label: "Projects", path: "/projects" },
   { label: "Blog", path: "/blog" },
   { label: "Contact", path: "/contact" },
@@ -119,7 +123,7 @@ export const servicesSlides = [
         title: "Solar Products",
         description: "Power your space with our wide range of quality solar panels, batteries, inverters, fans, streetlights, floodlights and more sourced from reliable manufacturers, designed for durability and performance.",
         buttonName: "Shop Products",
-        link: "/coming-soon",
+        link: STORE_PRODUCTS_URL,
         leftColor: "#F1F2F5",
         marginBottom: "mb-3",
         rightBackgroundImage: "/about_services_one.png"
@@ -129,7 +133,7 @@ export const servicesSlides = [
         title: "Solar Installations",
         description: "Professional setup from start to finish, fast, clean, and backed by expert technicians.",
         buttonName: "Book Installation",
-        link: "/coming-soon",
+        link: "/contact",
         leftColor: "#EBFAEB",
         marginBottom: "mb-6",
         rightBackgroundImage: "/about_services_two.png"
@@ -138,7 +142,7 @@ export const servicesSlides = [
         title: "Solar Financing",
         description: "Go solar now and pay flexibly over time making renewable energy more affordable for everyone.",
         buttonName: "Learn More",
-        link: "/coming-soon",
+        link: "/energy-calculator",
         leftColor: "#EDF6FA",
         marginBottom: "mb-9",
         rightBackgroundImage: "/about_services_three.png"
@@ -147,7 +151,7 @@ export const servicesSlides = [
         title: "Solar Streetlights",
         description: "Brighten up communities and businesses with efficient, long-lasting solar streetlight solutions.",
         buttonName: "View Streetlights",
-         link: "/coming-soon",
+         link: STORE_PRODUCTS_URL,
         leftColor: "#FFFBEB",
         marginBottom: "mb-12",
         rightBackgroundImage: "/about_services_four.png"
@@ -156,7 +160,7 @@ export const servicesSlides = [
         title: "Solar CCTV",
         description: "Secure your property 24/7 with smart solar-powered surveillance systems.",
         buttonName: "View Solutions",
-         link: "/coming-soon",
+         link: STORE_PRODUCTS_URL,
         leftColor: "#FEF5EF",
         marginBottom: "mb-0",
         rightBackgroundImage: "/about_services_five.png"
