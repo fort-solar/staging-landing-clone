@@ -205,7 +205,7 @@ function formatProjectDateLabel(value: string) {
   };
 }
 
-function normalizeProjectRecord(record: unknown) {
+export function normalizeProjectRecord(record: unknown) {
   if (!isRecord(record)) {
     return null;
   }

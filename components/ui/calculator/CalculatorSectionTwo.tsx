@@ -13,16 +13,20 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { submitForm } from "@/actions/SubmitForm";
 import { BASE_URL } from "@/components/features/constants";
-
-type NumericField = number | "";
-
-type Row = {
-  id: string;
-  item: string;
-  quantity: NumericField;
-  watts: NumericField;
-  hours: NumericField;
-};
+import {
+  addCalculatorRow,
+  buildCalculatorQuotePayload,
+  buildCalculatorTotals,
+  buildSelectedDevices,
+  CALCULATOR_CONSTANTS,
+  createCalculatorRow,
+  deriveCalculatorRecommendation,
+  parseCalculatorNumericInput,
+  removeCalculatorRow,
+  type CalculatorResponseData,
+  type CalculatorRow as Row,
+  type Totals,
+} from "@/lib/calculator";
 
 type Appliance = {
   id: string;
@@ -39,63 +43,7 @@ type AppliancesResponse = {
 
 type CalculatorResponse = {
   success: boolean;
-  data: {
-    totalLoadW: number;
-    totalLoadKw: number;
-    totalEnergyWhPerDay: number;
-    totalEnergyKwhPerDay: number;
-    avgEnergyKwhPerHour: number;
-    recommendedInverterKw: number;
-    recommendedBatteryKwh: number;
-    recommendedPvKwp: number;
-    display?: {
-      inverterKw: number;
-      batteryKwh: number;
-      pvKwp: number;
-    };
-  };
-};
-
-type Totals = {
-  totalWh: number;
-  dailyKWh: number;
-  peakKW: number;
-};
-
-const CALCULATOR_CONSTANTS = {
-  pshHours: 3.5,
-  inverterSurgeFactor: 1.5,
-  backupHours: 14,
-  batterySafetyFactor: 1.3,
-  pvLossFactor: 1.2,
-};
-
-const generateRowId = () => {
-  if (typeof globalThis !== "undefined" && "crypto" in globalThis) {
-    const cryptoObj = globalThis.crypto as Crypto | undefined;
-    if (cryptoObj?.randomUUID) {
-      return cryptoObj.randomUUID();
-    }
-  }
-
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-};
-
-const createRow = (): Row => ({
-  id: generateRowId(),
-  item: "",
-  quantity: "",
-  watts: "",
-  hours: "",
-});
-
-const isPositive = (value: NumericField) => typeof value === "number" && Number.isFinite(value) && value >= 1;
-
-const parseNumericInput = (value: string): NumericField => {
-  if (value === "") return "";
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return "";
-  return parsed;
+  data: CalculatorResponseData;
 };
 
 const buildApiUrl = (endpoint: string, query?: Record<string, string>) => {
@@ -106,7 +54,7 @@ const buildApiUrl = (endpoint: string, query?: Record<string, string>) => {
 };
 
 const CalculatorSectionTwo = () => {
-  const [rows, setRows] = useState<Row[]>([createRow()]);
+  const [rows, setRows] = useState<Row[]>([createCalculatorRow()]);
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
   const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
   const [activeSuggestions, setActiveSuggestions] = useState<Appliance[]>([]);
@@ -127,12 +75,7 @@ const CalculatorSectionTwo = () => {
   };
 
   const removeRow = (id: string) => {
-    setRows(currentRows => {
-      if (currentRows.length === 1) {
-        return [createRow()];
-      }
-      return currentRows.filter(row => row.id !== id);
-    });
+    setRows((currentRows) => removeCalculatorRow(currentRows, id));
   };
 
   useEffect(() => {
@@ -160,17 +103,23 @@ const CalculatorSectionTwo = () => {
   }, [activeRowId]);
 
   const completeRows = useMemo(() => {
-    return rows.filter(row => row.item.trim().length > 0 && isPositive(row.quantity) && isPositive(row.watts) && isPositive(row.hours));
+    return rows.filter(
+      (row) =>
+        row.item.trim().length > 0 &&
+        typeof row.quantity === "number" &&
+        Number.isFinite(row.quantity) &&
+        row.quantity >= 1 &&
+        typeof row.watts === "number" &&
+        Number.isFinite(row.watts) &&
+        row.watts >= 1 &&
+        typeof row.hours === "number" &&
+        Number.isFinite(row.hours) &&
+        row.hours >= 1,
+    );
   }, [rows]);
 
   const selectedDevices = useMemo(() => {
-    return completeRows.map(row => ({
-      item: row.item,
-      quantity: Number(row.quantity),
-      watts: Number(row.watts),
-      hours: Number(row.hours),
-      wattHours: Number(row.quantity) * Number(row.watts) * Number(row.hours),
-    }));
+    return buildSelectedDevices(completeRows);
   }, [completeRows]);
 
   useEffect(() => {
@@ -280,19 +229,10 @@ const CalculatorSectionTwo = () => {
     };
   }, [completeRows]);
 
-  const totals: Totals = {
-    totalWh: calculation?.totalEnergyWhPerDay ?? 0,
-    dailyKWh: calculation?.totalEnergyKwhPerDay ?? 0,
-    peakKW: calculation?.totalLoadKw ?? 0,
-  };
-
-  const inverterKw =
-    calculation?.display?.inverterKw ?? calculation?.recommendedInverterKw ?? Math.ceil(totals.peakKW * 1.25);
-  const batteryKwh =
-    calculation?.display?.batteryKwh ?? calculation?.recommendedBatteryKwh ?? Math.ceil(totals.dailyKWh);
-  const pvKwp = calculation?.display?.pvKwp ?? calculation?.recommendedPvKwp ?? totals.dailyKWh / 4;
-
-  const hasCalculated = Boolean(calculation) && !isCalculating;
+  const totals: Totals = buildCalculatorTotals(calculation);
+  const recommendation = deriveCalculatorRecommendation(calculation, totals);
+  const { inverterKw, batteryKwh, pvKwp } = recommendation;
+  const hasCalculated = recommendation.hasCalculated && !isCalculating;
 
   const downloadPdf = () => {
     if (!hasCalculated) return;
@@ -358,32 +298,19 @@ const CalculatorSectionTwo = () => {
       }>;
     };
   }) => {
-    const quantity = selectedDevices.reduce((sum, appliance) => sum + appliance.quantity, 0);
-
-    const quotePayload = {
+    const quotePayload = buildCalculatorQuotePayload({
+      selectedDevices,
+      totals,
       name: payload.name,
       email: payload.email,
       phone: payload.phone,
       location: payload.location,
       address: payload.address,
-      appliances: selectedDevices.map(appliance => ({
-        name: appliance.item,
-        wattage: appliance.watts,
-        quantity: appliance.quantity,
-        hoursPerDay: appliance.hours,
-      })),
-      totalLoadKw: Number(totals.peakKW.toFixed(2)),
-      totalWattHoursPerDay: Number(totals.totalWh.toFixed(2)),
-      dailyUsageKwh: Number(totals.dailyKWh.toFixed(2)),
-      monthlyUsageKwh: Number((totals.dailyKWh * 30).toFixed(2)),
-      monthlyBill: 0,
-      quantity,
-      projectType: payload.installationType,
+      installationType: payload.installationType,
       buildingType: payload.buildingType,
-      additionalInfo: payload.note ?? "",
-      agreeToTerms: payload.termsAccepted,
-      requestInstallation: true,
-    };
+      termsAccepted: payload.termsAccepted,
+      note: payload.note,
+    });
 
     try {
       setQuoteSubmitting(true);
@@ -487,7 +414,13 @@ const CalculatorSectionTwo = () => {
 
           <tbody className="table-row-group">
             {rows.map(row => {
-              const wattHours = isPositive(row.quantity) && isPositive(row.watts) && isPositive(row.hours)
+              const wattHours =
+                typeof row.quantity === "number" &&
+                row.quantity >= 1 &&
+                typeof row.watts === "number" &&
+                row.watts >= 1 &&
+                typeof row.hours === "number" &&
+                row.hours >= 1
                 ? Number(row.quantity) * Number(row.watts) * Number(row.hours)
                 : "";
 
@@ -550,7 +483,7 @@ const CalculatorSectionTwo = () => {
                         value={row.quantity}
                         onChange={e =>
                           updateRow(row.id, {
-                            quantity: parseNumericInput(e.target.value),
+                            quantity: parseCalculatorNumericInput(e.target.value),
                           })
                         }
                         onBlur={() => {
@@ -574,7 +507,7 @@ const CalculatorSectionTwo = () => {
                         value={row.watts}
                         onChange={e =>
                           updateRow(row.id, {
-                            watts: parseNumericInput(e.target.value),
+                            watts: parseCalculatorNumericInput(e.target.value),
                           })
                         }
                         onBlur={() => {
@@ -600,7 +533,7 @@ const CalculatorSectionTwo = () => {
                         value={row.hours}
                         onChange={e =>
                           updateRow(row.id, {
-                            hours: parseNumericInput(e.target.value),
+                            hours: parseCalculatorNumericInput(e.target.value),
                           })
                         }
                         onBlur={() => {
@@ -684,7 +617,7 @@ const CalculatorSectionTwo = () => {
       })()}
       <div className="flex justify-end">
         <Button
-          onClick={() => setRows(currentRows => [...currentRows, createRow()])}
+          onClick={() => setRows((currentRows) => addCalculatorRow(currentRows))}
           className="w-full md:w-fit text-[10px] md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
         >
           Add Item
