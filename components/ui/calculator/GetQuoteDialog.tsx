@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import GradientCheckbox from "@/components/ui/gradient-checkbox";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -333,17 +334,12 @@ export default function GetQuoteDialog({
                     </div>
 
                     {/* Terms */}
-                    <label className="flex items-start gap-3 text-sm text-[#475467]">
-                        <input
-                            type="checkbox"
-                            checked={termsAccepted}
-                            onChange={e => setTermsAccepted(e.target.checked)}
-                            className="mt-1 h-4 w-4 rounded border-[#D0D5DD]"
-                        />
-                        <span>
-                            I agree to the terms of service to receive a call/email regarding my quote.
-                        </span>
-                    </label>
+                    <GradientCheckbox
+                        checked={termsAccepted}
+                        onChange={e => setTermsAccepted(e.target.checked)}
+                        label="I agree to the terms of service to receive a call/email regarding my quote."
+                        labelClassName="text-sm text-[#475467]"
+                    />
 
                     {/* Footer buttons */}
                     <div className="flex items-center justify-between gap-3 pt-2">

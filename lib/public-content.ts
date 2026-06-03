@@ -145,7 +145,7 @@ export async function fetchAllCollectionRecords<T>(
     query?: Record<string, string | number | undefined>;
   } = {},
 ) {
-  const limit = options.limit ?? 100;
+  const limit = options.limit ?? 20;
   const firstPageCandidates = basePaths.map((basePath) => ({
     basePath,
     path: withQuery(basePath, { page: 1, limit, ...options.query }),
@@ -188,6 +188,38 @@ export async function fetchAllCollectionRecords<T>(
   }
 
   return records;
+}
+
+export async function fetchCollectionPage<T>(
+  basePaths: string[],
+  options: {
+    page?: number;
+    limit?: number;
+    query?: Record<string, string | number | undefined>;
+  } = {},
+) {
+  const page = Math.max(1, options.page ?? 1);
+  const limit = Math.max(1, options.limit ?? 20);
+  const pageCandidates = basePaths.map((basePath) => ({
+    basePath,
+    path: withQuery(basePath, { page, limit, ...options.query }),
+  }));
+  const response = await fetchFirstAvailable<CollectionPayload<T>>(pageCandidates);
+
+  if (!response) {
+    return null;
+  }
+
+  const records = extractRecords(response.payload);
+  const pagination = Array.isArray(response.payload)
+    ? toPaginationMeta(undefined, records.length, limit, page)
+    : toPaginationMeta(response.payload.pagination, records.length, limit, page);
+
+  return {
+    basePath: response.basePath,
+    data: records,
+    pagination,
+  };
 }
 
 export function paginateCollection<T>(

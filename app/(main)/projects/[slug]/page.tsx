@@ -11,7 +11,7 @@ import Newsletter from "@/components/features/global/Newsletter";
 import { Button } from "@/components/ui/button";
 import PublicEmptyState from "@/components/ui/public/PublicEmptyState";
 import ProjectCard from "@/components/ui/projects/ProjectCard";
-import { getProjectBySlug, getProjects } from "@/lib/projects-data";
+import { getProjectBySlug, getProjects, getProjectsPage } from "@/lib/projects-data";
 import { STORE_PACKAGES_URL } from "@/lib/store-links";
 
 type ProjectDetailPageProps = {
@@ -54,8 +54,8 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  const projects = await getProjects();
-  const relatedProjects = projects
+  const { data: recentProjects } = await getProjectsPage(1, 3);
+  const relatedProjects = recentProjects
     .filter((item) => item.slug !== project.slug)
     .slice(0, 2);
   const detailImages = project.galleryImages.length ? project.galleryImages : project.heroImages;

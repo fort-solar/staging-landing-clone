@@ -1,8 +1,8 @@
 import { cache } from "react";
 
 import {
+  fetchCollectionPage,
   fetchAllCollectionRecords,
-  paginateCollection,
   type PaginationMeta,
 } from "@/lib/public-content";
 
@@ -50,7 +50,7 @@ export type BlogPost = {
 };
 
 const BLOG_PLACEHOLDER_IMAGE = "/panels_on_a_roof.jpg";
-const BLOG_PAGE_SIZE = 6;
+const BLOG_PAGE_SIZE = 20;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -262,7 +262,12 @@ function normalizeBlogRecord(record: unknown) {
 const loadAllBlogPosts = cache(async () => {
   const records = await fetchAllCollectionRecords<BlogApiRecord>(
     ["/api/v1/blog", "/api/v1/blog/"],
-    { limit: 100 },
+    {
+      limit: BLOG_PAGE_SIZE,
+      query: {
+        status: "published",
+      },
+    },
   );
 
   return records
@@ -285,15 +290,49 @@ export async function getBlogPostsPage(
   data: BlogPost[];
   pagination: PaginationMeta;
 }> {
-  const posts = await loadAllBlogPosts();
-  return paginateCollection(posts, page, limit);
+  const payload = await fetchCollectionPage<BlogApiRecord>(["/api/v1/blog", "/api/v1/blog/"], {
+    page,
+    limit,
+    query: {
+      status: "published",
+    },
+  });
+
+  if (!payload) {
+    return {
+      data: [],
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0,
+      },
+    };
+  }
+
+  return {
+    data: payload.data
+      .map((record) => normalizeBlogRecord(record))
+      .filter((record): record is BlogPost => Boolean(record)),
+    pagination: payload.pagination,
+  };
 }
 
 export async function getBlogBySlug(slug: string) {
-  const posts = await loadAllBlogPosts();
+  const postsPayload = await fetchCollectionPage<BlogApiRecord>(["/api/v1/blog", "/api/v1/blog/"], {
+    page: 1,
+    limit: BLOG_PAGE_SIZE,
+    query: {
+      search: slug.trim(),
+      status: "published",
+    },
+  });
   const normalizedSlug = slug.trim().toLowerCase();
 
   return (
-    posts.find((post) => post.slug.trim().toLowerCase() === normalizedSlug) ?? null
+    postsPayload?.data
+      .map((record) => normalizeBlogRecord(record))
+      .filter((record): record is BlogPost => Boolean(record))
+      .find((post) => post.slug.trim().toLowerCase() === normalizedSlug) ?? null
   );
 }

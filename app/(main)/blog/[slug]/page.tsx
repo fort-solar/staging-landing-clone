@@ -10,7 +10,7 @@ import Newsletter from "@/components/features/global/Newsletter";
 import { SlantedArrow } from "@/components/features/icons/SlantedArrow";
 import { Button } from "@/components/ui/button";
 import BlogToc from "@/components/ui/blog/BlogToc";
-import { getAllBlogPosts, getBlogBySlug } from "@/lib/blog-data";
+import { getAllBlogPosts, getBlogBySlug, getBlogPostsPage } from "@/lib/blog-data";
 import { STORE_PACKAGES_URL } from "@/lib/store-links";
 
 type BlogDetailPageProps = {
@@ -51,8 +51,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
     notFound();
   }
 
-  const allPosts = await getAllBlogPosts();
-  const relatedPosts = allPosts
+  const { data: recentPosts } = await getBlogPostsPage(1, 4);
+  const relatedPosts = recentPosts
     .filter((item) => item.slug !== post.slug)
     .slice(0, 3);
 

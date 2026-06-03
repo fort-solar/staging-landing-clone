@@ -1,8 +1,8 @@
 import { cache } from "react";
 
 import {
+  fetchCollectionPage,
   fetchAllCollectionRecords,
-  paginateCollection,
   type PaginationMeta,
 } from "@/lib/public-content";
 
@@ -78,7 +78,7 @@ type ProjectApiRecord = {
 };
 
 const PROJECT_PLACEHOLDER_IMAGE = "/contact_hero_image.png";
-const PROJECT_PAGE_SIZE = 6;
+const PROJECT_PAGE_SIZE = 20;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -298,18 +298,18 @@ function uniqueProjects(projects: ProjectItem[]) {
 }
 
 const loadAllProjects = cache(async () => {
-  const [projectRecords, installationRecords] = await Promise.all([
-    fetchAllCollectionRecords<ProjectApiRecord>(["/api/v1/projects", "/api/v1/projects/"], {
-      limit: 100,
-    }),
-    fetchAllCollectionRecords<ProjectApiRecord>(
-      ["/api/v1/installations", "/api/v1/installations/"],
-      { limit: 100 },
-    ),
-  ]);
+  const projectRecords = await fetchAllCollectionRecords<ProjectApiRecord>(
+    ["/api/v1/projects", "/api/v1/projects/"],
+    {
+      limit: PROJECT_PAGE_SIZE,
+      query: {
+        status: "published",
+      },
+    },
+  );
 
   return uniqueProjects(
-    [...projectRecords, ...installationRecords]
+    projectRecords
       .map((record) => normalizeProjectRecord(record))
       .filter((record): record is ProjectItem => Boolean(record))
       .sort(
@@ -330,15 +330,55 @@ export async function getProjectsPage(
   data: ProjectItem[];
   pagination: PaginationMeta;
 }> {
-  const projects = await loadAllProjects();
-  return paginateCollection(projects, page, limit);
+  const payload = await fetchCollectionPage<ProjectApiRecord>(
+    ["/api/v1/projects", "/api/v1/projects/"],
+    {
+      page,
+      limit,
+      query: {
+        status: "published",
+      },
+    },
+  );
+
+  if (!payload) {
+    return {
+      data: [],
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0,
+      },
+    };
+  }
+
+  return {
+    data: payload.data
+      .map((record) => normalizeProjectRecord(record))
+      .filter((record): record is ProjectItem => Boolean(record)),
+    pagination: payload.pagination,
+  };
 }
 
 export async function getProjectBySlug(slug: string) {
-  const projects = await loadAllProjects();
+  const projectsPayload = await fetchCollectionPage<ProjectApiRecord>(
+    ["/api/v1/projects", "/api/v1/projects/"],
+    {
+      page: 1,
+      limit: PROJECT_PAGE_SIZE,
+      query: {
+        search: slug.trim(),
+        status: "published",
+      },
+    },
+  );
   const normalizedSlug = slug.trim().toLowerCase();
 
   return (
-    projects.find((project) => project.slug.trim().toLowerCase() === normalizedSlug) ?? null
+    projectsPayload?.data
+      .map((record) => normalizeProjectRecord(record))
+      .filter((record): record is ProjectItem => Boolean(record))
+      .find((project) => project.slug.trim().toLowerCase() === normalizedSlug) ?? null
   );
 }
