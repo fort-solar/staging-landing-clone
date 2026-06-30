@@ -154,7 +154,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <div className="mt-6 flex flex-wrap gap-3">
             <Button
               asChild
-              className="h-11 rounded-2xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 text-white hover:opacity-90"
+              className="h-11 rounded-2xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-6 text-white hover:opacity-90"
             >
               <Link href={STORE_PACKAGES_URL}>Explore Packages</Link>
             </Button>

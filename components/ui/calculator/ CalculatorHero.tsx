@@ -32,7 +32,7 @@ const CalculatorHero = () => {
                       items-center 
                       justify-center 
                       gap-3
-                      bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                      bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]
                       hover:opacity-90
                     "
                             >

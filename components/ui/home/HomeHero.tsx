@@ -34,11 +34,13 @@ const HomeHero = () => {
 
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-4 py-5 lg:py-10 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start" ref={heroRef}>
+        <div className="w-full max-w-6xl mx-auto px-4 py-0 lg:py-4 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start" ref={heroRef}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
-                <div className="flex flex-col  justify-between">
+                {/* [ui-fix] stretch left column to full height so the bottom marquee is stable during transitions */}
+                <div className="flex flex-col justify-between h-full">
                     <div className='flex flex-col gap-5'>
-                        <div className="hidden lg:block">
+                        {/* [ui-fix] fix desktop text slide container height to prevent shifting on slide change */}
+                        <div className="hidden lg:flex flex-col justify-between h-[300px] xl:h-[330px]">
                             <div
                                 key={current}
                                 className="animate-fade"
@@ -53,11 +55,11 @@ const HomeHero = () => {
                                     {CAROUSEL_CONTENT[current].toast}
                                 </div>
 
-                                <h1 className="text-4xl lg:text-6xl font-bold font-poppins mt-1 lg:mt-2 min-h-30">
+                                <h1 className="text-3xl lg:text-5xl font-bold font-poppins mt-1 lg:mt-2 min-h-[100px]">
                                     {CAROUSEL_CONTENT[current].title}
                                 </h1>
 
-                                <div className="mt-1 lg:mt-2  min-h-24">
+                                <div className="mt-1 lg:mt-2 min-h-[80px] leading-relaxed">
                                     {CAROUSEL_CONTENT[current].content}
                                 </div>
                             </div>
@@ -76,7 +78,7 @@ const HomeHero = () => {
                       items-center 
                       justify-center 
                       gap-3
-                      bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                      bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]
                       hover:opacity-90
                     "
                                     >
@@ -88,14 +90,30 @@ const HomeHero = () => {
                             </div>
                         </div>
 
+                        {/* [ui-fix] set appropriate heights on mobile/tablet Swiper container to ensure navigation dots fit above fold and contents look grand */}
                         <div className="lg:hidden">
-                            <MobileSliderHome className="md:block lg:hidden">
+                            <MobileSliderHome className="block lg:hidden h-[390px] md:h-[480px]">
                                 {CAROUSEL_CONTENT.map((item, index) => (
                                     <SwiperSlide key={`${item.title}-${index}`}>
-                                        <div className="px-3">
-                                            <div className="flex flex-col gap-4">
+                                        <div className="relative h-full w-full overflow-hidden">
+                                            {/* Image: positioned top-right with slanted left edge using SVG clipPath */}
+                                            <div 
+                                                className="absolute top-0 right-0 w-[50%] h-[95%] overflow-hidden"
+                                                style={{ clipPath: "url(#hero-clip)" }}
+                                            >
+                                                <Image
+                                                    fill
+                                                    alt="Solar installation"
+                                                    src={item.image}
+                                                    sizes="50vw"
+                                                    className="object-cover"
+                                                    priority={index === 0}
+                                                />
+                                            </div>
+                                            {/* Text content: left 50% with full unclipped text */}
+                                            <div className="relative z-10 flex flex-col gap-2 pt-2 md:gap-4 md:pt-6 pr-[52%] pl-1">
                                                 <div
-                                                    className="p-2 text-xs w-fit rounded-lg font-medium"
+                                                    className="p-1 px-2 md:p-1.5 md:px-3 text-[10px] md:text-xs w-fit rounded-lg font-medium"
                                                     style={{
                                                         backgroundColor: item.toast_background_color,
                                                         color: item.toast_color,
@@ -103,63 +121,54 @@ const HomeHero = () => {
                                                 >
                                                     {item.toast}
                                                 </div>
-
-                                                <div className="min-h-26 flex items-start">
-                                                    <h1 className="text-3xl font-bold font-poppins leading-tight">
-                                                        {item.title}
-                                                    </h1>
-                                                </div>
-
-                                                <div className="min-h-30 leading-6">
+                                                <h1 className="text-lg xs:text-xl md:text-3.5xl font-bold font-poppins leading-tight">
+                                                    {item.title}
+                                                </h1>
+                                                <p className="text-[11px] xs:text-xs md:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
                                                     {item.content}
-                                                </div>
-
-                                                <Link href={item.href} className="flex gap-10 items-center">
-                                                    <Button
-                                                        className="
-                            transition-all
-                      text-white
-                      cursor-pointer
-                      text-[16px]
-                      font-medium
-                      flex 
-                      w-full
-                      py-7
-                      rounded-xl
-                      items-center 
-                      justify-center 
-                      gap-3
-                      bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
-                      hover:opacity-90
-                    "
-                                                    >
+                                                </p>
+                                                <Link href={item.href} className="w-fit mt-1">
+                                                    <Button className="transition-all text-white cursor-pointer text-[11px] xs:text-xs md:text-sm font-semibold flex py-2.5 px-4 md:py-3.5 md:px-6 rounded-xl items-center justify-center gap-2 bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
                                                         {item.buttonName}
-                                                        <SlantedArrow className='h-3 w-3 text-sm' />
+                                                        <SlantedArrow className="h-2.5 w-2.5 md:h-3.5 md:w-3.5" />
                                                     </Button>
                                                 </Link>
-
-                                                <div className="relative h-100 mt-10 w-full overflow-hidden rounded-4xl border-white">
-                                                    <Image
-                                                        fill
-                                                        alt="Residential solar installation"
-                                                        src={item.image}
-                                                        sizes="(min-width: 1024px) 50vw, 100vw"
-                                                        className="object-cover rounded-4xl"
-                                                    />
-                                                </div>
                                             </div>
                                         </div>
                                     </SwiperSlide>
                                 ))}
                             </MobileSliderHome>
+                            {/* "Trusted by" section — fixed below slider, doesn't change per slide */}
+                            <div className="px-1 mt-2">
+                                <div className="py-1 px-2 rounded-lg bg-[#048A0525] border border-[#048A0580] flex gap-2 items-center">
+                                    <GreenTick className="w-4 h-4" />
+                                    <p className="text-[#048A05] text-xs">Trusted by 100+ homeowners, businesses and partners.</p>
+                                </div>
+                                <div className="trusted-brands-marquee mt-3">
+                                    <div className="trusted-brands-track">
+                                        {[...TRUSTED_BRANDS, ...TRUSTED_BRANDS].map((brand, index) => (
+                                            <div
+                                                key={`mobile-${brand.alt}-${index}`}
+                                                className="trusted-brands-item px-1"
+                                                aria-hidden={index >= TRUSTED_BRANDS.length}
+                                            >
+                                                <div className={`border rounded-lg w-full py-2 flex justify-center items-center ${brand.cardClassName}`}>
+                                                    <Image alt={brand.alt} src={brand.src} height={80} width={80} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div>
-                        <div className="mt-10 py-1 px-2 rounded-lg bg-[#058a0525] border border-[#058A0580] flex gap-2 items-center">
+                        {/* Desktop trusted brands — hidden on mobile since mobile has its own above */}
+                        <div className="hidden lg:flex mt-10 py-1 px-2 rounded-lg bg-[#048A0525] border border-[#048A0580] gap-2 items-center">
                             <GreenTick className="w-4 h-4" />
-                            <p className="text-[#058A05] text-xs lg:text-sm">Trusted by 100+ homeowners businesses and partners.</p>
+                            <p className="text-[#048A05] text-xs lg:text-sm">Trusted by 100+ homeowners, businesses and partners.</p>
                         </div>
-                        <div className="trusted-brands-marquee mt-4">
+                        <div className="hidden lg:block trusted-brands-marquee mt-4">
                             <div className="trusted-brands-track">
                                 {[...TRUSTED_BRANDS, ...TRUSTED_BRANDS].map((brand, index) => (
                                     <div
@@ -179,7 +188,7 @@ const HomeHero = () => {
                 </div>
 
 
-                <div className="hidden lg:block relative h-140 w-full overflow-hidden rounded-4xl border-white ">
+                <div className="hidden lg:block relative h-[calc(100vh-10rem)] min-h-[460px] max-h-[580px] w-full overflow-hidden rounded-4xl border-white ">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={current}
@@ -218,7 +227,7 @@ const HomeHero = () => {
                             onClick={() =>
                                 setCurrent((prev) => (prev + 1) % CAROUSEL_CONTENT.length)
                             }
-                            className="h-12 w-12 cursor-pointer rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                            className="h-12 w-12 cursor-pointer rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]
     hover:opacity-90 text-white flex items-center justify-center shadow"
                         >
                             →
@@ -227,6 +236,20 @@ const HomeHero = () => {
                 </div>
 
             </div>
+            {/* SVG ClipPath for mobile hero shaped/slanted image */}
+            <svg className="absolute w-0 h-0" aria-hidden="true">
+                <defs>
+                    <clipPath id="hero-clip" clipPathUnits="objectBoundingBox">
+                        <path d="M 0.28 0 
+                                 C 0.24 0, 0.21 0.03, 0.20 0.08 
+                                 L 0.01 0.92 
+                                 C 0.00 0.97, 0 1, 0.06 1 
+                                 L 1 1 
+                                 L 1 0 
+                                 Z" />
+                    </clipPath>
+                </defs>
+            </svg>
         </div>
 
     )

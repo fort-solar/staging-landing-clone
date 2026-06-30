@@ -157,7 +157,7 @@ export default async function ProjectDetailPage({
 
               <Button
                 variant="outline"
-                className="mt-8 h-11 rounded-xl w-full lg:w-fit border-[#0000004D] bg-transparent px-6 text-[#111827] hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white"
+                className="mt-8 h-11 rounded-xl w-full lg:w-fit border-[#0000004D] bg-transparent px-6 text-[#111827] hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:text-white"
               >
                 Get Quote
               </Button>
@@ -211,7 +211,7 @@ export default async function ProjectDetailPage({
 
               <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
-                <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90">
+                <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
                   <Link href={STORE_PACKAGES_URL} className="w-full">
                     Get Package
                     <SlantedArrow className="h-3.5 w-3.5" />

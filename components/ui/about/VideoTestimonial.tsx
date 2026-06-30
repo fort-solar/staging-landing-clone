@@ -11,8 +11,8 @@ const VideoTestimonial = () => {
                     </p>
                     <p>Real stories. Real results. Watch how Fortsolar is transforming lives and powering success across the nation.</p>
                 </div>
-                <div className="mt-10 mb-20 grid grid-cols-1 lg:grid-cols-3 gap-14">
-                    <div className="relative min-h-100 rounded-xl overflow-hidden bg-[url('/video_testimony_image_one.png')] bg-cover bg-center">
+                <div className="mt-10 mb-20 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12">
+                    <div className="relative aspect-[9/16] w-full max-w-[320px] mx-auto rounded-2xl overflow-hidden bg-[url('/video_testimony_image_one.png')] bg-cover bg-center">
                         <div className='absolute z-10 inset-0 flex items-end justify-between p-6'>
                             <div className='text-white'>
                                 <p className='text-lg font-semibold'>Bidemi Fortune</p>
@@ -25,7 +25,7 @@ const VideoTestimonial = () => {
                         </div>
                         <div className="absolute inset-0 bg-linear-to-b from-[rgba(1,50,1,0)] to-[#024A02] z-0" />
                     </div>
-                    <div className="relative min-h-100 rounded-xl overflow-hidden bg-[url('/video_testimony_image_two.png')] bg-cover bg-center">
+                    <div className="relative aspect-[9/16] w-full max-w-[320px] mx-auto rounded-2xl overflow-hidden bg-[url('/video_testimony_image_two.png')] bg-cover bg-center">
                         <div className='absolute z-10 inset-0 flex items-end justify-between p-6'>
                             <div className='text-white'>
                                 <p className='text-lg font-semibold'>Werey Yo</p>
@@ -38,7 +38,7 @@ const VideoTestimonial = () => {
                         </div>
                         <div className="absolute inset-0 bg-linear-to-b from-[rgba(1,50,1,0)] to-[#024A02] z-0" />
                     </div>
-                    <div className="relative min-h-100 rounded-xl overflow-hidden bg-[url('/video_testimony_image_three.png')] bg-cover bg-center">
+                    <div className="relative aspect-[9/16] w-full max-w-[320px] mx-auto rounded-2xl overflow-hidden bg-[url('/video_testimony_image_three.png')] bg-cover bg-center">
                         <div className='absolute z-10 inset-0 flex items-end justify-between p-6'>
                             <div className='text-white'>
                                 <p className='text-lg font-semibold'>Rome Edith</p>

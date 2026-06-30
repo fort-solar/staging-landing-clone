@@ -17,7 +17,7 @@ export default function BlogListingClient({
     <>
       <section className="relative overflow-hidden bg-[#EBFAEB] px-4 py-16 lg:py-20">
         <div className="mx-auto max-w-5xl text-center">
-          <span className="inline-flex rounded-full border border-[#22A922] px-4 py-1 text-sm font-medium text-[#058A05]">
+          <span className="inline-flex rounded-full border border-[#22A922] px-4 py-1 text-sm font-medium text-[#048A05]">
             Our Blog
           </span>
           <h1 className="mt-8 text-2xl font-semibold leading-tight font-poppins text-[#333333] lg:text-5xl">

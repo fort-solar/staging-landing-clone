@@ -114,7 +114,7 @@ export default function Navbar() {
             />
           </div>
           <Link href="/energy-calculator">
-            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
+            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
           </Link>
 
         </div>
@@ -197,7 +197,7 @@ export default function Navbar() {
                 />
               </div>
               <Link href="/energy-calculator" onClick={() => setMenuOpen(false)}>
-                <Button className="w-full mt-4 cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]  hover:opacity-90 py-6"> Energy Calculator </Button>
+                <Button className="w-full mt-4 cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]  hover:opacity-90 py-6"> Energy Calculator </Button>
               </Link>
             </div>
           </div>

@@ -4,6 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-brand: #048A05;
+  --color-brand-dark: #036c04;
+  --color-brand-soft: #eafbea;
+  --color-brand-muted: #d4f2d4;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-fortsolartext: var(--fortsolar-text);
@@ -272,7 +276,7 @@
 }
 
 .blog-rich-content a {
-  color: #058a05;
+  color: #048A05;
   text-decoration: underline;
 }
 
@@ -304,6 +308,17 @@
 .hero-slider .swiper-slide-active {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+/* [ui-fix] absolute position hero swiper pagination so it is visible above the fold on mobile/tablet */
+.hero-slider .swiper-pagination {
+  position: absolute !important;
+  bottom: 16px !important;
+  left: 4px !important;
+  text-align: left !important;
+  margin-top: 0 !important;
+  width: auto !important;
+  z-index: 20 !important;
 }
 
 @keyframes trustedBrandsScroll {

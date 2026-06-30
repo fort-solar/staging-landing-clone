@@ -3,9 +3,10 @@
 import React from "react";
 import { Swiper } from "swiper/react";
 import "swiper/css";
+// [ui-fix] replaced Navigation module + custom arrow buttons with Pagination module (dot indicators) to match the mobile services slider style
+import "swiper/css/pagination";
 import { motion } from "framer-motion";
-import { Autoplay, Navigation } from "swiper/modules";
-import { usePathname } from "next/navigation";
+import { Autoplay, Pagination } from "swiper/modules";
 
 
 export const MobileSliderHome = ({
@@ -17,9 +18,8 @@ export const MobileSliderHome = ({
   extra?: boolean;
   className?: string;
 }) => {
-  const pathName = usePathname();
   return (
-    <div className={`md:hidden ${className ?? ""}`}>
+    <div className={`w-full ${className ?? ""}`}>
       {extra && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -28,11 +28,12 @@ export const MobileSliderHome = ({
         ></motion.div>
       )}
 
+      {/* [ui-fix] uses Pagination (clickable dots) instead of Navigation arrows so the desktop services slider shows the same dot indicators as the mobile version */}
       <Swiper
-        modules={[Autoplay, Navigation]}
+        modules={[Autoplay, Pagination]}
         slidesPerView={1}
         spaceBetween={0}
-        className="overflow-hidden hero-slider"
+        className="overflow-hidden hero-slider h-full w-full"
         speed={800}
         loop={true}
         autoplay={{
@@ -40,30 +41,10 @@ export const MobileSliderHome = ({
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
         }}
-        navigation={{
-          prevEl: ".hero-slider-prev",
-          nextEl: ".hero-slider-next",
-        }}
+        pagination={{ clickable: true }}
       >
         {children}
       </Swiper>
-
-      {pathName !== "/about" && (
-        <div className="flex gap-3 mt-5">
-          <button
-            className="hero-slider-prev h-12 w-12 rounded-xl bg-white flex items-center justify-center shadow"
-            aria-label="Previous slide"
-          >
-            ←
-          </button>
-          <button
-            className="hero-slider-next h-12 w-12 rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] text-white flex items-center justify-center shadow"
-            aria-label="Next slide"
-          >
-            →
-          </button>
-        </div>
-      )}
 
     </div>
   );

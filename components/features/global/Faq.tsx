@@ -38,7 +38,7 @@ const Faq = () => {
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-[4fr_8fr] gap-8 lg:gap-2">
                         <div className="order-2 lg:order-1  flex items-end">
-                            <div className="space-y-2 text-white lg:w-[80%] rounded-xl h-fit bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] p-4">
+                            <div className="space-y-2 text-white lg:w-[80%] rounded-xl h-fit bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] p-4">
                                 <p className="text-lg font-bold">
                                     Don&apos;t see what you&apos;re looking for?
                                 </p>
@@ -46,7 +46,7 @@ const Faq = () => {
                                     Reach out to our team directly and we&apos;ll get back to you.
                                 </p>
                                 <Link href={pathname === "/contact" ? "" : "/contact"} className="w-full lg:w-fit">
-                                    <Button className="w-full py-6 lg:w-fit rounded-xl bg-white text-[#058a05] hover:bg-white hover:opacity-90 cursor-pointer">
+                                    <Button className="w-full py-6 lg:w-fit rounded-xl bg-white text-[#048A05] hover:bg-white hover:opacity-90 cursor-pointer">
                                         Get in Touch
                                     </Button>
                                 </Link>

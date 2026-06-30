@@ -15,7 +15,7 @@ const HomeHow = () => {
         <div className="bg-[#B8C0CC1A]">
             <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-20 space-y-10  dark:bg-black sm:items-start">
                 <div className='flex flex-col lg:flex-row justify-center text-start gap-6 lg:gap-2 lg:justify-between w-full items-start mt-5'>
-                    <div className="text-3xl lg:text-5xl font-bold font-poppins mt-2">
+                    <div className="text-3xl md:text-4xl lg:text-5xl font-bold font-poppins mt-2">
                         How It Works
                     </div>
                     <div className='max-w-4xl mb-2 block lg:hidden'>

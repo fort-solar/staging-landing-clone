@@ -173,7 +173,7 @@ export default function GetQuoteDialog({
             <DialogTrigger asChild>
                 <Button
                     disabled={disabled || isSubmitting}
-                    className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-6 py-6 hover:opacity-90 disabled:opacity-50"
+                    className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-6 py-6 hover:opacity-90 disabled:opacity-50"
                 >
                     Get Quote →
                 </Button>
@@ -353,7 +353,7 @@ export default function GetQuoteDialog({
                             type="button"
                             onClick={handleSubmit}
                             disabled={!canSubmit}
-                            className="rounded-xl px-6 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90 disabled:opacity-50"
+                            className="rounded-xl px-6 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90 disabled:opacity-50"
                         >
                             {isSubmitting ? "Submitting..." : "Get My Final Quote →"}
                         </Button>
@@ -371,9 +371,13 @@ function Field({
     label: string;
     children: React.ReactNode;
 }) {
+    const isOptional = label.includes("(Optional)");
     return (
         <div className="space-y-1.5">
-            <p className="text-xs font-medium text-[#344054]">{label}</p>
+            <p className="text-xs font-medium text-[#344054]">
+                {label}
+                {!isOptional && <span className="text-[#F35B5B] ml-1">*</span>}
+            </p>
             {children}
         </div>
     );
