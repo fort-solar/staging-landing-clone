@@ -75,7 +75,7 @@ const ContactMap = () => {
         </GoogleMap>
         <Button
           asChild
-          className="absolute bottom-4 right-4 z-10 rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-4 py-5 text-white shadow-lg hover:opacity-90"
+          className="absolute bottom-4 left-4 z-10 rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-4 py-5 text-white shadow-lg hover:opacity-90"
         >
           <a
             href={directionsUrl}
