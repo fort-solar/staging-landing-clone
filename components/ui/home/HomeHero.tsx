@@ -11,6 +11,7 @@ import { brand_6, trusted_brands_2, trusted_brands_3, trusted_brands_4, trusted_
 import { MobileSliderHome } from "../mobileSliderHome";
 import { SwiperSlide } from "swiper/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { IMAGE_ASPECT_RATIOS } from "@/lib/aspect-ratios";
 
 const TRUSTED_BRANDS = [
     { src: brand_6, alt: "Trusted brand logo 1", cardClassName: "bg-white" },
@@ -23,6 +24,7 @@ const TRUSTED_BRANDS = [
 const HomeHero = () => {
     const [current, setCurrent] = useState(0);
     const heroRef = useRef<HTMLDivElement | null>(null);
+    const heroImageAspect = IMAGE_ASPECT_RATIOS.homeHeroSliderImage;
 
 
     useEffect(() => {
@@ -188,7 +190,7 @@ const HomeHero = () => {
                 </div>
 
 
-                <div className="hidden lg:block relative h-[calc(100vh-10rem)] min-h-[460px] max-h-[580px] w-full overflow-hidden rounded-4xl border-white ">
+                <div className={`hidden lg:block relative ${heroImageAspect.desktop.className} min-h-[460px] max-h-[580px] w-full overflow-hidden rounded-4xl border-white `}>
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={current}

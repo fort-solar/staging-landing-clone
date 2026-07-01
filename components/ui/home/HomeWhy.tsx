@@ -6,6 +6,9 @@ import { WarrantyAuditIcon } from '@/components/features/icons/WarrantyAuditIcon
 import Image from 'next/image';
 import { PlayIcon } from '@/components/features/icons/PlayIcon';
 import { Result } from '@/components/features/images';
+import { VIDEO_ASPECT_RATIOS } from '@/lib/aspect-ratios';
+import { ABOUT_US_VIDEO } from '@/lib/video-content';
+import { HoverVideoPreview, VideoDialog } from '@/components/ui/video/VideoDialog';
 
 
 const HomeWhy = () => {
@@ -20,15 +23,29 @@ const HomeWhy = () => {
                     </div>
 
                     <div className='grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 py-10 items-center'>
-                        <div className="relative bg-[#DAF1FB] rounded-2xl p-3 md:p-6 aspect-video w-full">
-                            <div className="relative rounded-2xl h-full bg-[url('/video_background.jpg')] bg-cover bg-center">
+                        <div className={`relative bg-[#DAF1FB] rounded-2xl p-3 md:p-6 ${VIDEO_ASPECT_RATIOS.whyChooseUsVideoThumbnail.mobile.className} w-full`}>
+                            <HoverVideoPreview
+                                video={ABOUT_US_VIDEO}
+                                className="relative h-full rounded-2xl"
+                                sizes="(max-width: 1024px) 100vw, 50vw"
+                            >
                                 <div className="rounded-2xl absolute inset-0 bg-linear-to-b from-[#168ABD80] via-[#168ABD80] to-[#168ABD80] z-0" />
-                            </div>
-                            <div className="absolute inset-0 z-10 flex items-center justify-center">
-                                <button className="bg-transparent cursor-pointer rounded-full p-4 shadow-lg transition">
-                                    <PlayIcon className="w-14 h-14 text-[#168ABD]" />
-                                </button>
-                            </div>
+                                <div className="absolute inset-0 z-10 flex items-center justify-center">
+                                    <VideoDialog
+                                        video={ABOUT_US_VIDEO}
+                                        iframeAspectRatioClassName={VIDEO_ASPECT_RATIOS.videoIframe.mobile.className}
+                                        trigger={
+                                            <button
+                                                type="button"
+                                                aria-label="Play Fortsolar about us video"
+                                                className="bg-transparent cursor-pointer rounded-full p-4 shadow-lg transition"
+                                            >
+                                                <PlayIcon className="w-14 h-14 text-[#168ABD]" />
+                                            </button>
+                                        }
+                                    />
+                                </div>
+                            </HoverVideoPreview>
                             <div className='absolute -bottom-8 right-0 md:-bottom-12 lg:-right-14 p-3 md:p-5 bg-[#DAF1FB] rounded-2xl scale-75 md:scale-100 origin-bottom-right'>
                                 <Image src={Result} alt="Solar performance chart result" height={150} width={150} />
                             </div>

@@ -12,9 +12,11 @@ import { servicesSlides } from '@/components/features/constants';
 import Link from 'next/link';
 import { MobileSlider } from '../mobileSlider';
 import { MobileSliderHome } from '../mobileSliderHome';
+import { IMAGE_ASPECT_RATIOS } from '@/lib/aspect-ratios';
 
 
 const AboutServices = () => {
+    const serviceImageAspect = IMAGE_ASPECT_RATIOS.aboutServicesSliderImage;
 
 
 
@@ -36,7 +38,7 @@ const AboutServices = () => {
                                 <SwiperSlide key={i}>
                                     <div className="w-full rounded-[18px] overflow-hidden">
                                         <div
-                                            className="relative w-full min-h-[30vh] bg-cover bg-top"
+                                            className={`relative w-full ${serviceImageAspect.mobile.className} bg-cover bg-top`}
                                             style={{ backgroundImage: `url(${image})` }}
                                         />
                                         <div className={`flex flex-col h-full min-h-[40vh] justify-center text-start gap-5 px-5 py-8`} style={{ backgroundColor: s.leftColor }}>
@@ -103,7 +105,7 @@ const AboutServices = () => {
                                             </Link>
 
                                         </div>
-                                        <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[50vh]  bg-cover bg-top`} style={{ backgroundImage: `url(${image})` }}>
+                                        <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[50vh] ${serviceImageAspect.tablet.className} ${serviceImageAspect.desktop.className} bg-cover bg-top`} style={{ backgroundImage: `url(${image})` }}>
                                         </div>
 
                                     </div>
@@ -118,5 +120,4 @@ const AboutServices = () => {
 }
 
 export default AboutServices
-
 

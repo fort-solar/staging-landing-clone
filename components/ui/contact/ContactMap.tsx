@@ -3,6 +3,8 @@
 import React, { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api"
+import { MapPinned } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const offices = {
   lagos: {
@@ -30,6 +32,7 @@ const ContactMap = () => {
   })
 
   const office = offices[activeOffice]
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${office.position.lat},${office.position.lng}&travelmode=driving`
 
   if (!isLoaded) {
     return (
@@ -58,7 +61,7 @@ const ContactMap = () => {
           ))}
         </TabsList>
       </Tabs>
-      <div className="overflow-hidden h-full">
+      <div className="relative overflow-hidden h-full rounded-2xl">
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           zoom={14}
@@ -70,12 +73,25 @@ const ContactMap = () => {
         >
           <Marker position={office.position} />
         </GoogleMap>
+        <Button
+          asChild
+          className="absolute bottom-4 right-4 z-10 rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-4 py-5 text-white shadow-lg hover:opacity-90"
+        >
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open directions to ${office.label} in Google Maps`}
+          >
+            <MapPinned className="size-4" />
+            Open in Map
+          </a>
+        </Button>
       </div>
     </div>
   )
 }
 
 export default ContactMap
-
 
 
