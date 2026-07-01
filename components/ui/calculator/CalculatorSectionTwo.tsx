@@ -618,7 +618,7 @@ const CalculatorSectionTwo = () => {
       <div className="flex justify-end">
         <Button
           onClick={() => setRows((currentRows) => addCalculatorRow(currentRows))}
-          className="w-full md:w-fit text-[10px] md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
+          className="w-full md:w-fit text-[10px] md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
         >
           Add Item
         </Button>

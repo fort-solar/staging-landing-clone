@@ -120,28 +120,28 @@ const Footer = () => {
           <p className='text-[10px] lg:text-xs'>Fort Energy Solar Ltd (RC: 1997466) © 2022 - {new Date().getFullYear()}. All rights reserved.</p>
            <div className='flex gap-7 items-center'>
                     <Link href="https://facebook.com/fortsolar.ng/">
-                        <FaFacebook className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                        <FaFacebook className="w-5 h-5 hover:text-[#048A05] cursor-pointer" />
                     </Link>
 
                     <Link href="https://x.com/Fortsolar">
-                        <TwitterIcon className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                        <TwitterIcon className="w-5 h-5 hover:text-[#048A05] cursor-pointer" />
                     </Link>
 
                     <Link href="https://www.linkedin.com/company/fortsolar/">
-                        <FaLinkedin className='w-5 h-5 hover:text-[#058A05] cursor-pointer' />
+                        <FaLinkedin className='w-5 h-5 hover:text-[#048A05] cursor-pointer' />
                     </Link>
 
                     {/* #3B3B3B */}
                     <Link href="https://www.tiktok.com/@fortsolar">
-                        <FaTiktok className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                        <FaTiktok className="w-5 h-5 hover:text-[#048A05] cursor-pointer" />
                     </Link>
 
                     <Link href="https://youtube.com/@Fortsolar">
-                        <FaYoutube className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                        <FaYoutube className="w-5 h-5 hover:text-[#048A05] cursor-pointer" />
                     </Link>
 
                     <Link href="https://www.instagram.com/fortsolar.ng/">
-                        <FaInstagram className="w-5 h-5 hover:text-[#058A05] cursor-pointer" />
+                        <FaInstagram className="w-5 h-5 hover:text-[#048A05] cursor-pointer" />
                     </Link>
 
 

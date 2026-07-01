@@ -10,9 +10,9 @@ const CardThree = () => {
                 <div className='space-y-4 flex flex-col justify-between h-full'>
                     <div className='flex justify-between items-center'>
                         <div className='flex gap-1'>
-                            <div className='w-2 h-2 rounded-full bg-[#058A05]'></div>
-                            <div className='w-2 h-2 rounded-full bg-[#058A05]'></div>
-                            <div className='w-2 h-2 rounded-full bg-[#058A05]'></div>
+                            <div className='w-2 h-2 rounded-full bg-[#048A05]'></div>
+                            <div className='w-2 h-2 rounded-full bg-[#048A05]'></div>
+                            <div className='w-2 h-2 rounded-full bg-[#048A05]'></div>
                             <div className='w-2 h-2 rounded-full bg-[#EBEBEB]'></div>
                         </div>
                         <div>
@@ -20,7 +20,7 @@ const CardThree = () => {
                         </div>
                     </div>
                     <div>
-                        <p className="pb-2 font-semibold text-lg transition-all duration-300 text-[#3B3B3B] group-hover:text-[#058A05]">
+                        <p className="pb-2 font-semibold text-lg transition-all duration-300 text-[#3B3B3B] group-hover:text-[#048A05]">
                             Book Installation
                         </p>
 

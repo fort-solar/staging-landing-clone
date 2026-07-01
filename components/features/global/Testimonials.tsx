@@ -56,7 +56,7 @@ const Testimonials = () => {
         <div>
             <div className=" min-h-[60%] w-full max-w-6xl mx-auto px-4  space-y-10  dark:bg-black sm:items-start">
                 <div className="mt-6 flex flex-col items-center text-center gap-3">
-                    <p className="text-3xl lg:text-5xl font-bold font-poppins">
+                    <p className="text-3xl md:text-4xl lg:text-5xl font-bold font-poppins">
                         What Our Customers Say
                     </p>
                     <p>Affordable and efficient solutions tailored to your needs.</p>
@@ -64,7 +64,7 @@ const Testimonials = () => {
 
                 <div className="relative h-105 overflow-hidden">
                     <motion.div
-                        className="grid grid-cols-1 lg:grid-cols-3 gap-10"
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
                         animate={{ y: ["0%", "-50%"] }}
                         transition={{
                             duration: 45,

@@ -27,10 +27,11 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
         handleSubmit,
         formState: { errors, isValid },
         reset,
-        trigger
+        // [ui-fix] removed 'trigger' – no longer needed after removing the mount-time trigger() useEffect
     } = useForm<ContactFormData>({
         resolver: zodResolver(ContactFormSchema),
-        mode: "onChange"
+        // [ui-fix] changed from 'onChange' to 'onBlur' so validation errors only show after a field is touched and left
+        mode: "onBlur"
     });
 
     const onSubmit = async (data: ContactFormData) => {
@@ -87,13 +88,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
     };
 
 
-    React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            trigger();
-        }, 100);
-
-        return () => clearTimeout(timeout);
-    }, [trigger]);
+    // [ui-fix] removed the mount-time trigger() useEffect that was causing 'First name is required' to show on page load
 
 
 
@@ -116,7 +111,8 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
 
             <div className="grid grid-cols-2 gap-5">
                 <div>
-                    <label className="label">First name</label>
+                    {/* [ui-fix] added required asterisk (*) as standard UX indicator for mandatory fields */}
+                    <label className="label">First name <span className="text-red-500">*</span></label>
                     <input
                         {...register("firstName")}
                         className="input"
@@ -137,7 +133,8 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                 </div>
 
                 <div>
-                    <label className="label">Email</label>
+                    {/* [ui-fix] added required asterisk (*) as standard UX indicator for mandatory fields */}
+                    <label className="label">Email <span className="text-red-500">*</span></label>
                     <input
                         {...register("email")}
                         type="email"
@@ -147,7 +144,8 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                 </div>
 
                 <div>
-                    <label className="label">Phone number</label>
+                    {/* [ui-fix] added required asterisk (*) as standard UX indicator for mandatory fields */}
+                    <label className="label">Phone number <span className="text-red-500">*</span></label>
                     <input
                         {...register("phone")}
                         className="input"
@@ -156,7 +154,8 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                 </div>
 
                 <div className="col-span-2">
-                    <label className="label">Subject</label>
+                    {/* [ui-fix] added required asterisk (*) as standard UX indicator for mandatory fields */}
+                    <label className="label">Subject <span className="text-red-500">*</span></label>
                     <input
                         {...register("subject")}
                         className="input"
@@ -165,7 +164,8 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                 </div>
 
                 <div className="col-span-2">
-                    <label className="label">Message</label>
+                    {/* [ui-fix] added required asterisk (*) as standard UX indicator for mandatory fields */}
+                    <label className="label">Message <span className="text-red-500">*</span></label>
                     <textarea
                         {...register("message")}
                         rows={5}
@@ -197,7 +197,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
                 <button
                     disabled={!isValid || !agreed || isSubmitting}
                     className="py-3 rounded-2xl col-span-2 cursor-pointer text-white
-          bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+          bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]
           hover:opacity-90 disabled:opacity-50"
                 >
                     {isSubmitting ? "Sending..." : "Send Message"}

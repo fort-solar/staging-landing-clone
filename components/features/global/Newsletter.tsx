@@ -53,8 +53,8 @@ const Newsletter = () => {
     <div>
       <Toaster />
       <div className={`relative w-full max-w-6xl mx-auto px-4 ${pathname === "/energy-calculator" ? "lg:pt-0" : "lg:pt-20"}  dark:bg-black sm:items-start`}>
-        <div className='grid grid-cols-1 lg:grid-cols-[3fr_6fr_3fr]'>
-          <div className="hidden lg:block bg-[url('/engineer_updated.png')] bg-cover bg-center min-h-87.5">
+        <div className='grid grid-cols-1 lg:grid-cols-[3.2fr_5.6fr_3.2fr] gap-6 lg:gap-10 items-center'>
+          <div className="hidden lg:block bg-[url('/engineer_updated.png')] bg-cover bg-center min-h-87.5 rounded-3xl lg:rounded-[40px] shadow-lg border border-neutral-100 dark:border-neutral-900 transition-transform duration-500 hover:scale-103">
 
           </div>
           <div className='lg:py-10 h-full lg:min-h-87.5'>
@@ -66,7 +66,7 @@ const Newsletter = () => {
             </div>
           </div>
 
-          <div className="hidden lg:block bg-[url('/solar_panel_in_sun.png')] bg-cover bg-center min-h-87.5">
+          <div className="hidden lg:block bg-[url('/solar_panel_in_sun.png')] bg-cover bg-center min-h-87.5 rounded-3xl lg:rounded-[40px] shadow-lg border border-neutral-100 dark:border-neutral-900 transition-transform duration-500 hover:scale-103">
 
           </div>
         </div>
@@ -89,7 +89,7 @@ const Newsletter = () => {
                     disabled={isSubmitting}
                     className='py-4 px-6 rounded-lg cursor-pointer
     text-white
-    bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:text-white
+    bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:text-white
     hover:opacity-80 disabled:opacity-50'
                   >
                     {isSubmitting ? "Subscribing..." : "Subscribe →"}
@@ -109,29 +109,29 @@ const Newsletter = () => {
               <Phone className='text-[#55565B] w-5 h-5' />
               <div className='flex flex-col gap-1'>
                 <p className='text-[#55565B] text-sm'>Tel</p>
-                <Link href={"tel:+2347066524793"} className='text-[#058A05] text-sm'>+234 706 652 4793</Link>
-                <Link href={"tel:+2342013309043"} className='text-[#058A05] text-sm'>+234 201 330 9043</Link>
+                <Link href={"tel:+2347066524793"} className='text-[#048A05] text-sm'>+234 706 652 4793</Link>
+                <Link href={"tel:+2342013309043"} className='text-[#048A05] text-sm'>+234 201 330 9043</Link>
               </div>
             </div>
             <div className='flex flex-col items-start gap-2'>
               <Mail className='text-[#55565B] w-5 h-5' />
               <div>
                 <p className='text-[#55565B] text-sm'>Mail</p>
-                <Link href="mailto:enquiry@fortsolar.ng" className='text-[#058A05] text-sm'>enquiry@fortsolar.ng</Link>
+                <Link href="mailto:enquiry@fortsolar.ng" className='text-[#048A05] text-sm'>enquiry@fortsolar.ng</Link>
               </div>
             </div>
             <div className='flex flex-col items-start gap-2'>
               <MapPin className='text-[#55565B] w-5 h-5' />
               <div>
                 <p className='text-[#55565B] text-sm'>Lagos Address</p>
-                <p className='text-[#058A05] text-sm'>Suite D1 038 HFP East Line Complex Abraham Adesanya</p>
+                <p className='text-[#048A05] text-sm'>Suite D1 038 HFP East Line Complex Abraham Adesanya</p>
               </div>
             </div>
             <div className='flex flex-wrap items-start gap-2'>
               <MapPin className='text-[#55565B] w-5 h-5' />
               <div>
                 <p className='text-[#55565B] text-sm'>Uyo Address</p>
-                <p className='text-[#058A05] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
+                <p className='text-[#048A05] text-sm'>183 Ikot Ekpene Road, Uyo, Akwa Ibom State</p>
               </div>
             </div>
           </div>

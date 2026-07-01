@@ -11,7 +11,7 @@ const HomeBrands = () => {
                     <p className='font-poppins'>Our Partner Brands</p>
                 </div>
                 <div className="relative space-y-5 lg:space-y-8 bg-[url('/center_gradient.png')] bg-contain bg-center py-10">
-                    <div className="flex items-center gap-10 lg:gap-20 justify-center">
+                    <div className="flex flex-wrap items-center gap-6 md:gap-10 lg:gap-20 justify-center">
                         <div className="w-fit">
                             <Image alt="brand logo 6" src={trusted_brands_1} height={100} width={100} />
                         </div>
@@ -26,7 +26,7 @@ const HomeBrands = () => {
                             <Image alt="brand logo 4" src={brand_4} height={100} width={100} />
                         </div>
                     </div>
-                    <div className="flex items-center gap-8 lg:gap-18 justify-center">
+                    <div className="flex flex-wrap items-center gap-6 md:gap-8 lg:gap-18 justify-center">
                         <div className="w-fit">
                             <Image alt="brand logo 5" src={brand_5} height={100} width={100} />
                         </div>

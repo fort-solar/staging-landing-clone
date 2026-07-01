@@ -25,7 +25,7 @@ export default function BlogCard({ post, className }: BlogCardProps) {
         </div>
 
         <div className="space-y-3 px-1 pb-2 pt-5">
-          <p className="text-sm font-semibold text-[#058A05]">{post.category}</p>
+          <p className="text-sm font-semibold text-[#048A05]">{post.category}</p>
 
           <div className="flex items-start justify-between gap-3">
             <h3 className="line-clamp-2 text-xl font-semibold leading-tight font-poppins text-[#111827]">

@@ -33,7 +33,7 @@ export default function NotFound() {
           <div className="mt-3">
             <Link
               href="/"
-              className="inline-flex mt-8 items-center justify-center rounded-full bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] px-8 py-3 text-white font-semibold hover:bg-green-700 transition"
+              className="inline-flex mt-8 items-center justify-center rounded-full bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-8 py-3 text-white font-semibold hover:bg-green-700 transition"
             >
               Go Back Home
             </Link>

@@ -10,7 +10,7 @@ import {
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
-const BRAND_GREEN = "#058A05";
+const BRAND_GREEN = "#048A05";
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
@@ -30,13 +30,13 @@ const Toaster = ({ ...props }: ToasterProps) => {
       icons={{
         success: (
           <CircleCheckIcon
-            className="size-6 text-[#058A05]"
+            className="size-6 text-[#048A05]"
             color={BRAND_GREEN}
           />
         ),
         loading: (
           <Loader2Icon
-            className="size-6 animate-spin #058A05"
+            className="size-6 animate-spin #048A05"
             color={BRAND_GREEN}
           />
         ),

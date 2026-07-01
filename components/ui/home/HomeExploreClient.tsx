@@ -77,7 +77,7 @@ function ExploreProductCard({ product }: { product: LandingStoreProduct }) {
             {product.title}
           </p>
           <p className="line-clamp-2 text-xs text-white">{product.description}</p>
-          <span className="block w-full rounded-xl border border-white py-3 text-center text-sm text-white transition-all group-hover:border-[#2CB22C] group-hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]">
+          <span className="block w-full rounded-xl border border-white py-3 text-center text-sm text-white transition-all group-hover:border-[#2CB22C] group-hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]">
             View Details
           </span>
         </div>
@@ -97,14 +97,14 @@ function ExplorePackageCard({ item }: { item: LandingStorePackage }) {
   return (
     <Link
       href={storePackageHref(item.id)}
-      className="group flex h-full flex-col justify-between gap-3 overflow-hidden rounded-lg border border-transparent bg-white px-4 pt-4 shadow-sm transition-all duration-300 hover:border-[#058A05] hover:bg-[#EBFAEB]"
+      className="group flex h-full flex-col justify-between gap-3 overflow-hidden rounded-lg border border-transparent bg-white px-4 pt-4 shadow-sm transition-all duration-300 hover:border-[#048A05] hover:bg-[#EBFAEB]"
     >
       <div className="flex w-full items-start justify-between gap-3">
         <p className="min-h-14 line-clamp-2 text-lg font-semibold text-[#3B3B3B]">
           {item.title}
         </p>
-        <div className="rounded-lg border border-[#CCCCCC] p-3 transition-all duration-300 group-hover:border-[#058A05] group-hover:bg-[#058A05]">
-          <SlantedArrow className="text-[#058A05] transition-colors duration-300 group-hover:text-white" />
+        <div className="rounded-lg border border-[#CCCCCC] p-3 transition-all duration-300 group-hover:border-[#048A05] group-hover:bg-[#048A05]">
+          <SlantedArrow className="text-[#048A05] transition-colors duration-300 group-hover:text-white" />
         </div>
       </div>
 
@@ -230,7 +230,7 @@ export default function HomeExploreClient({
 
         <div className="flex w-full items-center justify-center py-4">
           <Link href={activeLink} className="w-full lg:w-fit">
-            <Button className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] py-6 text-sm text-white transition-all hover:opacity-90 lg:w-fit">
+            <Button className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] py-6 text-sm text-white transition-all hover:opacity-90 lg:w-fit">
               {activeSection === "Packages" ? "See All Packages" : "See All Products"}
               <span aria-hidden>→</span>
             </Button>

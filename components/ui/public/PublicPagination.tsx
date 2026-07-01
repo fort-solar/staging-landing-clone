@@ -25,7 +25,7 @@ function PaginationButton({
     "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-xl border px-4 text-sm font-medium transition " +
     (disabled
       ? "cursor-not-allowed border-[#D0D5DD] bg-[#F2F4F7] text-[#98A2B3]"
-      : "border-[#D0D5DD] bg-white text-[#344054] hover:border-[#2CB22C] hover:text-[#058A05]");
+      : "border-[#D0D5DD] bg-white text-[#344054] hover:border-[#2CB22C] hover:text-[#048A05]");
 
   if (disabled) {
     return (

@@ -28,7 +28,7 @@ const AboutServices = () => {
                     <p>Explore the range of solar solutions we offer from quality products to expert installations and reliable support designed to keep your home or business powered efficiently.</p>
                 </div>
 
-                <div className="lg:hidden">
+                <div className="md:hidden">
                     <MobileSlider extra={true}>
                         {servicesSlides.map((s, i) => {
                             const image = s.rightBackgroundImage;
@@ -56,7 +56,7 @@ const AboutServices = () => {
                                    items-center 
                                    justify-center 
                                    gap-3
-                                   bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                                   bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]
                                    hover:opacity-90
                                  "
                                                 >
@@ -72,8 +72,8 @@ const AboutServices = () => {
                     </MobileSlider>
                 </div>
 
-                <div className="hidden lg:block lg:mt-14">
-                    <MobileSliderHome className="hidden lg:block">
+                <div className="hidden md:block md:mt-14">
+                    <MobileSliderHome className="hidden md:block">
                         {servicesSlides.map((s, i) => {
                             const image = s.rightBackgroundImage;
                             return (
@@ -94,7 +94,7 @@ const AboutServices = () => {
                                                                      items-center 
                                                                      justify-center 
                                                                      gap-3
-                                                                     bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)]
+                                                                     bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]
                                                                      hover:opacity-90
                                                                    "
                                                 >

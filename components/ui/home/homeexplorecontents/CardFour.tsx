@@ -12,7 +12,7 @@ const CardFour = () => {
   group flex flex-col gap-3 justify-between overflow-hidden shadow-sm rounded-lg pt-4 px-4
   bg-white border border-transparent cursor-pointer
   transition-all duration-300
-  hover:bg-[#EBFAEB] hover:border-[#058A05]
+  hover:bg-[#EBFAEB] hover:border-[#048A05]
 ">
             <div className="flex w-full justify-between items-center">
                 <p className="font-semibold text-lg">
@@ -21,12 +21,12 @@ const CardFour = () => {
                 <div className="
       border p-3 rounded-lg border-[#CCCCCC]
       transition-all duration-300
-      group-hover:bg-[#058A05]
-      group-hover:border-[#058A05]
+      group-hover:bg-[#048A05]
+      group-hover:border-[#048A05]
     ">
                     <SlantedArrow
                         className="
-          text-[#058A05]
+          text-[#048A05]
           transition-colors duration-300
           group-hover:text-white
         "

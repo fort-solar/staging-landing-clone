@@ -49,7 +49,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             </p>
             <Button
               asChild
-              className="mt-8 h-12 rounded-2xl px-8 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#058A05_110.95%)] hover:opacity-90"
+              className="mt-8 h-12 rounded-2xl px-8 text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90"
             >
               <Link href={STORE_PACKAGES_URL} className="gap-3 font-medium w-full lg:w-fit">
                 View Available Packages
