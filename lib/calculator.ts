@@ -68,7 +68,7 @@ export function createCalculatorRow(): CalculatorRow {
 }
 
 export function isPositiveCalculatorNumber(value: NumericField) {
-  return typeof value === "number" && Number.isFinite(value) && value >= 1;
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
 export function parseCalculatorNumericInput(value: string): NumericField {

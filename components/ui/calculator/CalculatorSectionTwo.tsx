@@ -137,10 +137,10 @@ const CalculatorSectionTwo = () => {
         row.quantity >= 1 &&
         typeof row.watts === "number" &&
         Number.isFinite(row.watts) &&
-        row.watts >= 1 &&
+        row.watts > 0 &&
         typeof row.hours === "number" &&
         Number.isFinite(row.hours) &&
-        row.hours >= 1,
+        row.hours > 0,
     );
   }, [rows]);
 
