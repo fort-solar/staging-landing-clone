@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Trash2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Trash2, Zap } from "lucide-react";
 import PdfIcon from "@/components/features/icons/PdfIcon";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -13,12 +13,12 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { submitForm } from "@/actions/SubmitForm";
 import { BASE_URL } from "@/components/features/constants";
+import Link from "next/link";
 import {
   addCalculatorRow,
   buildCalculatorQuotePayload,
   buildCalculatorTotals,
   buildSelectedDevices,
-  CALCULATOR_CONSTANTS,
   createCalculatorRow,
   deriveCalculatorRecommendation,
   parseCalculatorNumericInput,
@@ -28,17 +28,39 @@ import {
   type Totals,
 } from "@/lib/calculator";
 
-type Appliance = {
-  id: string;
+type CatalogItem = {
+  key: string;
   name: string;
   category: string;
-  power_rating_watts: number;
-  daily_hours_usage: number;
+  watts: number;
+  surgeMultiplier: number;
+  inductive: boolean;
+  search_aliases: string[];
 };
 
-type AppliancesResponse = {
+type CatalogSearchResponse = {
   success: boolean;
-  data: Appliance[];
+  data: { matches?: CatalogItem[]; presets?: CatalogItem[] };
+};
+
+type SuggestedPackage = {
+  id: string;
+  name: string;
+  slug: string | null;
+  system_size_kw: number | null;
+  price: number;
+  description: string | null;
+  what_it_powers: string[];
+  battery_included: boolean;
+  number_of_panels: number | null;
+  estimated_savings_monthly: number | null;
+  is_active?: boolean;
+  matchScore: number; // % difference from calculated system size
+};
+
+type PackagesApiResponse = {
+  success: boolean;
+  data: { packages?: SuggestedPackage[] } | SuggestedPackage[];
 };
 
 type CalculatorResponse = {
@@ -57,12 +79,16 @@ const CalculatorSectionTwo = () => {
   const [rows, setRows] = useState<Row[]>([createCalculatorRow()]);
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
   const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
-  const [activeSuggestions, setActiveSuggestions] = useState<Appliance[]>([]);
+  const [activeSuggestions, setActiveSuggestions] = useState<CatalogItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const [calculation, setCalculation] = useState<CalculatorResponse["data"] | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [quoteSubmitting, setQuoteSubmitting] = useState(false);
+
+  // Package suggestion state
+  const [suggestedPackages, setSuggestedPackages] = useState<SuggestedPackage[]>([]);
+  const [isFetchingPackages, setIsFetchingPackages] = useState(false);
 
   const summaryRef = useRef<HTMLDivElement>(null);
   const activeInputRef = useRef<HTMLInputElement | null>(null);
@@ -122,6 +148,7 @@ const CalculatorSectionTwo = () => {
     return buildSelectedDevices(completeRows);
   }, [completeRows]);
 
+  // Live search: uses the correct /calculator/catalog?q= endpoint
   useEffect(() => {
     if (!activeRowId) {
       setActiveSuggestions([]);
@@ -141,11 +168,9 @@ const CalculatorSectionTwo = () => {
     const timeout = setTimeout(async () => {
       try {
         setIsSearching(true);
+        // Fixed: was calling /appliances, now correctly calls /calculator/catalog
         const response = await fetch(
-          buildApiUrl("appliances", {
-            q: query,
-            limit: "8",
-          }),
+          buildApiUrl("calculator/catalog", { q: query }),
           {
             method: "GET",
             signal: controller.signal,
@@ -158,8 +183,12 @@ const CalculatorSectionTwo = () => {
           return;
         }
 
-        const data = (await response.json()) as AppliancesResponse;
-        setActiveSuggestions(data.success ? data.data : []);
+        const data = (await response.json()) as CatalogSearchResponse;
+        if (data.success) {
+          setActiveSuggestions(data.data.matches ?? data.data.presets ?? []);
+        } else {
+          setActiveSuggestions([]);
+        }
       } catch {
         if (!controller.signal.aborted) {
           setActiveSuggestions([]);
@@ -181,6 +210,7 @@ const CalculatorSectionTwo = () => {
     if (!completeRows.length) {
       setCalculation(null);
       setIsCalculating(false);
+      setSuggestedPackages([]);
       return;
     }
 
@@ -190,9 +220,7 @@ const CalculatorSectionTwo = () => {
         setIsCalculating(true);
         const response = await fetch(buildApiUrl("calculator/calculate"), {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             appliances: completeRows.map(row => ({
               name: row.item,
@@ -200,7 +228,6 @@ const CalculatorSectionTwo = () => {
               wattage: Number(row.watts),
               hoursPerDay: Number(row.hours),
             })),
-            constants: CALCULATOR_CONSTANTS,
           }),
           signal: controller.signal,
         });
@@ -228,6 +255,58 @@ const CalculatorSectionTwo = () => {
       controller.abort();
     };
   }, [completeRows]);
+
+  // Fetch package suggestions whenever calculation updates
+  useEffect(() => {
+    if (!calculation) {
+      setSuggestedPackages([]);
+      return;
+    }
+
+    const calculatedKw = calculation.recommendedPvKwp ?? calculation.totalLoadKw ?? 0;
+    if (calculatedKw <= 0) {
+      setSuggestedPackages([]);
+      return;
+    }
+
+    const controller = new AbortController();
+    const fetchPackages = async () => {
+      try {
+        setIsFetchingPackages(true);
+        const response = await fetch(buildApiUrl("products/packages"), {
+          signal: controller.signal,
+          cache: "no-store",
+        });
+        if (!response.ok) return;
+
+        const json = (await response.json()) as PackagesApiResponse;
+        const raw: SuggestedPackage[] = Array.isArray(json.data)
+          ? json.data
+          : (json.data as { packages?: SuggestedPackage[] }).packages ?? [];
+
+        // Filter to packages within ±10% of calculated PV size and sort by closeness
+        const TOLERANCE = 0.10;
+        const matched = raw
+          .filter(pkg => pkg.system_size_kw != null && pkg.is_active !== false)
+          .map(pkg => ({
+            ...pkg,
+            matchScore: Math.abs((pkg.system_size_kw! - calculatedKw) / calculatedKw),
+          }))
+          .filter(pkg => pkg.matchScore <= TOLERANCE)
+          .sort((a, b) => a.matchScore - b.matchScore)
+          .slice(0, 3);
+
+        setSuggestedPackages(matched);
+      } catch {
+        if (!controller.signal.aborted) setSuggestedPackages([]);
+      } finally {
+        if (!controller.signal.aborted) setIsFetchingPackages(false);
+      }
+    };
+
+    fetchPackages();
+    return () => controller.abort();
+  }, [calculation]);
 
   const totals: Totals = buildCalculatorTotals(calculation);
   const recommendation = deriveCalculatorRecommendation(calculation, totals);
@@ -589,7 +668,7 @@ const CalculatorSectionTwo = () => {
           >
             {activeSuggestions.map(device => (
               <button
-                key={device.id}
+                key={device.key}
                 type="button"
                 className="w-full text-left text-[10px] md:text-sm px-3 py-2 hover:bg-gray-50"
                 onMouseDown={event => {
@@ -597,8 +676,8 @@ const CalculatorSectionTwo = () => {
                   if (!activeRowId) return;
                   updateRow(activeRowId, {
                     item: device.name,
-                    watts: Math.max(1, Number(device.power_rating_watts) || 1),
-                    hours: Math.min(24, Math.max(1, Number(device.daily_hours_usage) || 1)),
+                    watts: Math.max(1, Number(device.watts) || 1),
+                    hours: 1,
                     quantity: 1,
                   });
                   setActiveRowId(null);
@@ -607,7 +686,8 @@ const CalculatorSectionTwo = () => {
               >
                 <span className="font-medium">{device.name}</span>
                 <span className="text-[#667085]">
-                  {` - ${device.power_rating_watts}W - ${Number(device.daily_hours_usage).toFixed(1)}hrs`}
+                  {` — ${device.watts}W`}
+                  {device.category ? ` · ${device.category}` : ""}
                 </span>
               </button>
             ))}
@@ -623,13 +703,12 @@ const CalculatorSectionTwo = () => {
           Add Item
         </Button>
       </div>
-
       <div ref={summaryRef} className="bg-white my-20 max-w-2xl">
         <p className="text-lg font-semibold mb-4 text-[#101828]">
           Your Custom System Recommendation
         </p>
         <p className="pb-10">
-          Here’s a quick breakdown of your total energy usage based on your inputs. This shows your daily demand and the solar setup that fits perfectly.
+          Here&apos;s a quick breakdown of your total energy usage based on your inputs. This shows your daily demand and the solar setup that fits perfectly.
         </p>
 
         {isSearching && (
@@ -649,6 +728,97 @@ const CalculatorSectionTwo = () => {
             <tr><td className="p-3">Estimated PV Size</td><td>{Number(pvKwp).toFixed(2)} kWp</td></tr>
           </tbody>
         </table>
+
+        {/* ── Package Suggestions ──────────────────────────────── */}
+        {hasCalculated && (
+          <div className="mt-10">
+            {isFetchingPackages && (
+              <p className="text-xs text-[#667085] mb-3">Checking for matching packages...</p>
+            )}
+
+            {!isFetchingPackages && suggestedPackages.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Zap className="h-4 w-4 text-[#2CB22C]" />
+                  <p className="font-semibold text-[#101828] text-base">
+                    We have packages that match your energy needs!
+                  </p>
+                </div>
+                <p className="text-sm text-[#667085] mb-5">
+                  Based on your calculated system size of <strong>{Number(pvKwp).toFixed(1)} kWp</strong>, here are our closest available packages — all with free installation included.
+                </p>
+
+                <div className="flex flex-col gap-4">
+                  {suggestedPackages.map((pkg, i) => (
+                    <div
+                      key={pkg.id}
+                      className={`relative border rounded-xl p-4 sm:p-5 bg-white shadow-sm transition-shadow hover:shadow-md ${
+                        i === 0 ? "border-[#2CB22C] ring-1 ring-[#2CB22C]/30" : "border-gray-200"
+                      }`}
+                    >
+                      {i === 0 && (
+                        <span className="absolute top-3 right-3 bg-[#2CB22C] text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                          Best Match
+                        </span>
+                      )}
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                        <div className="flex-1">
+                          <p className="font-semibold text-[#101828] text-sm mb-1">{pkg.name}</p>
+                          {pkg.system_size_kw && (
+                            <p className="text-xs text-[#667085] mb-2">
+                              {pkg.system_size_kw} kWp system
+                              {pkg.battery_included && " · Battery included"}
+                              {pkg.number_of_panels ? ` · ${pkg.number_of_panels} panels` : ""}
+                            </p>
+                          )}
+                          {pkg.what_it_powers && pkg.what_it_powers.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {(pkg.what_it_powers as string[]).slice(0, 4).map((item: string) => (
+                                <span key={item} className="inline-flex items-center gap-1 text-[10px] bg-[#F0FFF0] text-[#2CB22C] px-2 py-0.5 rounded-full">
+                                  <CheckCircle2 className="h-2.5 w-2.5" /> {item}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
+                          <p className="text-base font-bold text-[#101828]">
+                            ₦{pkg.price.toLocaleString()}
+                          </p>
+                          {pkg.estimated_savings_monthly && (
+                            <p className="text-[10px] text-[#2CB22C]">
+                              ~₦{pkg.estimated_savings_monthly.toLocaleString()} saved/mo
+                            </p>
+                          )}
+                          <Link
+                            href={`/store/packages/${pkg.slug ?? pkg.id}`}
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+                          >
+                            View Package <ArrowRight className="h-3.5 w-3.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-xs text-[#667085] mt-4">
+                  Packages shown are within ±10% of your calculated system size. All packages include free professional installation.
+                </p>
+              </div>
+            )}
+
+            {!isFetchingPackages && suggestedPackages.length === 0 && hasCalculated && (
+              <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center">
+                <p className="text-sm font-medium text-[#101828] mb-1">No exact package match found</p>
+                <p className="text-xs text-[#667085] mb-4">
+                  We don&apos;t have a pre-built package that matches your exact needs right now — but we can build one for you. Submit a quote and our team will get back to you within 24 hours.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+        {/* ── End Package Suggestions ─────────────────────────── */}
 
         <div className="mt-8">
           <p className="italic">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
