@@ -64,7 +64,7 @@ type Props = {
         email: string;
         phone: string;
         location: string;
-        address: string;
+        address?: string;
         installationType: string;
         buildingType?: string;
         termsAccepted: boolean;
