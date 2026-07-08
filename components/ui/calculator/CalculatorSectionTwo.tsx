@@ -52,10 +52,12 @@ type SuggestedPackage = {
   description: string | null;
   what_it_powers: string[];
   battery_included: boolean;
+  battery_capacity_kwh?: number | null;
+  inverter_size_kw?: number | null;
   number_of_panels: number | null;
   estimated_savings_monthly: number | null;
   is_active?: boolean;
-  matchScore: number; // % difference from calculated system size
+  matchScore: number; // calculated combined difference
 };
 
 type PackagesApiResponse = {
@@ -284,15 +286,38 @@ const CalculatorSectionTwo = () => {
           ? json.data
           : (json.data as { packages?: SuggestedPackage[] }).packages ?? [];
 
-        // Filter to packages within ±10% of calculated PV size and sort by closeness
+        // Filter to packages within ±10% of calculated PV size, Inverter size, and Battery size
         const TOLERANCE = 0.10;
+        
+        // We calculate combined difference for sorting, but strictly filter each component.
+        // If the calculator says we don't need a battery (0), we shouldn't strictly require 0 if the package has one?
+        // Wait, the prompt says "if there is a package that matches all 3 by either a +/- 10% margin room".
+        // Let's implement strict +/- 10% bounds for all 3 components.
+        const reqPv = calculatedKw;
+        const reqInv = Number(inverterKw);
+        const reqBat = Number(batteryKwh);
+        
         const matched = raw
           .filter(pkg => pkg.system_size_kw != null && pkg.is_active !== false)
-          .map(pkg => ({
-            ...pkg,
-            matchScore: Math.abs((pkg.system_size_kw! - calculatedKw) / calculatedKw),
-          }))
-          .filter(pkg => pkg.matchScore <= TOLERANCE)
+          .map(pkg => {
+            const pkgPv = pkg.system_size_kw!;
+            const pkgInv = pkg.inverter_size_kw ?? 0;
+            const pkgBat = pkg.battery_capacity_kwh ?? 0;
+            
+            // Calculate absolute % difference. For 0 bounds, avoid division by zero.
+            const diffPv = Math.abs((pkgPv - reqPv) / reqPv);
+            const diffInv = reqInv > 0 ? Math.abs((pkgInv - reqInv) / reqInv) : (pkgInv > 0 ? 1 : 0);
+            const diffBat = reqBat > 0 ? Math.abs((pkgBat - reqBat) / reqBat) : (pkgBat > 0 ? 1 : 0);
+            
+            return {
+              ...pkg,
+              diffPv,
+              diffInv,
+              diffBat,
+              matchScore: diffPv + diffInv + diffBat,
+            };
+          })
+          .filter(pkg => pkg.diffPv <= TOLERANCE && pkg.diffInv <= TOLERANCE && pkg.diffBat <= TOLERANCE)
           .sort((a, b) => a.matchScore - b.matchScore)
           .slice(0, 3);
 
@@ -360,10 +385,11 @@ const CalculatorSectionTwo = () => {
     email: string;
     phone: string;
     location: string;
-    address: string;
+    address?: string;
     installationType: string;
-    buildingType: string;
+    buildingType?: string;
     termsAccepted: boolean;
+    createAccount: boolean;
     note?: string;
     summary?: {
       peakKW: number;
@@ -406,8 +432,19 @@ const CalculatorSectionTwo = () => {
           error: err => (err instanceof Error ? err.message : "Unable to submit quote right now"),
         }
       );
+
+      if (payload.createAccount) {
+        setTimeout(() => {
+          const params = new URLSearchParams();
+          params.append('email', payload.email);
+          params.append('name', payload.name);
+          window.location.href = `http://localhost:3323/signup?${params.toString()}`;
+        }, 3000);
+      }
     } finally {
-      setQuoteSubmitting(false);
+      if (!payload.createAccount) {
+        setQuoteSubmitting(false);
+      }
     }
   };
 
@@ -811,8 +848,9 @@ const CalculatorSectionTwo = () => {
             {!isFetchingPackages && suggestedPackages.length === 0 && hasCalculated && (
               <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center">
                 <p className="text-sm font-medium text-[#101828] mb-1">No exact package match found</p>
-                <p className="text-xs text-[#667085] mb-4">
-                  We don&apos;t have a pre-built package that matches your exact needs right now — but we can build one for you. Submit a quote and our team will get back to you within 24 hours.
+                <p className="text-[#333333] text-xs text-center">
+                  We don&apos;t have a pre-built package that matches your exact needs right now — but we can build one for you.
+                  Request a custom quote and our team will get back to you within 24 hours.
                 </p>
               </div>
             )}

@@ -65,8 +65,9 @@ type Props = {
         location: string;
         address: string;
         installationType: string;
-        buildingType: string;
+        buildingType?: string;
         termsAccepted: boolean;
+        createAccount: boolean;
         note?: string;
         summary: {
             peakKW: number;
@@ -95,6 +96,7 @@ export default function GetQuoteDialog({
     const [buildingType, setBuildingType] = useState("");
     const [note, setNote] = useState("");
     const [termsAccepted, setTermsAccepted] = useState(false);
+    const [createAccount, setCreateAccount] = useState(false);
 
     const [summaryOpen, setSummaryOpen] = useState(true);
 
@@ -116,9 +118,7 @@ export default function GetQuoteDialog({
         email.trim().length > 3 &&
         phone.trim().length > 6 &&
         location &&
-        address.trim().length > 3 &&
         installationType &&
-        buildingType &&
         termsAccepted;
 
     const resetForm = () => {
@@ -131,6 +131,7 @@ export default function GetQuoteDialog({
         setBuildingType("");
         setNote("");
         setTermsAccepted(false);
+        setCreateAccount(false);
         setSummaryOpen(true);
     };
 
@@ -141,10 +142,11 @@ export default function GetQuoteDialog({
                 email,
                 phone,
                 location,
-                address,
+                address: address.trim() || undefined,
                 installationType,
-                buildingType,
+                buildingType: buildingType.trim() || undefined,
                 termsAccepted,
+                createAccount,
                 note: note.trim() || undefined,
                 summary: {
                     peakKW: Number(totals.peakKW.toFixed(2)),
@@ -283,7 +285,7 @@ export default function GetQuoteDialog({
                             </Select>
                         </Field>
 
-                        <Field label="Installation Address">
+                        <Field label="Installation Address (Optional)">
                             <input
                                 value={address}
                                 onChange={e => setAddress(e.target.value)}
@@ -307,7 +309,7 @@ export default function GetQuoteDialog({
                             </Select>
                         </Field>
 
-                        <Field label="Building Type">
+                        <Field label="Building Type (Optional)">
                             <Select value={buildingType} onValueChange={setBuildingType}>
                                 <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
                                     <SelectValue placeholder="Bungalow" />
@@ -333,13 +335,22 @@ export default function GetQuoteDialog({
                         </Field>
                     </div>
 
-                    {/* Terms */}
-                    <GradientCheckbox
-                        checked={termsAccepted}
-                        onChange={e => setTermsAccepted(e.target.checked)}
-                        label="I agree to the terms of service to receive a call/email regarding my quote."
-                        labelClassName="text-sm text-[#475467]"
-                    />
+                    {/* Terms & Account Creation */}
+                    <div className="space-y-4">
+                        <GradientCheckbox
+                            checked={termsAccepted}
+                            onChange={e => setTermsAccepted(e.target.checked)}
+                            label="I agree to the terms of service to receive a call/email regarding my quote."
+                            labelClassName="text-sm text-[#475467]"
+                        />
+
+                        <GradientCheckbox
+                            checked={createAccount}
+                            onChange={e => setCreateAccount(e.target.checked)}
+                            label="Create an account with these details"
+                            labelClassName="text-sm text-[#475467] font-medium"
+                        />
+                    </div>
 
                     {/* Footer buttons */}
                     <div className="flex items-center justify-between gap-3 pt-2">

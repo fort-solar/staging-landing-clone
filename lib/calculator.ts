@@ -159,9 +159,9 @@ export function buildCalculatorQuotePayload(input: {
   email: string;
   phone: string;
   location: string;
-  address: string;
+  address?: string;
   installationType: string;
-  buildingType: string;
+  buildingType?: string;
   termsAccepted: boolean;
   note?: string;
 }) {
@@ -175,7 +175,7 @@ export function buildCalculatorQuotePayload(input: {
     email: input.email,
     phone: input.phone,
     location: input.location,
-    address: input.address,
+    address: input.address ?? "Not provided",
     appliances: input.selectedDevices.map((appliance) => ({
       name: appliance.item,
       wattage: appliance.watts,
@@ -189,7 +189,7 @@ export function buildCalculatorQuotePayload(input: {
     monthlyBill: 0,
     quantity,
     projectType: input.installationType,
-    buildingType: input.buildingType,
+    buildingType: input.buildingType ?? "Not provided",
     additionalInfo: input.note ?? "",
     agreeToTerms: input.termsAccepted,
     requestInstallation: true,
