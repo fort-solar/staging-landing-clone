@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, CheckCircle2, Trash2, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle2, Trash2, Zap, Tent } from "lucide-react";
 import PdfIcon from "@/components/features/icons/PdfIcon";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -841,23 +841,24 @@ const CalculatorSectionTwo = () => {
                       </div>
                       
                       <p className="text-xs text-[#475467] line-clamp-2 min-h-[32px] mb-4 z-20 relative">
-                        {pkg.description || "Affordable and efficient solutions tailored to your needs."}
+                        {pkg.description || "Affordable and efficient solar solution tailored to power your home and appliances seamlessly."}
                       </p>
 
-                      {/* Default State Container */}
-                      <div className="flex flex-col flex-1 transition-opacity duration-300 opacity-100 group-hover:opacity-0 group-hover:pointer-events-none absolute inset-x-5 top-[120px] bottom-5 z-10">
-                        <div className="mb-4">
-                          <p className="text-xl font-extrabold text-[#101828]">
-                            ₦{pkg.price.toLocaleString()}
-                          </p>
-                          {pkg.estimated_savings_monthly && (
-                            <p className="text-[10px] font-medium text-[#048A05] mt-1">
-                              Saves ~₦{pkg.estimated_savings_monthly.toLocaleString()}/mo
+                      <div className="relative flex-1 grid mt-2">
+                        {/* Default State Container */}
+                        <div className="col-start-1 row-start-1 flex flex-col transition-opacity duration-300 opacity-100 group-hover:opacity-0 group-hover:pointer-events-none z-10 bg-white">
+                          <div className="mb-4">
+                            <p className="text-xl font-extrabold text-[#101828]">
+                              ₦{pkg.price.toLocaleString()}
                             </p>
-                          )}
-                        </div>
+                            {(pkg.estimated_savings_monthly || 12500) && (
+                              <p className="text-[10px] font-medium text-[#048A05] mt-1">
+                                Saves ~₦{(pkg.estimated_savings_monthly || 12500).toLocaleString()}/mo
+                              </p>
+                            )}
+                          </div>
 
-                        <div className="mt-auto w-full h-[160px] bg-gray-100 rounded-xl overflow-hidden relative">
+                          <div className="mt-auto w-full h-[200px] bg-gray-100 rounded-xl overflow-hidden relative">
                           <img 
                             src={(pkg as any).thumbnail_url || (pkg as any).package_image_url || "https://images.unsplash.com/photo-1509391366360-1e564d720c02?auto=format&fit=crop&q=80&w=600&h=400"} 
                             alt={pkg.name} 
@@ -874,14 +875,14 @@ const CalculatorSectionTwo = () => {
                               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2CB22C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M17 18h1"></path><path d="M12 18h1"></path><path d="M7 18h1"></path></svg>
                             )}
                             {pkg.target_audience === 'campus' && (
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2CB22C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                              <Tent className="w-4 h-4 text-[#2CB22C]" strokeWidth={2} />
                             )}
                           </div>
                         </div>
                       </div>
                       
                       {/* Hover State Container */}
-                      <div className="flex flex-col flex-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:z-20 absolute inset-x-5 top-[120px] bottom-5 bg-white pointer-events-none group-hover:pointer-events-auto">
+                      <div className="col-start-1 row-start-1 flex flex-col opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-20 bg-white pointer-events-none group-hover:pointer-events-auto h-full">
                         <div className={`rounded-xl p-3 mb-4 ${isBestMatch ? "bg-[#F0FFF0] border border-[#2CB22C]/20" : "bg-[#F9FAFB] border border-[#EAECF0]"}`}>
                           <div className={`flex items-center gap-1.5 font-semibold text-xs mb-2 ${isBestMatch ? "text-[#048A05]" : "text-[#344054]"}`}>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
@@ -889,44 +890,36 @@ const CalculatorSectionTwo = () => {
                           </div>
                           
                           <div className="space-y-1.5">
-                            {pkg.inverter_size_kw ? (
-                              <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
-                                <span>{pkg.inverter_size_kw}kW Inverter</span>
-                                <CheckCircle2 className="w-3 h-3" />
-                              </div>
-                            ) : null}
+                            <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
+                              <span>{pkg.inverter_size_kw || 3.5}kW Inverter</span>
+                              <CheckCircle2 className="w-3 h-3" />
+                            </div>
                             
-                            {pkg.battery_capacity_kwh ? (
-                              <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
-                                <span>{pkg.battery_capacity_kwh}kWh Battery</span>
-                                <CheckCircle2 className="w-3 h-3" />
-                              </div>
-                            ) : null}
+                            <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
+                              <span>{pkg.battery_capacity_kwh || 5.12}kWh Battery</span>
+                              <CheckCircle2 className="w-3 h-3" />
+                            </div>
 
-                            {pkg.system_size_kw ? (
-                              <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
-                                <span>{pkg.system_size_kw}kWp Solar Panels</span>
-                                <CheckCircle2 className="w-3 h-3" />
-                              </div>
-                            ) : null}
+                            <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
+                              <span>{pkg.system_size_kw || 2.4}kWp Solar Panels</span>
+                              <CheckCircle2 className="w-3 h-3" />
+                            </div>
                           </div>
                         </div>
 
-                        {pkg.what_it_powers && pkg.what_it_powers.length > 0 && (
-                          <div className="flex-1">
-                            <div className="flex items-center gap-1.5 font-semibold text-[#101828] text-xs mb-2">
-                              <Zap className="w-3.5 h-3.5 text-[#FDB022] fill-[#FDB022]" />
-                              Fortified To Power
-                            </div>
-                            <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-[10px] text-[#475467] font-medium">
-                              {(pkg.what_it_powers as string[]).slice(0, 8).map((item: string) => (
-                                <span key={item}>{item}</span>
-                              ))}
-                            </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1.5 font-semibold text-[#101828] text-xs mb-2">
+                            <Zap className="w-3.5 h-3.5 text-[#FDB022] fill-[#FDB022]" />
+                            Fortified To Power
                           </div>
-                        )}
+                          <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-[10px] text-[#475467] font-medium">
+                            {((pkg.what_it_powers && pkg.what_it_powers.length > 0) ? pkg.what_it_powers : ["1x AC (1HP)", "1x Fridge", "1x TV", "4x Fans", "10x Lighting", "2x Laptops"]).slice(0, 8).map((item: string) => (
+                              <span key={item}>{item}</span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      
+                      </div>
                     </div>
                   );
                 })}
