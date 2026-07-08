@@ -176,7 +176,7 @@ export default function GetQuoteDialog({
             <DialogTrigger asChild>
                 <Button
                     disabled={disabled || isSubmitting}
-                    className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-6 py-6 hover:opacity-90 disabled:opacity-50"
+                    className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-6 py-6 rounded-xl hover:opacity-90 disabled:opacity-50 w-full sm:w-auto text-base font-semibold"
                 >
                     Get Quote →
                 </Button>
