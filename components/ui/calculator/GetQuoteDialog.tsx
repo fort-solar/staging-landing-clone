@@ -28,6 +28,7 @@ const LOCATION_OPTIONS = [
 ];
 
 const INSTALLATION_TYPE_OPTIONS = [
+    { label: "Residential", value: "residential" },
     { label: "Commercial", value: "commercial" },
     { label: "Industrial", value: "industrial" },
 ];
