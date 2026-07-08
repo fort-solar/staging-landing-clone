@@ -766,169 +766,169 @@ const CalculatorSectionTwo = () => {
           </tbody>
         </table>
 
-        {/* ── Package Suggestions ──────────────────────────────── */}
-        {hasCalculated && (
-          <div className="mt-10">
-            {isFetchingPackages && (
-              <p className="text-xs text-[#667085] mb-3">Checking for matching packages...</p>
-            )}
-
-            {!isFetchingPackages && suggestedPackages.length > 0 && hasCalculated && (
-              <div className="mt-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                
-                <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                  <GetQuoteDialog
-                    totals={totals}
-                    selectedDevices={selectedDevices}
-                    disabled={!completeRows.length || !hasCalculated}
-                    isSubmitting={quoteSubmitting}
-                    onSubmit={submitQuote}
-                  />
-                  <Button disabled={!hasCalculated} variant="outline" onClick={downloadPdf} className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300">
-                    <PdfIcon /> Download Summary & Save
-                  </Button>
-                </div>
-
-                <div className="mb-8">
-                  <h2 className="text-[28px] md:text-[36px] font-bold text-[#101828] leading-tight mb-3">
-                    Your Perfect Solar Package
-                  </h2>
-                  <p className="text-[#475467] text-base md:text-lg max-w-3xl">
-                    We&apos;ve matched your energy needs with the best-fit solar Package complete with panels, inverter, batteries, and free installation. You can adjust or upgrade anytime.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {suggestedPackages.map((pkg, i) => {
-                    const isBestMatch = i === 0;
-                    
-                    return (
-                      <div
-                        key={pkg.id}
-                        className={`relative rounded-[24px] p-6 transition-all duration-300 hover:shadow-lg flex flex-col ${
-                          isBestMatch 
-                            ? "bg-white border-2 border-[#12B76A] shadow-md shadow-[#12B76A]/10" 
-                            : "bg-white border border-gray-200"
-                        }`}
-                      >
-                        {isBestMatch && (
-                          <div className="absolute -top-3 left-6 bg-[#12B76A] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                            Best Match
-                          </div>
-                        )}
-                        
-                        <div className="flex items-start justify-between gap-3 mb-2 pt-2">
-                          <h3 className="text-xl font-bold text-[#101828] leading-tight">
-                            {pkg.name}
-                          </h3>
-                          <Link
-                            href={`/store/packages/${pkg.slug ?? pkg.id}`}
-                            className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
-                              isBestMatch ? "bg-[#12B76A] text-white hover:bg-[#039855]" : "bg-[#F2F4F7] text-[#101828] hover:bg-gray-200"
-                            }`}
-                          >
-                            <ArrowRight className="w-5 h-5 -rotate-45" />
-                          </Link>
-                        </div>
-                        
-                        <p className="text-sm text-[#475467] min-h-[40px] mb-4">
-                          {pkg.description || "Affordable and efficient solutions tailored to your needs."}
-                        </p>
-
-                        <div className="mb-6">
-                          <p className="text-2xl font-extrabold text-[#101828]">
-                            ₦{pkg.price.toLocaleString()}
-                          </p>
-                          {pkg.estimated_savings_monthly && (
-                            <p className="text-xs font-medium text-[#027A48] mt-1">
-                              Saves ~₦{pkg.estimated_savings_monthly.toLocaleString()}/mo
-                            </p>
-                          )}
-                        </div>
-
-                        <div className={`rounded-xl p-4 mb-6 ${isBestMatch ? "bg-[#F6FEF9] border border-[#D1FADF]" : "bg-[#F9FAFB] border border-[#EAECF0]"}`}>
-                          <div className={`flex items-center gap-2 font-semibold text-sm mb-3 ${isBestMatch ? "text-[#027A48]" : "text-[#344054]"}`}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                            Package Components
-                          </div>
-                          
-                          <div className="space-y-2">
-                            {pkg.inverter_size_kw ? (
-                              <div className={`flex items-center justify-between text-xs font-medium ${isBestMatch ? "text-[#027A48]" : "text-[#475467]"}`}>
-                                <span>{pkg.inverter_size_kw}kW Inverter</span>
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                              </div>
-                            ) : null}
-                            
-                            {pkg.battery_capacity_kwh ? (
-                              <div className={`flex items-center justify-between text-xs font-medium ${isBestMatch ? "text-[#027A48]" : "text-[#475467]"}`}>
-                                <span>{pkg.battery_capacity_kwh}kWh Battery</span>
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                              </div>
-                            ) : null}
-
-                            {pkg.system_size_kw ? (
-                              <div className={`flex items-center justify-between text-xs font-medium ${isBestMatch ? "text-[#027A48]" : "text-[#475467]"}`}>
-                                <span>{pkg.system_size_kw}kWp Solar Panels</span>
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                              </div>
-                            ) : null}
-                          </div>
-                        </div>
-
-                        {pkg.what_it_powers && pkg.what_it_powers.length > 0 && (
-                          <div className="mb-6 flex-1">
-                            <div className="flex items-center gap-2 font-semibold text-[#101828] text-sm mb-3">
-                              <Zap className="w-4 h-4 text-[#FDB022] fill-[#FDB022]" />
-                              Fortified To Power
-                            </div>
-                            <div className="grid grid-cols-2 gap-y-2 gap-x-2 text-xs text-[#475467] font-medium">
-                              {(pkg.what_it_powers as string[]).slice(0, 8).map((item: string) => (
-                                <span key={item}>{item}</span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="mt-auto pt-2">
-                          {/* We use standard image fallback if thumbnail is missing */}
-                          <div className="w-full h-[180px] bg-gray-100 rounded-xl overflow-hidden relative">
-                            {/* In real usage we'd use next/image with pkg.thumbnail_url or pkg.package_image_url */}
-                            <img 
-                              src={(pkg as any).thumbnail_url || (pkg as any).package_image_url || "https://images.unsplash.com/photo-1509391366360-1e564d720c02?auto=format&fit=crop&q=80&w=600&h=400"} 
-                              alt={pkg.name} 
-                              className="w-full h-full object-cover"
-                            />
-                            <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm p-1.5 rounded-lg shadow-sm">
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12B76A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                            </div>
-                          </div>
-                        </div>
-                        
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {!isFetchingPackages && suggestedPackages.length === 0 && hasCalculated && (
-              <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center">
-                <p className="text-sm font-medium text-[#101828] mb-1">No exact package match found</p>
-                <p className="text-[#333333] text-xs text-center">
-                  We don&apos;t have a pre-built package that matches your exact needs right now — but we can build one for you.
-                  Request a custom quote and our team will get back to you within 24 hours.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-        {/* ── End Package Suggestions ─────────────────────────── */}
-
         <div className="mt-8">
           <p className="italic text-[#667085] text-sm">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
         </div>
       </div>
+
+      {/* ── Package Suggestions ──────────────────────────────── */}
+      {hasCalculated && (
+        <div className="mt-12 w-full">
+          {isFetchingPackages && (
+            <p className="text-xs text-[#667085] mb-3">Checking for matching packages...</p>
+          )}
+
+          {!isFetchingPackages && suggestedPackages.length > 0 && hasCalculated && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+              
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <GetQuoteDialog
+                  totals={totals}
+                  selectedDevices={selectedDevices}
+                  disabled={!completeRows.length || !hasCalculated}
+                  isSubmitting={quoteSubmitting}
+                  onSubmit={submitQuote}
+                />
+                <Button disabled={!hasCalculated} variant="outline" onClick={downloadPdf} className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300">
+                  <PdfIcon /> Download Summary & Save
+                </Button>
+              </div>
+
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-2">
+                  <Zap className="h-6 w-6 text-[#2CB22C] fill-[#2CB22C]" />
+                  <h2 className="text-[24px] md:text-[32px] font-bold text-[#101828] leading-tight">
+                    We have packages that match your energy needs!
+                  </h2>
+                </div>
+                <p className="text-[#475467] text-base md:text-lg max-w-3xl">
+                  Based on your calculated system size of <strong>{Number(pvKwp).toFixed(1)} kWp</strong>, here are our closest available packages — all with free installation included.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {suggestedPackages.map((pkg, i) => {
+                  const isBestMatch = i === 0;
+                  
+                  return (
+                    <div
+                      key={pkg.id}
+                      className={`relative rounded-[24px] p-6 transition-all duration-300 hover:shadow-lg flex flex-col ${
+                        isBestMatch 
+                          ? "bg-white border-2 border-[#2CB22C] shadow-md shadow-[#2CB22C]/10" 
+                          : "bg-white border border-gray-200"
+                      }`}
+                    >
+                      {isBestMatch && (
+                        <div className="absolute -top-3 left-6 bg-[#2CB22C] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                          Best Match
+                        </div>
+                      )}
+                      
+                      <div className="flex items-start justify-between gap-3 mb-2 pt-2">
+                        <h3 className="text-xl font-bold text-[#101828] leading-tight">
+                          {pkg.name}
+                        </h3>
+                        <Link
+                          href={`/store/packages/${pkg.slug ?? pkg.id}`}
+                          className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${
+                            isBestMatch ? "bg-[#2CB22C] text-white hover:bg-[#048A05]" : "bg-[#F2F4F7] text-[#101828] hover:bg-gray-200"
+                          }`}
+                        >
+                          <ArrowRight className="w-5 h-5 -rotate-45" />
+                        </Link>
+                      </div>
+                      
+                      <p className="text-sm text-[#475467] min-h-[40px] mb-4">
+                        {pkg.description || "Affordable and efficient solutions tailored to your needs."}
+                      </p>
+
+                      <div className="mb-6">
+                        <p className="text-2xl font-extrabold text-[#101828]">
+                          ₦{pkg.price.toLocaleString()}
+                        </p>
+                        {pkg.estimated_savings_monthly && (
+                          <p className="text-xs font-medium text-[#048A05] mt-1">
+                            Saves ~₦{pkg.estimated_savings_monthly.toLocaleString()}/mo
+                          </p>
+                        )}
+                      </div>
+
+                      <div className={`rounded-xl p-4 mb-6 ${isBestMatch ? "bg-[#F0FFF0] border border-[#2CB22C]/20" : "bg-[#F9FAFB] border border-[#EAECF0]"}`}>
+                        <div className={`flex items-center gap-2 font-semibold text-sm mb-3 ${isBestMatch ? "text-[#048A05]" : "text-[#344054]"}`}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                          Package Components
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {pkg.inverter_size_kw ? (
+                            <div className={`flex items-center justify-between text-xs font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
+                              <span>{pkg.inverter_size_kw}kW Inverter</span>
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                            </div>
+                          ) : null}
+                          
+                          {pkg.battery_capacity_kwh ? (
+                            <div className={`flex items-center justify-between text-xs font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
+                              <span>{pkg.battery_capacity_kwh}kWh Battery</span>
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                            </div>
+                          ) : null}
+
+                          {pkg.system_size_kw ? (
+                            <div className={`flex items-center justify-between text-xs font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
+                              <span>{pkg.system_size_kw}kWp Solar Panels</span>
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+
+                      {pkg.what_it_powers && pkg.what_it_powers.length > 0 && (
+                        <div className="mb-6 flex-1">
+                          <div className="flex items-center gap-2 font-semibold text-[#101828] text-sm mb-3">
+                            <Zap className="w-4 h-4 text-[#FDB022] fill-[#FDB022]" />
+                            Fortified To Power
+                          </div>
+                          <div className="grid grid-cols-2 gap-y-2 gap-x-2 text-xs text-[#475467] font-medium">
+                            {(pkg.what_it_powers as string[]).slice(0, 8).map((item: string) => (
+                              <span key={item}>{item}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="mt-auto pt-2">
+                        <div className="w-full h-[180px] bg-gray-100 rounded-xl overflow-hidden relative">
+                          <img 
+                            src={(pkg as any).thumbnail_url || (pkg as any).package_image_url || "https://images.unsplash.com/photo-1509391366360-1e564d720c02?auto=format&fit=crop&q=80&w=600&h=400"} 
+                            alt={pkg.name} 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm p-1.5 rounded-lg shadow-sm">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2CB22C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {!isFetchingPackages && suggestedPackages.length === 0 && hasCalculated && (
+            <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center mt-8">
+              <p className="text-sm font-medium text-[#101828] mb-1">No exact package match found</p>
+              <p className="text-[#333333] text-xs text-center">
+                We don&apos;t have a pre-built package that matches your exact needs right now — but we can build one for you.
+                Request a custom quote and our team will get back to you within 24 hours.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 };
