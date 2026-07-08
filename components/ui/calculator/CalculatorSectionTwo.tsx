@@ -92,6 +92,7 @@ const CalculatorSectionTwo = () => {
   // Package suggestion state
   const [suggestedPackages, setSuggestedPackages] = useState<SuggestedPackage[]>([]);
   const [isFetchingPackages, setIsFetchingPackages] = useState(false);
+  const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
 
   const summaryRef = useRef<HTMLDivElement>(null);
   const activeInputRef = useRef<HTMLInputElement | null>(null);
@@ -814,7 +815,9 @@ const CalculatorSectionTwo = () => {
                   return (
                     <div
                       key={pkg.id}
-                      className={`relative rounded-[24px] p-5 transition-all duration-300 hover:shadow-lg flex flex-col group min-h-[420px] ${
+                      onMouseEnter={() => setHoveredCardId(pkg.id)}
+                      onMouseLeave={() => setHoveredCardId(null)}
+                      className={`relative rounded-[24px] p-5 transition-all duration-300 hover:shadow-lg flex flex-col min-h-[420px] ${
                         isBestMatch 
                           ? "bg-white border-2 border-[#2CB22C] shadow-md shadow-[#2CB22C]/10" 
                           : "bg-white border border-gray-200"
@@ -846,21 +849,19 @@ const CalculatorSectionTwo = () => {
 
                       <div className="relative flex-1 grid mt-2">
                         {/* Default State Container */}
-                        <div className="col-start-1 row-start-1 flex flex-col transition-opacity duration-300 opacity-100 group-hover:opacity-0 group-hover:pointer-events-none z-10 bg-white">
+                        <div className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-300 z-10 bg-white ${hoveredCardId === pkg.id ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                           <div className="mb-4">
                             <p className="text-xl font-extrabold text-[#101828]">
                               ₦{pkg.price.toLocaleString()}
                             </p>
-                            {(pkg.estimated_savings_monthly || 12500) && (
-                              <p className="text-[10px] font-medium text-[#048A05] mt-1">
-                                Saves ~₦{(pkg.estimated_savings_monthly || 12500).toLocaleString()}/mo
-                              </p>
-                            )}
                           </div>
 
                           <div className="mt-auto w-full h-[200px] bg-gray-100 rounded-xl overflow-hidden relative">
                           <img 
-                            src={(pkg as any).thumbnail_url || (pkg as any).package_image_url || "https://images.unsplash.com/photo-1509391366360-1e564d720c02?auto=format&fit=crop&q=80&w=600&h=400"} 
+                            src={((pkg as any).thumbnail_url && (pkg as any).thumbnail_url !== "null") ? (pkg as any).thumbnail_url : (((pkg as any).package_image_url && (pkg as any).package_image_url !== "null") ? (pkg as any).package_image_url : "/double_solar_panels.png")} 
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/double_solar_panels.png";
+                            }}
                             alt={pkg.name} 
                             className="w-full h-full object-cover"
                           />
@@ -882,7 +883,7 @@ const CalculatorSectionTwo = () => {
                       </div>
                       
                       {/* Hover State Container */}
-                      <div className="col-start-1 row-start-1 flex flex-col opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-20 bg-white pointer-events-none group-hover:pointer-events-auto h-full">
+                      <div className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-300 z-20 bg-white h-full ${hoveredCardId === pkg.id ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
                         <div className={`rounded-xl p-3 mb-4 ${isBestMatch ? "bg-[#F0FFF0] border border-[#2CB22C]/20" : "bg-[#F9FAFB] border border-[#EAECF0]"}`}>
                           <div className={`flex items-center gap-1.5 font-semibold text-xs mb-2 ${isBestMatch ? "text-[#048A05]" : "text-[#344054]"}`}>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
