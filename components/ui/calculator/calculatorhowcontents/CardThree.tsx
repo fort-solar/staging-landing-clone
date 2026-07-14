@@ -18,10 +18,10 @@ const CardThree = () => {
                     </div>
                     <div>
                         <p className="group-hover:text-[#048A05] pb-2 font-semibold min-h-16  text-lg transition-all duration-300 text-[#3B3B3B]">
-                          View Your Total Energy Consumption
+                          View System Sizing Output
                         </p>
 
-                        <p className='text-sm min-h-16'>We will instantly calculate your total energy usage per item and for all your items populated in the table.</p>
+                        <p className='text-sm min-h-16'>We instantly calculate your daily consumption and estimate the required inverter size, PV panels, and a baseline battery backup size.</p>
                     </div>
                 </div>
             </div>

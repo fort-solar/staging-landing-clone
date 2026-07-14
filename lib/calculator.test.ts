@@ -98,6 +98,8 @@ describe("calculator row state helpers", () => {
       quantity: 1,
       watts: 120,
       hours: 6,
+      nightBackup: false,
+      inductive: false,
     };
 
     const rows = addCalculatorRow([firstRow]);

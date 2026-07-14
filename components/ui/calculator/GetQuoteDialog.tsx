@@ -19,7 +19,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import GradientCheckbox from "@/components/ui/gradient-checkbox";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LOCATION_OPTIONS = [
@@ -122,6 +122,8 @@ export default function GetQuoteDialog({
         installationType &&
         termsAccepted;
 
+    const [isSuccess, setIsSuccess] = useState(false);
+
     const resetForm = () => {
         setName("");
         setEmail("");
@@ -134,6 +136,7 @@ export default function GetQuoteDialog({
         setTermsAccepted(false);
         setCreateAccount(false);
         setSummaryOpen(true);
+        setIsSuccess(false);
     };
 
     const handleSubmit = async () => {
@@ -157,9 +160,7 @@ export default function GetQuoteDialog({
             };
 
             await onSubmit?.(payload);
-
-            setOpen(false);
-            resetForm();
+            setIsSuccess(true);
         } catch {
             // Handled by parent via toast.
         }
@@ -183,18 +184,57 @@ export default function GetQuoteDialog({
             </DialogTrigger>
 
             <DialogContent className="p-0 sm:max-w-130 max-h-[90vh] rounded-3xl overflow-hidden">
+                {isSuccess ? (
+                    <div className="p-8 flex flex-col items-center text-center space-y-6">
+                        <div className="h-16 w-16 bg-[#ECFDF3] rounded-full flex items-center justify-center">
+                            <CheckCircle2 className="h-8 w-8 text-[#027A48]" />
+                        </div>
+                        
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold text-[#101828]">
+                                Quote Request Submitted!
+                            </h3>
+                            <p className="text-sm text-[#667085]">
+                                Thank you, <span className="font-semibold text-[#101828]">{name}</span>. 
+                                Your quote request has been successfully submitted. Our team will review your energy configuration and contact you within 24 business hours.
+                            </p>
+                        </div>
 
-                <div className="px-6 pt-6">
-                    <DialogHeader>
-                        <DialogTitle className="text-[18px] font-semibold text-[#101828]">
-                            Ready to Go Solar? Let’s Get Started!
-                        </DialogTitle>
-                        <DialogDescription className="text-sm text-[#667085]">
-                            Please confirm your details and project location so our team can prepare your
-                            personalized final quote and installation schedule.
-                        </DialogDescription>
-                    </DialogHeader>
-                </div>
+                        {createAccount ? (
+                            <div className="w-full bg-[#F9FAFB] rounded-xl p-4 flex flex-col items-center space-y-2 border border-[#EAECF0]">
+                                <div className="flex items-center gap-2 text-sm text-[#027A48] font-medium">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2CB22C] opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2CB22C]"></span>
+                                    </span>
+                                    Redirecting to complete your signup...
+                                </div>
+                                <p className="text-xs text-[#667085]">
+                                    You will be redirected shortly to choose a password.
+                                </p>
+                            </div>
+                        ) : (
+                            <Button 
+                                onClick={() => setOpen(false)}
+                                className="w-full rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90 py-5"
+                            >
+                                Done
+                            </Button>
+                        )}
+                    </div>
+                ) : (
+                    <>
+                        <div className="px-6 pt-6">
+                            <DialogHeader>
+                                <DialogTitle className="text-[18px] font-semibold text-[#101828]">
+                                    Ready to Go Solar? Let’s Get Started!
+                                </DialogTitle>
+                                <DialogDescription className="text-sm text-[#667085]">
+                                    Please confirm your details and project location so our team can prepare your
+                                    personalized final quote and installation schedule.
+                                </DialogDescription>
+                            </DialogHeader>
+                        </div>
 
                 <div className="px-6 pb-6 pt-4 space-y-6 overflow-y-auto max-h-[calc(85vh-140px)]">
 
@@ -274,7 +314,7 @@ export default function GetQuoteDialog({
                         <Field label="Location">
                             <Select value={location} onValueChange={setLocation}>
                                 <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
-                                    <SelectValue placeholder="City" />
+                                    <SelectValue placeholder="Select Location (e.g. Urban)" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {LOCATION_OPTIONS.map(opt => (
@@ -298,7 +338,7 @@ export default function GetQuoteDialog({
                         <Field label="Installation Type">
                             <Select value={installationType} onValueChange={setInstallationType}>
                                 <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
-                                    <SelectValue placeholder="Commercial" />
+                                    <SelectValue placeholder="Select Installation Type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {INSTALLATION_TYPE_OPTIONS.map(opt => (
@@ -313,7 +353,7 @@ export default function GetQuoteDialog({
                         <Field label="Building Type (Optional)">
                             <Select value={buildingType} onValueChange={setBuildingType}>
                                 <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
-                                    <SelectValue placeholder="Bungalow" />
+                                    <SelectValue placeholder="Select Building Type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {BUILDING_TYPE_OPTIONS.map(opt => (
@@ -371,7 +411,9 @@ export default function GetQuoteDialog({
                         </Button>
                     </div>
                 </div>
-            </DialogContent>
+                </>
+            )}
+        </DialogContent>
         </Dialog>
     );
 }

@@ -6,6 +6,8 @@ export type CalculatorRow = {
   quantity: NumericField;
   watts: NumericField;
   hours: NumericField;
+  nightBackup: boolean;
+  inductive: boolean;
 };
 
 export type SelectedDevice = {
@@ -64,6 +66,8 @@ export function createCalculatorRow(): CalculatorRow {
     quantity: "",
     watts: "",
     hours: "",
+    nightBackup: false,
+    inductive: false,
   };
 }
 

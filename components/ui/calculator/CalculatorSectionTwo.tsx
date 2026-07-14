@@ -231,6 +231,8 @@ const CalculatorSectionTwo = () => {
               quantity: Number(row.quantity),
               wattage: Number(row.watts),
               hoursPerDay: Number(row.hours),
+              nightBackup: row.nightBackup,
+              inductive: row.inductive,
             })),
           }),
           signal: controller.signal,
@@ -288,13 +290,9 @@ const CalculatorSectionTwo = () => {
           ? json.data
           : (json.data as { packages?: SuggestedPackage[] }).packages ?? [];
 
-        // Filter to packages within ±10% of calculated PV size, Inverter size, and Battery size
-        const TOLERANCE = 0.10;
-        
-        // We calculate combined difference for sorting, but strictly filter each component.
-        // If the calculator says we don't need a battery (0), we shouldn't strictly require 0 if the package has one?
-        // Wait, the prompt says "if there is a package that matches all 3 by either a +/- 10% margin room".
-        // Let's implement strict +/- 10% bounds for all 3 components.
+        // Match packages that safely cover the user's calculated needs.
+        // A package must meet or exceed the requirement (10% under tolerance allowed)
+        // but must not be excessively oversized (max 2× the requirement).
         const reqPv = calculatedKw;
         const reqInv = Number(inverterKw);
         const reqBat = Number(batteryKwh);
@@ -306,10 +304,22 @@ const CalculatorSectionTwo = () => {
             const pkgInv = pkg.inverter_size_kw ?? 0;
             const pkgBat = pkg.battery_capacity_kwh ?? 0;
             
-            // Calculate absolute % difference. For 0 bounds, avoid division by zero.
-            const diffPv = Math.abs((pkgPv - reqPv) / reqPv);
-            const diffInv = reqInv > 0 ? Math.abs((pkgInv - reqInv) / reqInv) : (pkgInv > 0 ? 1 : 0);
-            const diffBat = reqBat > 0 ? Math.abs((pkgBat - reqBat) / reqBat) : (pkgBat > 0 ? 1 : 0);
+            // Package must meet or exceed the requirement (allow 10% under)
+            const pvOk = reqPv > 0 ? pkgPv >= reqPv * 0.9 : true;
+            const invOk = reqInv > 0 ? pkgInv >= reqInv * 0.9 : true;
+            const batOk = reqBat > 0 ? pkgBat >= reqBat * 0.9 : true;
+            
+            // But not excessively oversized (max 2× the requirement)
+            const pvCap = reqPv > 0 ? pkgPv <= reqPv * 2 : true;
+            const invCap = reqInv > 0 ? pkgInv <= reqInv * 2 : true;
+            const batCap = reqBat > 0 ? pkgBat <= reqBat * 2 : true;
+            
+            const fits = pvOk && invOk && batOk && pvCap && invCap && batCap;
+            
+            // Score = how much overshoot (lower is better, tighter fit)
+            const diffPv = reqPv > 0 ? Math.abs(pkgPv - reqPv) / reqPv : 0;
+            const diffInv = reqInv > 0 ? Math.abs(pkgInv - reqInv) / reqInv : 0;
+            const diffBat = reqBat > 0 ? Math.abs(pkgBat - reqBat) / reqBat : 0;
             
             return {
               ...pkg,
@@ -317,9 +327,10 @@ const CalculatorSectionTwo = () => {
               diffInv,
               diffBat,
               matchScore: diffPv + diffInv + diffBat,
+              fits,
             };
           })
-          .filter(pkg => pkg.diffPv <= TOLERANCE && pkg.diffInv <= TOLERANCE && pkg.diffBat <= TOLERANCE)
+          .filter(pkg => pkg.fits)
           .sort((a, b) => a.matchScore - b.matchScore)
           .slice(0, 3);
 
@@ -440,7 +451,8 @@ const CalculatorSectionTwo = () => {
           const params = new URLSearchParams();
           params.append('email', payload.email);
           params.append('name', payload.name);
-          window.location.href = `http://localhost:3323/signup?${params.toString()}`;
+          params.append('phone', payload.phone);
+          window.location.href = `http://localhost:3226/signup?${params.toString()}`;
         }, 3000);
       }
     } finally {
@@ -516,6 +528,16 @@ const CalculatorSectionTwo = () => {
                   <TooltipContent>Total Watt Hours</TooltipContent>
                 </Tooltip>
               </th>
+              <th className="p-2 md:p-3 border-r text-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="inline-flex cursor-pointer whitespace-nowrap">
+                      🌙 Night Backup?
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>Runs when solar is off</TooltipContent>
+                </Tooltip>
+              </th>
               <th className="p-2 md:p-3 text-center">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -545,12 +567,15 @@ const CalculatorSectionTwo = () => {
               return (
                 <tr
                   key={row.id}
-                  className=" border-b bg-white p-3 last:border-b-0 table-row md:border-t md:p-0"
+                  className={`border-b p-3 last:border-b-0 table-row md:border-t md:p-0 ${row.inductive ? 'border-l-4 border-l-amber-500' : 'border-l-4 border-l-transparent'} ${row.nightBackup ? 'bg-[#2CB22C]/5' : 'bg-white'}`}
                 >
                   <td
                     className="table-cell border-b-0 border-r md:p-2 w-fit whitespace-nowrap min-w-22"
                   >
-                    <div className="relative w-full">
+                    <div className="relative w-full flex items-center">
+                      {row.nightBackup && (
+                        <div className="w-2 h-2 rounded-full bg-[#2CB22C] shrink-0 mr-2 ml-1" />
+                      )}
                       <input
                         type="text"
                         className="w-full text-[10px] md:text-sm rounded-md border-none p-2 outline-0 focus:ring-0 whitespace-nowrap"
@@ -675,7 +700,21 @@ const CalculatorSectionTwo = () => {
                   </td>
 
                   <td
-                    className="table-cell border-b-0 border-r md:p-2 bg-[#FF00001A]"
+                    className="table-cell border-b-0 border-r md:p-2"
+                  >
+                    <div className="flex w-full items-center justify-center h-full">
+                      <input
+                        type="checkbox"
+                        disabled={!row.item}
+                        checked={row.nightBackup}
+                        onChange={(e) => updateRow(row.id, { nightBackup: e.target.checked })}
+                        className="w-4 h-4 text-[#2CB22C] focus:ring-[#2CB22C] rounded border-gray-300 cursor-pointer"
+                      />
+                    </div>
+                  </td>
+
+                  <td
+                    className="table-cell border-b-0 md:p-2 bg-[#FF00001A]"
                   >
                     <button
                       onClick={() => removeRow(row.id)}
@@ -718,6 +757,7 @@ const CalculatorSectionTwo = () => {
                     watts: Math.max(1, Number(device.watts) || 1),
                     hours: 1,
                     quantity: 1,
+                    inductive: device.inductive || false,
                   });
                   setActiveRowId(null);
                   setActiveSuggestions([]);
@@ -742,7 +782,20 @@ const CalculatorSectionTwo = () => {
           Add Item
         </Button>
       </div>
-      <div ref={summaryRef} className="bg-white my-20 max-w-2xl">
+
+      {/* Legend */}
+      <div className="flex flex-wrap items-center gap-4 bg-gray-50 border border-t-0 border-gray-200 p-3 text-xs text-gray-600 rounded-b-lg">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-3.5 bg-amber-500 rounded-[1px]"></div>
+          <span>Inductive load — startup surge factored into inverter sizing</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 bg-[#2CB22C] rounded-full"></div>
+          <span>🌙 Night backup load — factored into battery sizing</span>
+        </div>
+        <p className="w-full text-[11px] italic text-gray-400 mt-1">Energy consumed per item is included in your downloadable PDF summary.</p>
+      </div>
+      <div ref={summaryRef} className="bg-white mt-8 mb-12 max-w-2xl">
         <p className="text-lg font-semibold mb-4 text-[#101828]">
           Your Custom System Recommendation
         </p>
@@ -769,7 +822,7 @@ const CalculatorSectionTwo = () => {
         </table>
 
         <div className="mt-8">
-          <p className="italic text-[#667085] text-sm">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
+          <p className="italic text-[#667085] text-sm mb-6">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
         </div>
       </div>
 
@@ -782,19 +835,6 @@ const CalculatorSectionTwo = () => {
 
           {!isFetchingPackages && suggestedPackages.length > 0 && hasCalculated && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-              
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <GetQuoteDialog
-                  totals={totals}
-                  selectedDevices={selectedDevices}
-                  disabled={!completeRows.length || !hasCalculated}
-                  isSubmitting={quoteSubmitting}
-                  onSubmit={submitQuote}
-                />
-                <Button disabled={!hasCalculated} variant="outline" onClick={downloadPdf} className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300">
-                  <PdfIcon /> Download Summary & Save
-                </Button>
-              </div>
 
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
@@ -937,6 +977,52 @@ const CalculatorSectionTwo = () => {
               </p>
             </div>
           )}
+        </div>
+      )}
+
+      {hasCalculated && (
+        <div className="mt-12 rounded-2xl border border-[#EAECF0] bg-white p-6 md:p-8">
+          <h4 className="text-lg font-bold text-[#101828]">What happens after requesting a quote?</h4>
+          <p className="text-sm text-[#475467] mt-1 mb-6">
+            We follow a structured engineering process to ensure you get the absolute best setup for your home or business.
+          </p>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECFDF3] text-sm font-semibold text-[#027A48]">1</div>
+              <h5 className="font-semibold text-sm text-[#101828]">Submit Energy Audit</h5>
+              <p className="text-xs text-[#475467]">Submit your appliance load breakdown so our engineers have accurate requirements.</p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F0F9FF] text-sm font-semibold text-[#026AA2]">2</div>
+              <h5 className="font-semibold text-sm text-[#101828]">Engineer Review</h5>
+              <p className="text-xs text-[#475467]">Our engineers review the sizing, calculate exact equipment specs, and upload a priced proposal.</p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FDF2FA] text-sm font-semibold text-[#C11574]">3</div>
+              <h5 className="font-semibold text-sm text-[#101828]">Approve & Pay Deposit</h5>
+              <p className="text-xs text-[#475467]">Review the custom design spec in your customer portal, approve it, and make a Paystack payment.</p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FEF4EB] text-sm font-semibold text-[#B93815]">4</div>
+              <h5 className="font-semibold text-sm text-[#101828]">Professional Install</h5>
+              <p className="text-xs text-[#475467]">A verified local installer sets up the system, sharing real-time photo proofs for your sign-off.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {hasCalculated && (
+        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
+          <GetQuoteDialog
+            totals={totals}
+            selectedDevices={selectedDevices}
+            disabled={!completeRows.length || !hasCalculated}
+            isSubmitting={quoteSubmitting}
+            onSubmit={submitQuote}
+          />
+          <Button disabled={!hasCalculated} variant="outline" onClick={downloadPdf} className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300">
+            <PdfIcon /> Download Summary
+          </Button>
         </div>
       )}
     </section>

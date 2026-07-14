@@ -18,10 +18,10 @@ const CardTwo = () => {
                     </div>
                     <div>
                         <p className="group-hover:text-[#048A05] pb-2 font-semibold text-lg min-h-16  transition-all duration-300 text-[#3B3B3B]">
-                          Enter Quantity & Usage Time
+                          Set Quantity, Hours & Night Backup
                         </p>
 
-                        <p className='text-sm min-h-16'>Tell us how many units of the appliance you want to use, the power rating and how long you use them each day.</p>
+                        <p className='text-sm min-h-16'>Enter quantity, power rating and daily usage hours. Check 🌙 Night Backup for appliances you use at night — this sizes your battery.</p>
                     </div>
                 </div>
             </div>
