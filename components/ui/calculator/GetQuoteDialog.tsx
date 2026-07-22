@@ -11,13 +11,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { ComboboxField } from "@/components/ui/combobox-field";
 import GradientCheckbox from "@/components/ui/gradient-checkbox";
 import { ChevronDown, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -312,18 +306,7 @@ export default function GetQuoteDialog({
                         <p className="text-sm font-semibold text-[#101828]">Project Location & Details</p>
 
                         <Field label="Location">
-                            <Select value={location} onValueChange={setLocation}>
-                                <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
-                                    <SelectValue placeholder="Select Location (e.g. Urban)" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {LOCATION_OPTIONS.map(opt => (
-                                        <SelectItem key={opt.value} value={opt.value}>
-                                            {opt.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <ComboboxField value={location} onValueChange={setLocation} options={LOCATION_OPTIONS} placeholder="Select Location (e.g. Urban)" className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0" />
                         </Field>
 
                         <Field label="Installation Address (Optional)">
@@ -336,33 +319,11 @@ export default function GetQuoteDialog({
                         </Field>
 
                         <Field label="Installation Type">
-                            <Select value={installationType} onValueChange={setInstallationType}>
-                                <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
-                                    <SelectValue placeholder="Select Installation Type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {INSTALLATION_TYPE_OPTIONS.map(opt => (
-                                        <SelectItem key={opt.value} value={opt.value}>
-                                            {opt.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <ComboboxField value={installationType} onValueChange={setInstallationType} options={INSTALLATION_TYPE_OPTIONS} placeholder="Select Installation Type" className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0" />
                         </Field>
 
                         <Field label="Building Type (Optional)">
-                            <Select value={buildingType} onValueChange={setBuildingType}>
-                                <SelectTrigger className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0">
-                                    <SelectValue placeholder="Select Building Type" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {BUILDING_TYPE_OPTIONS.map(opt => (
-                                        <SelectItem key={opt.value} value={opt.value}>
-                                            {opt.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <ComboboxField value={buildingType} onValueChange={setBuildingType} options={BUILDING_TYPE_OPTIONS} placeholder="Select Building Type" className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0" />
                         </Field>
 
                         <Field label="Note (Optional)">
