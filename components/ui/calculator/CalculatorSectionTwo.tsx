@@ -58,6 +58,8 @@ type SuggestedPackage = {
   number_of_panels: number | null;
   estimated_savings_monthly: number | null;
   is_active?: boolean;
+  thumbnail_url?: string | null;
+  package_image_url?: string | null;
   matchScore: number; // calculated combined difference
 };
 
@@ -466,7 +468,77 @@ const CalculatorSectionTwo = () => {
     <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
       <Toaster />
 
-      <div ref={tableScrollRef} className="border border-gray-200 overflow-x-auto">
+      <div className="space-y-4 md:hidden">
+        {rows.map((row, index) => {
+          const wattHours =
+            typeof row.quantity === "number" && typeof row.watts === "number" && typeof row.hours === "number"
+              ? row.quantity * row.watts * row.hours
+              : 0;
+
+          return (
+            <article key={row.id} className={`rounded-2xl border p-4 shadow-sm ${row.nightBackup ? "border-[#2CB22C]/40 bg-[#F6FFF6]" : "border-gray-200 bg-white"}`}>
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm font-semibold text-[#101828]">Appliance {index + 1}</p>
+                <button type="button" onClick={() => removeRow(row.id)} aria-label={`Remove appliance ${index + 1}`} className="rounded-lg bg-red-50 p-2 text-red-500">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+
+              <label className="block text-xs font-semibold uppercase tracking-wide text-[#667085]">
+                Appliance
+                <input
+                  type="text"
+                  value={row.item}
+                  placeholder="Search or type an appliance"
+                  className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-3 py-3 text-base font-normal normal-case tracking-normal text-[#101828] outline-none focus:border-[#2CB22C]"
+                  onFocus={(event) => {
+                    activeInputRef.current = event.currentTarget;
+                    setDropdownRect(event.currentTarget.getBoundingClientRect());
+                    setActiveRowId(row.id);
+                  }}
+                  onBlur={() => setTimeout(() => setActiveRowId((current) => current === row.id ? null : current), 100)}
+                  onChange={(event) => {
+                    activeInputRef.current = event.currentTarget;
+                    setDropdownRect(event.currentTarget.getBoundingClientRect());
+                    setActiveRowId(row.id);
+                    updateRow(row.id, { item: event.target.value });
+                  }}
+                />
+              </label>
+
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                {([
+                  ["Qty", "quantity", 1, undefined],
+                  ["Watts", "watts", 1, undefined],
+                  ["Hrs/day", "hours", 1, 24],
+                ] as const).map(([label, field, min, max]) => (
+                  <label key={field} className="text-xs font-semibold uppercase tracking-wide text-[#667085]">
+                    {label}
+                    <input
+                      type="number"
+                      min={min}
+                      max={max}
+                      inputMode="decimal"
+                      value={row[field]}
+                      className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-2 py-3 text-center text-base font-normal normal-case tracking-normal text-[#101828] outline-none focus:border-[#2CB22C]"
+                      onChange={(event) => updateRow(row.id, { [field]: parseCalculatorNumericInput(event.target.value) })}
+                    />
+                  </label>
+                ))}
+              </div>
+
+              <label className="mt-4 flex cursor-pointer items-center justify-between rounded-xl bg-[#F2F4F7] px-3 py-3 text-sm font-medium text-[#344054]">
+                <span>🌙 Include in night backup</span>
+                <input type="checkbox" disabled={!row.item} checked={row.nightBackup} onChange={(event) => updateRow(row.id, { nightBackup: event.target.checked })} className="h-5 w-5 accent-[#2CB22C]" />
+              </label>
+
+              <p className="mt-3 text-right text-xs text-[#667085]">Daily energy: <strong className="text-[#101828]">{wattHours.toLocaleString()} Wh</strong></p>
+            </article>
+          );
+        })}
+      </div>
+
+      <div ref={tableScrollRef} className="hidden border border-gray-200 overflow-x-auto md:block">
         <table className="w-full text-[10px] md:text-sm table">
           <thead className="table-header-group">
             <tr className="text-[#101828] font-medium md:font-semibold border-b">
@@ -898,7 +970,7 @@ const CalculatorSectionTwo = () => {
 
                           <div className="mt-auto w-full h-[200px] bg-gray-100 rounded-xl overflow-hidden relative">
                           <img 
-                            src={((pkg as any).thumbnail_url && (pkg as any).thumbnail_url !== "null") ? (pkg as any).thumbnail_url : (((pkg as any).package_image_url && (pkg as any).package_image_url !== "null") ? (pkg as any).package_image_url : "/double_solar_panels.png")} 
+                            src={(pkg.thumbnail_url && pkg.thumbnail_url !== "null") ? pkg.thumbnail_url : ((pkg.package_image_url && pkg.package_image_url !== "null") ? pkg.package_image_url : "/double_solar_panels.png")}
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = "/double_solar_panels.png";
                             }}
