@@ -1,13 +1,21 @@
 import type { NextConfig } from "next";
 
-const BACKEND_URL = process.env.BACKEND_API_URL ?? "http://localhost:3000";
+const BACKEND_URL =
+  process.env.BACKEND_API_URL ??
+  process.env.FORTSOLAR_API_BASE_URL ??
+  process.env.NEXT_PUBLIC_FORTSOLAR_API_BASE_URL ??
+  "https://api.fortsolar.ng";
 
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
-      { protocol: "http", hostname: "localhost" },
-      { protocol: "http", hostname: "127.0.0.1" },
+      ...(process.env.NODE_ENV === "development"
+        ? [
+            { protocol: "http" as const, hostname: "localhost" },
+            { protocol: "http" as const, hostname: "127.0.0.1" },
+          ]
+        : []),
     ],
   },
   async rewrites() {

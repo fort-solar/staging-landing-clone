@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { submitForm } from "@/actions/SubmitForm";
 import { BASE_URL } from "@/components/features/constants";
+import { storeSignupHref } from "@/lib/store-links";
 import Link from "next/link";
 import {
   addCalculatorRow,
@@ -450,11 +451,13 @@ const CalculatorSectionTwo = () => {
 
       if (payload.createAccount) {
         setTimeout(() => {
-          const params = new URLSearchParams();
-          params.append('email', payload.email);
-          params.append('name', payload.name);
-          params.append('phone', payload.phone);
-          window.location.href = `http://localhost:3226/signup?${params.toString()}`;
+          window.location.assign(
+            storeSignupHref({
+              email: payload.email,
+              name: payload.name,
+              phone: payload.phone,
+            }),
+          );
         }, 3000);
       }
     } finally {
