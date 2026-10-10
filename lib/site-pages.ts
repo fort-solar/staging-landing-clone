@@ -3,70 +3,48 @@ import type {
   SitePageListApiResponse,
   SitePageRecord,
 } from "@/types/api.types";
+import { fetchJson } from "@/lib/public-content";
 
-const DEFAULT_API_HOST = "https://api.fortsolar.ng";
+export async function getSitePageBySlug(slug: string) {
+  const detailPayload = await fetchJson<SitePageDetailApiResponse>(
+    `/api/v1/admin/site-pages/${slug}`,
+  );
 
-export function buildApiUrl(path: string, overrideBase?: string): string {
-  const configured = overrideBase ?? (
-    process.env.BACKEND_API_URL ??
-    process.env.FORTSOLAR_API_BASE_URL ??
-    process.env.NEXT_PUBLIC_FORTSOLAR_API_BASE_URL ??
-    process.env.NEXT_PUBLIC_BASE_URL
-  )?.trim();
-
-  const isServer = typeof window === "undefined";
-
-  let base = configured || "";
-  if (!base || (isServer && base.startsWith("/"))) {
-    base = process.env.BACKEND_API_URL || process.env.FORTSOLAR_API_BASE_URL || DEFAULT_API_HOST;
+  if (detailPayload?.success && detailPayload.data?.sections?.length) {
+    return detailPayload.data;
   }
 
-  base = base.replace(/\/+$/, "");
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const listPayload = await fetchJson<SitePageListApiResponse>(
+    `/api/v1/admin/site-pages/?slug=${encodeURIComponent(slug)}`,
+  );
 
-  let cleanPath = normalizedPath;
-  if (base.endsWith("/api/v1") && cleanPath.startsWith("/api/v1")) {
-    cleanPath = cleanPath.slice("/api/v1".length);
-    if (!cleanPath.startsWith("/")) {
-      cleanPath = `/${cleanPath}`;
-    }
+  if (!listPayload?.success || !listPayload.data?.length) {
+    return null;
   }
 
-  return `${base}${cleanPath}`;
+  return (
+    listPayload.data.find((page) => page.slug === slug && page.sections?.length > 0) ??
+    listPayload.data.find((page) => page.sections?.length > 0) ??
+    null
+  );
 }
 
-async function fetchJson<T>(path: string): Promise<T | null> {
-  const primaryUrl = buildApiUrl(path);
+export async function resolveSitePageOrFallback(slug: string) {
+  const page = await getSitePageBySlug(slug);
 
-  try {
-    const response = await fetch(primaryUrl, {
-      headers: {
-        Accept: "application/json",
-      },
-      cache: "no-store",
-    });
-
-    if (response.ok) {
-      return (await response.json().catch(() => null)) as T | null;
-    }
-  } catch (error) {
-    if (primaryUrl.includes("localhost") || primaryUrl.includes("127.0.0.1")) {
-      try {
-        const fallbackUrl = buildApiUrl(path, DEFAULT_API_HOST);
-        const fallbackRes = await fetch(fallbackUrl, {
-          headers: { Accept: "application/json" },
-          cache: "no-store",
-        });
-        if (fallbackRes.ok) {
-          return (await fallbackRes.json().catch(() => null)) as T | null;
-        }
-      } catch {
-        // Fallback also failed
-      }
-    }
-  }
-
-  return null;
+  return {
+    page,
+    hasDynamicContent: Boolean(page?.sections?.length),
+  };
 }
 
+export function getSectionCards(section: SitePageRecord["sections"][number]) {
+  if (!section.card || !section.number_of_cards || section.number_of_cards <= 0) {
+    return [];
+  }
 
+  return Array.from({ length: section.number_of_cards }, (_, index) => ({
+    title: `${section.title || "Card"} ${index + 1}`,
+    content: section.content || section.subtitle || "Content pending from the admin dashboard.",
+  }));
+}
