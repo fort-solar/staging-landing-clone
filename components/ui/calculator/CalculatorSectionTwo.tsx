@@ -75,10 +75,11 @@ type CalculatorResponse = {
 };
 
 const buildApiUrl = (endpoint: string, query?: Record<string, string>) => {
-  const base = (BASE_URL ?? "").replace(/\/$/, "");
-  const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const rawBase = BASE_URL || "/api/v1";
+  const base = rawBase.replace(/\/$/, "");
+  const cleanEndpoint = endpoint.replace(/^\/?(api\/v1\/?)?/, "");
   const search = query ? new URLSearchParams(query).toString() : "";
-  return `${base}${normalizedEndpoint}${search ? `?${search}` : ""}`;
+  return `${base}/${cleanEndpoint}${search ? `?${search}` : ""}`;
 };
 
 const CalculatorSectionTwo = () => {
