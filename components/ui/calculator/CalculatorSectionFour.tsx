@@ -33,7 +33,7 @@ const CalculatorSectionFour = () => {
                         </Link>
 
                     </div>
-                    <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[60vh]  bg-cover bg-center bg-[url('/calculator_section_four_background.png')]`}></div>
+                    <div className={`order-1 lg:order-2 relative w-full h-full min-h-[30vh] lg:min-h-[60vh] rounded-2xl lg:rounded-3xl overflow-hidden bg-cover bg-center bg-[url('/engineer.png')]`}></div>
                 </div>
             </section>
         </div>

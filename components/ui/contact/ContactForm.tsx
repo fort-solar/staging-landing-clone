@@ -53,7 +53,7 @@ const ContactForm = ({ formRef }: ContactHeroProps) => {
         try {
             await toast.promise(
                 submitForm({
-                    endpoint: "contact-us",
+                    endpoint: "contacts",
                     method: "POST",
                     values: payload,
                 }),

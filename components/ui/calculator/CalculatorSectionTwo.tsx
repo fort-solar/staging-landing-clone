@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { submitForm } from "@/actions/SubmitForm";
 import { BASE_URL } from "@/components/features/constants";
-import { storeSignupHref } from "@/lib/store-links";
+import { storePackageHref, storeSignupHref } from "@/lib/store-links";
 import Link from "next/link";
 import {
   addCalculatorRow,
@@ -359,42 +359,155 @@ const CalculatorSectionTwo = () => {
     if (!hasCalculated) return;
 
     const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-    doc.setFontSize(16);
-    doc.text("Custom System Recommendation", 14, 20);
+    // Fortsolar Green Header bar
+    doc.setFillColor(44, 178, 44);
+    doc.rect(0, 0, pageWidth, 22, "F");
 
-    doc.setFontSize(11);
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(15);
+    doc.setFont("helvetica", "bold");
+    doc.text("FORTSOLAR ENERGY AUDIT & ESTIMATE", 14, 15);
+
+    // Subtitle & Date
+    doc.setTextColor(100, 100, 100);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    const dateStr = new Date().toLocaleDateString("en-NG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    doc.text(`Generated on: ${dateStr}  |  fortsolar.ng`, 14, 30);
+
+    doc.setFontSize(10);
+    doc.setTextColor(50, 50, 50);
     doc.text(
-      "Here’s a quick breakdown of your total energy usage based on your inputs. This shows your daily demand and the solar setup that fits perfectly.",
+      "Here is your personalized solar load breakdown and system sizing recommendation based on your appliance inputs.",
       14,
-      30,
-      {
-        maxWidth: 180,
-      }
+      36,
+      { maxWidth: 180 }
     );
 
+    // Table 1: System Sizing Estimates
     autoTable(doc, {
-      startY: 40,
-      head: [["Metric", "Value"]],
+      startY: 42,
+      head: [["System Metric", "Estimated Requirement"]],
       body: [
-        ["Total Load", `${totals.peakKW.toFixed(2)} kW`],
-        ["Calculated Daily Energy Use", `${totals.dailyKWh.toFixed(2)} kWh`],
+        ["Total Peak Load", `${totals.peakKW.toFixed(2)} kW`],
+        ["Calculated Daily Energy Use", `${totals.dailyKWh.toFixed(2)} kWh / day`],
         ["Estimated Inverter Size", `${Number(inverterKw).toFixed(2)} kW`],
         ["Estimated Battery Capacity", `${Number(batteryKwh).toFixed(2)} kWh`],
-        ["Estimated PV Size", `${Number(pvKwp).toFixed(2)} kWp`],
+        ["Estimated Solar PV Array", `${Number(pvKwp).toFixed(2)} kWp`],
       ],
       theme: "grid",
-      styles: {
-        fontSize: 11,
-        cellPadding: 4,
-      },
-      headStyles: {
-        fillColor: [44, 178, 44],
-        textColor: 255,
-      },
+      styles: { fontSize: 9.5, cellPadding: 3.5 },
+      headStyles: { fillColor: [44, 178, 44], textColor: 255, fontStyle: "bold" },
     });
 
-    doc.save("energy-summary.pdf");
+    let currentY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable
+      ? (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8
+      : 95;
+
+    // Table 2: Appliance Load Breakdown
+    if (completeRows.length > 0) {
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 30, 30);
+      doc.text("Appliance Load Breakdown", 14, currentY);
+
+      const applianceBody: (string | number)[][] = completeRows.map((r, i) => {
+        const wh = Number(r.quantity) * Number(r.watts) * Number(r.hours);
+        return [
+          String(i + 1),
+          r.item,
+          String(r.quantity),
+          `${r.watts} W`,
+          `${r.hours} hrs`,
+          `${wh.toLocaleString()} Wh`,
+          r.nightBackup ? "Yes" : "No",
+        ];
+      });
+
+      const totalWh = completeRows.reduce(
+        (sum, r) => sum + Number(r.quantity) * Number(r.watts) * Number(r.hours),
+        0
+      );
+      applianceBody.push([
+        "",
+        "Total Daily Consumption",
+        "",
+        "",
+        "",
+        `${totalWh.toLocaleString()} Wh (${(totalWh / 1000).toFixed(2)} kWh)`,
+        "",
+      ]);
+
+      autoTable(doc, {
+        startY: currentY + 3,
+        head: [["#", "Appliance", "Qty", "Power", "Hours/Day", "Daily Energy", "Night Backup"]],
+        body: applianceBody,
+        theme: "striped",
+        styles: { fontSize: 8.5, cellPadding: 2.5 },
+        headStyles: { fillColor: [24, 114, 24], textColor: 255, fontStyle: "bold" },
+      });
+
+      currentY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable
+        ? (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8
+        : currentY + 50;
+    }
+
+    // Table 3: Recommended Fortsolar Packages (if any)
+    if (suggestedPackages.length > 0) {
+      if (currentY > 230) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(30, 30, 30);
+      doc.text("Matching Fortsolar Pre-Configured Packages", 14, currentY);
+
+      const packageBody = suggestedPackages.map((pkg) => [
+        pkg.name,
+        `${pkg.system_size_kw ?? "-"} kWp`,
+        `${pkg.inverter_size_kw ?? "-"} kW`,
+        `${pkg.battery_capacity_kwh ?? "-"} kWh`,
+        `NGN ${pkg.price.toLocaleString()}`,
+      ]);
+
+      autoTable(doc, {
+        startY: currentY + 3,
+        head: [["Package", "Solar PV", "Inverter", "Battery", "Price (NGN)"]],
+        body: packageBody,
+        theme: "grid",
+        styles: { fontSize: 9, cellPadding: 3 },
+        headStyles: { fillColor: [44, 178, 44], textColor: 255, fontStyle: "bold" },
+      });
+
+      currentY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable
+        ? (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8
+        : currentY + 35;
+    }
+
+    // Footer guidance note
+    if (currentY > 255) {
+      doc.addPage();
+      currentY = 20;
+    }
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(120, 120, 120);
+    doc.text(
+      "Note: Sizing values are estimates based on your stated consumption patterns. Actual system requirements may vary based on site survey, roof orientation, and peak surges. Visit store.fortsolar.ng or contact contact@fortsolar.ng to schedule a comprehensive physical energy audit.",
+      14,
+      currentY,
+      { maxWidth: 180 }
+    );
+
+    doc.save("fortsolar-energy-audit-summary.pdf");
   };
 
   const submitQuote = async (payload: {
@@ -950,7 +1063,7 @@ const CalculatorSectionTwo = () => {
                           {pkg.name}
                         </h3>
                         <Link
-                          href={`/store/packages/${pkg.slug ?? pkg.id}`}
+                          href={storePackageHref(pkg.slug ?? pkg.id)}
                           className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-xl transition-colors ${
                             isBestMatch ? "bg-[#2CB22C] text-white hover:bg-[#048A05]" : "bg-[#F2F4F7] text-[#101828] hover:bg-gray-200"
                           }`}
@@ -1034,6 +1147,15 @@ const CalculatorSectionTwo = () => {
                               <span key={item}>{item}</span>
                             ))}
                           </div>
+                        </div>
+
+                        <div className="pt-3 mt-auto">
+                          <Link
+                            href={storePackageHref(pkg.slug ?? pkg.id)}
+                            className="w-full py-2 px-3 text-xs font-semibold text-center text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90 rounded-xl flex items-center justify-center gap-1.5 transition-opacity"
+                          >
+                            View & Order Package →
+                          </Link>
                         </div>
                       </div>
                       </div>
