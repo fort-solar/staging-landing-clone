@@ -501,7 +501,7 @@ const CalculatorSectionTwo = () => {
     doc.setFont("helvetica", "italic");
     doc.setTextColor(120, 120, 120);
     doc.text(
-      "Note: Sizing values are estimates based on your stated consumption patterns. Actual system requirements may vary based on site survey, roof orientation, and peak surges. Visit store.fortsolar.ng or contact contact@fortsolar.ng to schedule a comprehensive physical energy audit.",
+      "Note: Sizing values are estimates based on your stated consumption patterns. Actual system requirements may vary based on site survey, roof orientation, and peak surges. Visit store.fortsolar.ng or contact enquiry@fortsolar.ng to schedule a comprehensive physical energy audit.",
       14,
       currentY,
       { maxWidth: 180 }

@@ -11,28 +11,61 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { ComboboxField } from "@/components/ui/combobox-field";
 import GradientCheckbox from "@/components/ui/gradient-checkbox";
 import { ChevronDown, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LOCATION_OPTIONS = [
-    { label: "Urban", value: "urban" },
-    { label: "Rural", value: "rural" },
-];
+    { label: "Urban", value: "Urban" },
+    { label: "Rural", value: "Rural" },
+] as const;
 
 const INSTALLATION_TYPE_OPTIONS = [
-    { label: "Residential", value: "residential" },
-    { label: "Commercial", value: "commercial" },
-    { label: "Industrial", value: "industrial" },
-];
+    { label: "Residential", value: "Residential" },
+    { label: "Commercial/Industrial (C&I)", value: "Commercial/Industrial (C&I)" },
+] as const;
 
 const BUILDING_TYPE_OPTIONS = [
-    { label: "Appartment/Flat", value: "appartment" },
-    { label: "Bungalow", value: "bungalow" },
-    { label: "Duplex", value: "duplex" },
-    { label: "Mansion/High-Rise", value: "mansion" }
-];
+    { label: "Flat / Apartment", value: "Flat / Apartment" },
+    { label: "Bungalow", value: "Bungalow" },
+    { label: "Duplex", value: "Duplex" },
+    { label: "Mansion / High-Rise", value: "Mansion / High-Rise" },
+] as const;
+
+function SelectDropdown({
+    value,
+    onValueChange,
+    options,
+    placeholder,
+}: {
+    value: string;
+    onValueChange: (val: string) => void;
+    options: readonly { label: string; value: string }[];
+    placeholder: string;
+}) {
+    return (
+        <div className="relative w-full">
+            <select
+                value={value}
+                onChange={e => onValueChange(e.target.value)}
+                className={cn(
+                    "h-11 w-full appearance-none rounded-xl bg-[#F2F4F7] px-4 pr-10 text-sm outline-none transition cursor-pointer font-medium border border-transparent focus:border-[#2CB22C] focus:bg-white",
+                    value ? "text-[#101828]" : "text-[#98A2B3]"
+                )}
+            >
+                <option value="" disabled className="text-[#98A2B3]">
+                    {placeholder}
+                </option>
+                {options.map(opt => (
+                    <option key={opt.value} value={opt.value} className="text-[#101828] py-1.5">
+                        {opt.label}
+                    </option>
+                ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#667085]" />
+        </div>
+    );
+}
 
 type Totals = {
     totalWh: number;
@@ -306,7 +339,7 @@ export default function GetQuoteDialog({
                         <p className="text-sm font-semibold text-[#101828]">Project Location & Details</p>
 
                         <Field label="Location">
-                            <ComboboxField value={location} onValueChange={setLocation} options={LOCATION_OPTIONS} placeholder="Select Location (e.g. Urban)" className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0" />
+                            <SelectDropdown value={location} onValueChange={setLocation} options={LOCATION_OPTIONS} placeholder="Select Location (e.g. Urban)" />
                         </Field>
 
                         <Field label="Installation Address (Optional)">
@@ -319,11 +352,11 @@ export default function GetQuoteDialog({
                         </Field>
 
                         <Field label="Installation Type">
-                            <ComboboxField value={installationType} onValueChange={setInstallationType} options={INSTALLATION_TYPE_OPTIONS} placeholder="Select Installation Type" className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0" />
+                            <SelectDropdown value={installationType} onValueChange={setInstallationType} options={INSTALLATION_TYPE_OPTIONS} placeholder="Select Installation Type" />
                         </Field>
 
                         <Field label="Building Type (Optional)">
-                            <ComboboxField value={buildingType} onValueChange={setBuildingType} options={BUILDING_TYPE_OPTIONS} placeholder="Select Building Type" className="h-11 w-full rounded-xl bg-[#F2F4F7] border-0 shadow-none focus:ring-0" />
+                            <SelectDropdown value={buildingType} onValueChange={setBuildingType} options={BUILDING_TYPE_OPTIONS} placeholder="Select Building Type" />
                         </Field>
 
                         <Field label="Note (Optional)">
