@@ -156,33 +156,90 @@ const CalculatorSectionTwo = () => {
     return buildSelectedDevices(completeRows);
   }, [completeRows]);
 
-  // Live search: uses the correct /calculator/catalog?q= endpoint
+  const [catalogPresets, setCatalogPresets] = useState<CatalogItem[]>([]);
+
+  // Preload entire appliance catalog once on page visit for instant search without database delays
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCatalog() {
+      try {
+        const response = await fetch(buildApiUrl("calculator/catalog"), {
+          method: "GET",
+          headers: { Accept: "application/json" },
+        });
+        if (response.ok) {
+          const data = (await response.json()) as CatalogSearchResponse;
+          if (data.success && !cancelled) {
+            const items = data.data.presets ?? data.data.matches ?? [];
+            setCatalogPresets(items);
+          }
+        }
+      } catch {
+        // Ignored, will fall back to live API search if needed
+      }
+    }
+    loadCatalog();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Live search: instantaneous in-memory search from preloaded catalog (zero database queries)
   useEffect(() => {
     if (!activeRowId) {
-      setActiveSuggestions([]);
-      return;
-    }
-
-    const activeRow = rows.find(row => row.id === activeRowId);
-    const query = activeRow?.item.trim() ?? "";
-
-    if (query.length < 2) {
       setActiveSuggestions([]);
       setIsSearching(false);
       return;
     }
 
+    const activeRow = rows.find((row) => row.id === activeRowId);
+    const rawQuery = activeRow?.item.trim().toLowerCase() ?? "";
+
+    if (rawQuery.length < 2) {
+      setActiveSuggestions([]);
+      setIsSearching(false);
+      return;
+    }
+
+    // Instant in-memory search when catalog is loaded
+    if (catalogPresets.length > 0) {
+      const q = rawQuery;
+      const matches = catalogPresets.filter((item) => {
+        const nameMatch = item.name.toLowerCase().includes(q);
+        const keyMatch = item.key.toLowerCase().includes(q);
+        const catMatch = item.category?.toLowerCase().includes(q);
+        const aliasMatch =
+          Array.isArray(item.search_aliases) &&
+          item.search_aliases.some((a) => a.toLowerCase().includes(q));
+        return nameMatch || keyMatch || catMatch || aliasMatch;
+      });
+
+      // Sort by relevance: exact match or startsWith first
+      matches.sort((a, b) => {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+        const aStarts = aName.startsWith(q);
+        const bStarts = bName.startsWith(q);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return aName.localeCompare(bName);
+      });
+
+      setActiveSuggestions(matches.slice(0, 10));
+      setIsSearching(false);
+      return;
+    }
+
+    // Fallback if catalog is still loading
     const controller = new AbortController();
+    setIsSearching(true);
     const timeout = setTimeout(async () => {
       try {
-        setIsSearching(true);
-        // Fixed: was calling /appliances, now correctly calls /calculator/catalog
         const response = await fetch(
-          buildApiUrl("calculator/catalog", { q: query }),
+          buildApiUrl("calculator/catalog", { q: rawQuery }),
           {
             method: "GET",
             signal: controller.signal,
-            cache: "no-store",
           }
         );
 
@@ -192,7 +249,7 @@ const CalculatorSectionTwo = () => {
         }
 
         const data = (await response.json()) as CatalogSearchResponse;
-        if (data.success) {
+        if (data.success && !controller.signal.aborted) {
           setActiveSuggestions(data.data.matches ?? data.data.presets ?? []);
         } else {
           setActiveSuggestions([]);
@@ -206,13 +263,13 @@ const CalculatorSectionTwo = () => {
           setIsSearching(false);
         }
       }
-    }, 250);
+    }, 150);
 
     return () => {
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [activeRowId, rows]);
+  }, [activeRowId, rows, catalogPresets]);
 
   useEffect(() => {
     if (!completeRows.length) {
