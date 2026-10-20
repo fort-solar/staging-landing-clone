@@ -42,7 +42,7 @@ export const TESTIMONIAL_CONTENT = [
     name: "Bridget Samuel",
     role: "Creator",
     testimony:
-      "FortSolar pays attention to details and ensures you get the best energy solutions for your home and business. The best!",
+      "Fortsolar pays attention to details and ensures you get the best energy solutions for your home and business. The best!",
     star: 5,
   },
   {
@@ -70,7 +70,7 @@ export const TESTIMONIAL_CONTENT = [
     name: "Bridget Samuel",
     role: "Creator",
     testimony:
-      "FortSolar pays attention to details and ensures you get the best energy solutions for your home and business. The best!",
+      "Fortsolar pays attention to details and ensures you get the best energy solutions for your home and business. The best!",
     star: 5,
   },
   {
