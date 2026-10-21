@@ -78,8 +78,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=localStorage.getItem("fortsolar:theme_preference")||localStorage.getItem("fortsolar:appearance")||localStorage.getItem("theme");var isDark=p==="dark"||((!p||p==="system")&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",isDark);if(isDark){document.documentElement.style.backgroundColor="#0a0f1d";document.documentElement.style.colorScheme="dark";}else{document.documentElement.style.backgroundColor="#ffffff";document.documentElement.style.colorScheme="light";}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body
-        className={`${fontInter.variable} ${fontPoppins.variable}  antialiased`}
+        className={`${fontInter.variable} ${fontPoppins.variable} antialiased bg-white dark:bg-[#0a0f1d] text-slate-900 dark:text-slate-100 transition-colors`}
         suppressHydrationWarning
       >
         <Script
