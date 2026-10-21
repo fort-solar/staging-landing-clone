@@ -11,8 +11,6 @@ import Footer from '@/components/features/global/Footer';
 import AboutServices from '@/components/ui/about/AboutServices';
 import HomeBrands from '@/components/ui/home/HomeBrands';
 import VideoTestimonial from '@/components/ui/about/VideoTestimonial';
-import { resolveSitePageOrFallback } from '@/lib/site-pages';
-import SitePageRenderer from '@/components/site-pages/SitePageRenderer';
 
 export const metadata: Metadata = {
     title: "About Fortsolar",
@@ -30,13 +28,7 @@ export const metadata: Metadata = {
     },
 };
 
-const page = async () => {
-    const { page: dynamicPage, hasDynamicContent } = await resolveSitePageOrFallback("about");
-
-    if (dynamicPage && hasDynamicContent) {
-        return <SitePageRenderer page={dynamicPage} />;
-    }
-
+const page = () => {
     return (
         <div className="min-h-screen bg-white">
             <AboutHero />

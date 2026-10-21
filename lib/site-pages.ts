@@ -6,8 +6,10 @@ import type {
 import { fetchJson } from "@/lib/public-content";
 
 export async function getSitePageBySlug(slug: string) {
+  const cleanSlug = encodeURIComponent(slug.trim());
   const detailPayload = await fetchJson<SitePageDetailApiResponse>(
-    `/api/v1/admin/site-pages/${slug}`,
+    `/api/v1/site-pages/${cleanSlug}`,
+    { revalidate: 300, timeoutMs: 1500 },
   );
 
   if (detailPayload?.success && detailPayload.data?.sections?.length) {
@@ -15,7 +17,8 @@ export async function getSitePageBySlug(slug: string) {
   }
 
   const listPayload = await fetchJson<SitePageListApiResponse>(
-    `/api/v1/admin/site-pages/?slug=${encodeURIComponent(slug)}`,
+    `/api/v1/site-pages/?slug=${cleanSlug}`,
+    { revalidate: 300, timeoutMs: 1500 },
   );
 
   if (!listPayload?.success || !listPayload.data?.length) {

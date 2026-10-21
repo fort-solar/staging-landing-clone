@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,21 +7,14 @@ import { FaTimes } from "react-icons/fa";
 import { FaBars } from "react-icons/fa6";
 import { navItems, NotDesigned } from "../constants";
 import Link from "next/link";
-import { Search } from "lucide-react"
-import { Logo } from "../icons/Logo"
+import { Logo } from "../icons/Logo";
 import { Logo_half } from "../icons/Logo_half";
 import { LogoMobile } from "../icons/LogoMobile";
-
-
-
-
-
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,26 +37,23 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   return (
-    <header className="sticky top-0 z-50 w-full  lg:bg-background p-3 lg:p-0 bg-transparent ">
+    <header className="sticky top-0 z-50 w-full lg:bg-background p-3 lg:p-0 bg-transparent">
       <div className="bg-white border lg:border-none rounded-lg lg:rounded-none lg:bg-white flex items-center justify-between px-4 lg:px-2 py-2 lg:py-5 max-w-6xl mx-auto">
-        <div
-          className="font-bold  text-2xl text-fbp-primary-quiet font-poppins cursor-pointer w-fit"
-        >
-          <Link href={"/"} className="gap-2 items-center hidden lg:flex">
+        <div className="font-bold text-2xl text-fbp-primary-quiet font-poppins cursor-pointer w-fit">
+          <Link href={"/"} prefetch={true} className="gap-2 items-center hidden lg:flex">
             <Logo className="h-7 w-auto" />
           </Link>
-          <Link href={"/"} className="gap-2 items-center flex lg:hidden">
-            <LogoMobile className={`h-7 w-auto  ${isScrolled ? "hidden" : "block"}`} />
+          <Link href={"/"} prefetch={true} className="gap-2 items-center flex lg:hidden">
+            <LogoMobile className={`h-7 w-auto ${isScrolled ? "hidden" : "block"}`} />
           </Link>
-          <Link href={"/"} className="gap-2 items-center flex lg:hidden">
+          <Link href={"/"} prefetch={true} className="gap-2 items-center flex lg:hidden">
             <Logo_half className={`h-8 w-auto ${isScrolled ? "block" : "hidden"}`} />
           </Link>
-
         </div>
+
         <nav className="hidden lg:flex space-x-1">
           {navItems.map((item) => {
             const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
@@ -76,53 +65,38 @@ export default function Navbar() {
               <Link
                 href={isPartOfNotDesigned ? "" : item.path}
                 key={item.path}
-                className={`flex gap-1 items-center transition-colors py-2 px-4 rounded-md  ${isActive
-                  ? "text-[#000000] font-semibold  cursor-pointer bg-gray-50"
-                  : isPartOfNotDesigned ? "opacity-30 cursor-not-allowed"
-                    : "text-fbp-primary-quiet  hover:text-fbp-primary-quiet hover:bg-gray-50 cursor-pointer"
-                  }`}
+                prefetch={true}
+                className={`flex gap-1 items-center transition-colors py-2 px-4 rounded-md ${
+                  isActive
+                    ? "text-[#000000] font-semibold cursor-pointer bg-gray-50"
+                    : isPartOfNotDesigned
+                    ? "opacity-30 cursor-not-allowed"
+                    : "text-fbp-primary-quiet hover:text-fbp-primary-quiet hover:bg-gray-50 cursor-pointer"
+                }`}
               >
                 {item.label}
               </Link>
             );
           })}
         </nav>
+
         <div className="hidden lg:flex items-center justify-end gap-3">
-          <div
-            className={`relative flex items-center overflow-hidden transition-all duration-300 ease-out
-    border rounded-lg py-2 bg-white
-    ${searchOpen ? "w-64 px-3" : "w-fit px-0"}
-  `}
-          >
-
-            <button
-              onClick={() => setSearchOpen(true)}
-              className={`absolute left-2 transition-all flex items-center gap-3 duration-200
-      ${searchOpen ? "opacity-0 scale-75" : "opacity-100"}
-    `}
+          <Link href="/contact" prefetch={true}>
+            <Button
+              variant="outline"
+              className="cursor-pointer font-medium text-slate-800 border-slate-300 hover:border-[#048A05] hover:text-[#048A05] hover:bg-emerald-50/60 transition-all rounded-xl px-4 py-2 text-sm shadow-2xs hover:shadow-xs"
             >
-              <Search className="w-4 h-4" /> Search
-            </button>
-            <input
-              type="text"
-              placeholder="Search..."
-              autoFocus={searchOpen}
-              onBlur={() => setSearchOpen(false)}
-              className={`w-full bg-transparent text-sm outline-none transition-all duration-300
-      ${searchOpen ? "opacity-100 pl-8" : "opacity-0 pointer-events-none"}
-    `}
-            />
-          </div>
-          <Link href="/energy-calculator">
-            <Button className="cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]  hover:opacity-90"> Energy Calculator </Button>
+              Get a Quote
+            </Button>
           </Link>
-
+          <Link href="/energy-calculator" prefetch={true}>
+            <Button className="cursor-pointer text-white font-semibold bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-95 shadow-md shadow-emerald-700/15 transition-all rounded-xl px-5 py-2 text-sm">
+              Energy Calculator
+            </Button>
+          </Link>
         </div>
 
-
         <div className="lg:hidden flex items-center gap-1">
-
-
           <Button
             variant="ghost"
             size="icon"
@@ -135,14 +109,13 @@ export default function Navbar() {
         </div>
       </div>
 
-
       {menuOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden animate-fadeIn bg-white/75 backdrop-blur-2xl">
+        <div className="fixed inset-0 z-40 lg:hidden animate-fadeIn bg-white/90 backdrop-blur-2xl">
           <div className="flex justify-between items-center p-7">
             <Logo_half className="h-10 w-auto block lg:hidden" />
-            <FaTimes size={20} onClick={toggleMenu} className="" />
+            <FaTimes size={20} onClick={toggleMenu} className="cursor-pointer" />
           </div>
-          <div className="flex flex-col mt-6 px-6">
+          <div className="flex flex-col mt-4 px-6">
             {navItems.map((item) => {
               const isPartOfNotDesigned = NotDesigned.find((i) => i.name === item.label);
               const isActive =
@@ -160,49 +133,34 @@ export default function Navbar() {
                     }
                     setMenuOpen(false);
                   }}
-                  className={`flex items-center gap-3 text-lg font-medium mb-4 ${isActive
-                    ? "text-[#036d03]"
-                    : isPartOfNotDesigned ? "opacity-50 cursor-not-allowed"
-                      : ""
-                    }`}
+                  className={`flex items-center gap-3 text-lg font-medium mb-4 text-left ${
+                    isActive
+                      ? "text-[#048A05] font-semibold"
+                      : isPartOfNotDesigned
+                      ? "opacity-50 cursor-not-allowed"
+                      : "text-slate-800"
+                  }`}
                 >
                   {item.label}
                 </button>
               );
             })}
-            <div className="border-t border-[#3E45501A] mt-5 mb-10">
-              <div
-                className={`relative mt-5 flex items-center overflow-hidden transition-all duration-300 ease-out
-    border rounded-lg py-4 bg-white
-    ${searchOpen ? "w-64 px-3" : "w-full px-0"}
-  `}
-              >
-
-                <button
-                  onClick={() => setSearchOpen(true)}
-                  className={`absolute left-2 transition-all flex items-center gap-3 duration-200
-      ${searchOpen ? "opacity-0 scale-75" : "opacity-100"}
-    `}
+            <div className="border-t border-[#3E45501A] mt-4 pt-6 flex flex-col gap-3">
+              <Link href="/contact" onClick={() => setMenuOpen(false)} prefetch={true}>
+                <Button
+                  variant="outline"
+                  className="w-full cursor-pointer font-medium text-slate-800 border-slate-300 hover:bg-slate-50 py-5 rounded-xl text-base"
                 >
-                  <Search className="w-4 h-4" /> Search
-                </button>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  autoFocus={searchOpen}
-                  onBlur={() => setSearchOpen(false)}
-                  className={`w-full bg-transparent text-sm outline-none transition-all duration-300
-      ${searchOpen ? "opacity-100 pl-8" : "opacity-0 pointer-events-none"}
-    `}
-                />
-              </div>
-              <Link href="/energy-calculator" onClick={() => setMenuOpen(false)}>
-                <Button className="w-full mt-4 cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)]  hover:opacity-90 py-6"> Energy Calculator </Button>
+                  Get a Quote
+                </Button>
+              </Link>
+              <Link href="/energy-calculator" onClick={() => setMenuOpen(false)} prefetch={true}>
+                <Button className="w-full cursor-pointer text-white font-semibold bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90 py-5 rounded-xl shadow-md text-base">
+                  Energy Calculator
+                </Button>
               </Link>
             </div>
           </div>
-
-
         </div>
       )}
     </header>

@@ -67,32 +67,48 @@ export function withQuery(
   return query ? `${path}?${query}` : path;
 }
 
-export async function fetchJson<T>(path: string): Promise<T | null> {
+export async function fetchJson<T>(
+  path: string,
+  options: { revalidate?: number; timeoutMs?: number } = {},
+): Promise<T | null> {
   const primaryUrl = buildApiUrl(path);
+  const revalidate = options.revalidate ?? 120;
+  const timeoutMs = options.timeoutMs ?? 2500;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(primaryUrl, {
       headers: {
         Accept: "application/json",
       },
-      cache: "no-store",
+      next: { revalidate },
+      signal: controller.signal,
     });
+    clearTimeout(timer);
 
     if (response.ok) {
       return (await response.json().catch(() => null)) as T | null;
     }
-  } catch (error) {
+  } catch {
+    clearTimeout(timer);
     if (primaryUrl.includes("localhost") || primaryUrl.includes("127.0.0.1")) {
+      const fallbackController = new AbortController();
+      const fallbackTimer = setTimeout(() => fallbackController.abort(), 2000);
       try {
         const fallbackUrl = buildApiUrl(path, DEFAULT_API_HOST);
         const fallbackRes = await fetch(fallbackUrl, {
           headers: { Accept: "application/json" },
-          cache: "no-store",
+          next: { revalidate },
+          signal: fallbackController.signal,
         });
+        clearTimeout(fallbackTimer);
         if (fallbackRes.ok) {
           return (await fallbackRes.json().catch(() => null)) as T | null;
         }
       } catch {
+        clearTimeout(fallbackTimer);
         // Fallback also failed
       }
     }

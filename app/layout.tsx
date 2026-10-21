@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip"
+import TopProgressBar from "@/components/ui/TopProgressBar";
 
 const fontInter = Inter({
   variable: "--font-inter",
@@ -89,6 +90,7 @@ export default function RootLayout({
         className={`${fontInter.variable} ${fontPoppins.variable} antialiased bg-white text-slate-900 transition-colors`}
         suppressHydrationWarning
       >
+        <TopProgressBar />
         <Script
           id="ld-org"
           type="application/ld+json"

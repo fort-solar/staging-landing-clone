@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import React from 'react';
-import CalculatorHero from '@/components/ui/calculator/ CalculatorHero';
+import CalculatorHero from '@/components/ui/calculator/CalculatorHero';
 import CalculatorSectionOne from '@/components/ui/calculator/CalculatorSectionOne';
 import CalculatorSectionTwo from '@/components/ui/calculator/CalculatorSectionTwo';
 // import CalculatorSectionThree from '@/components/ui/calculator/CalculatorSectionThree';
