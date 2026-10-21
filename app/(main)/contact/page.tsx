@@ -17,7 +17,7 @@ const Page = async () => {
   }
 
   return (
-    <div className="min-h-screen  bg-white dark:bg-black">
+    <div className="min-h-screen bg-white">
       <ContactHero />
       <ContactSectionOne />
       <ContactSectionTwo />

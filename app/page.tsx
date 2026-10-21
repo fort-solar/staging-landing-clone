@@ -47,9 +47,9 @@ export default async function Home() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen  bg-white dark:bg-black">
+      <div className="min-h-screen bg-white">
         <HomeHero />
-        <main className="min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-5 pb-5 lg:pb-20  space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start">
+        <main className="min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-5 pb-5 lg:pb-20 space-y-10 lg:space-y-20 bg-white sm:items-start">
           <HomeAbout />
         </main>
         <HomeExplore />

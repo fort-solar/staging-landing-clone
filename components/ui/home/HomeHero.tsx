@@ -36,7 +36,7 @@ const HomeHero = () => {
 
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-4 py-0 lg:py-4 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start" ref={heroRef}>
+        <div className="w-full max-w-6xl mx-auto px-4 py-0 lg:py-4 space-y-10 lg:space-y-20 bg-white sm:items-start" ref={heroRef}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14">
                 {/* [ui-fix] stretch left column to full height so the bottom marquee is stable during transitions */}
                 <div className="flex flex-col justify-between h-full">
@@ -126,7 +126,7 @@ const HomeHero = () => {
                                                 <h1 className="text-lg xs:text-xl md:text-3.5xl font-bold font-poppins leading-tight">
                                                     {item.title}
                                                 </h1>
-                                                <p className="text-[11px] xs:text-xs md:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                                                <p className="text-[11px] xs:text-xs md:text-base text-neutral-600 leading-relaxed">
                                                     {item.content}
                                                 </p>
                                                 <Link href={item.href} className="w-fit mt-1">

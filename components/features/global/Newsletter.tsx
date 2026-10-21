@@ -52,9 +52,9 @@ const Newsletter = () => {
   return (
     <div>
       <Toaster />
-      <div className={`relative w-full max-w-6xl mx-auto px-4 ${pathname === "/energy-calculator" ? "lg:pt-0" : "lg:pt-20"}  dark:bg-black sm:items-start`}>
+      <div className={`relative w-full max-w-6xl mx-auto px-4 ${pathname === "/energy-calculator" ? "lg:pt-0" : "lg:pt-20"} sm:items-start`}>
         <div className='grid grid-cols-1 lg:grid-cols-[3.2fr_5.6fr_3.2fr] gap-6 lg:gap-10 items-center'>
-          <div className="hidden lg:block bg-[url('/engineer_updated.png')] bg-cover bg-center min-h-87.5 rounded-3xl lg:rounded-[40px] shadow-lg border border-neutral-100 dark:border-neutral-900 transition-transform duration-500 hover:scale-103">
+          <div className="hidden lg:block bg-[url('/engineer_updated.png')] bg-cover bg-center min-h-87.5 rounded-3xl lg:rounded-[40px] shadow-lg border border-neutral-100 transition-transform duration-500 hover:scale-103">
 
           </div>
           <div className='lg:py-10 h-full lg:min-h-87.5'>
@@ -66,7 +66,7 @@ const Newsletter = () => {
             </div>
           </div>
 
-          <div className="hidden lg:block bg-[url('/solar_panel_in_sun.png')] bg-cover bg-center min-h-87.5 rounded-3xl lg:rounded-[40px] shadow-lg border border-neutral-100 dark:border-neutral-900 transition-transform duration-500 hover:scale-103">
+          <div className="hidden lg:block bg-[url('/solar_panel_in_sun.png')] bg-cover bg-center min-h-87.5 rounded-3xl lg:rounded-[40px] shadow-lg border border-neutral-100 transition-transform duration-500 hover:scale-103">
 
           </div>
         </div>

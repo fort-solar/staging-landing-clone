@@ -6,7 +6,7 @@ import { STORE_PACKAGES_URL } from "@/lib/store-links";
 const CallToActionOne = () => {
     return (
         <div className='mt-20'>
-            <div className="min-h-[20vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-12 lg:py-0 dark:bg-black sm:items-start bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] rounded-3xl md:rounded-[80px] lg:rounded-[108px] flex flex-col items-center justify-center text-center gap-5">
+            <div className="min-h-[20vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-12 lg:py-0 bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] rounded-3xl md:rounded-[80px] lg:rounded-[108px] flex flex-col items-center justify-center text-center gap-5">
                 <div className='max-w-3xl mx-auto'>
                     <p className='text-white leading-snug text-2xl md:text-3xl lg:text-5xl font-bold font-poppins'>Ready to power your home or business with solar?</p>
                 </div>

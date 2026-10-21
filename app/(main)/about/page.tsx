@@ -38,9 +38,9 @@ const page = async () => {
     }
 
     return (
-        <div className="min-h-screen  bg-white dark:bg-black">
+        <div className="min-h-screen bg-white">
             <AboutHero />
-            <main className="min-h-screen w-full max-w-6xl mx-auto px-4 py-10 space-y-10 lg:space-y-20 bg-white dark:bg-black sm:items-start">
+            <main className="min-h-screen w-full max-w-6xl mx-auto px-4 py-10 space-y-10 lg:space-y-20 bg-white sm:items-start">
                 <HomeAbout />
             </main>
             <NumberBanner />

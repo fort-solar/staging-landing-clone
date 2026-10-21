@@ -11,7 +11,7 @@ import { SwiperSlide } from "swiper/react";
 const CalculatorSectionOne = () => {
     return (
         <div>
-            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10  dark:bg-black sm:items-start">
+            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10 sm:items-start">
                 <div className='flex flex-col lg:flex-row justify-start text-start  gap-6 lg:gap-2 lg:text-start lg:justify-between w-full items-center mt-5'>
                     <div className="max-w-3xl leading-10 lg:leading-16 text-3xl lg:text-5xl font-bold font-poppins mt-2">
                         How to Use the Energy Calculator

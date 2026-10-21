@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <div className="min-h-screen  bg-white dark:bg-black">
+    <div className="min-h-screen bg-white">
       <CalculatorHero />
       <CalculatorSectionOne />
       < CalculatorSectionTwo />

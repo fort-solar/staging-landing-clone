@@ -6,7 +6,7 @@ import { trusted_brands_1,brand_1, brand_2, brand_3, brand_4, brand_5, brand_6, 
 const HomeBrands = () => {
     return (
         <div className="my-10">
-            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-10 space-y-10  dark:bg-black sm:items-start">
+            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 py-10 space-y-10 sm:items-start">
                 <div className="mt-6 flex flex-col items-center text-center gap-3">
                     <p className='font-poppins'>Our Partner Brands</p>
                 </div>

@@ -10,7 +10,7 @@ import { FaTiktok, FaYoutube, FaInstagram, FaFacebook, FaLinkedin } from 'react-
 const ContactSectionOne = () => {
     return (
         <div>
-            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10  dark:bg-black sm:items-start">
+            <div className=" min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10 sm:items-start">
                 <div className='my-10'>
                     <div className=" w-fit p-4 rounded-t-lg transition-all text-white cursor-pointer text-sm flex items-center justify-center  gap-3 bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
                         <p className='font-medium'>Lagos Experience Centre</p>

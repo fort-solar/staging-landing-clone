@@ -54,7 +54,7 @@ const AvatarInitial = ({ name, size = 40 }: AvatarInitialProps) => {
 const Testimonials = () => {
     return (
         <div>
-            <div className=" min-h-[60%] w-full max-w-6xl mx-auto px-4  space-y-10  dark:bg-black sm:items-start">
+            <div className="min-h-[60%] w-full max-w-6xl mx-auto px-4 space-y-10 sm:items-start">
                 <div className="mt-6 flex flex-col items-center text-center gap-3">
                     <p className="text-3xl md:text-4xl lg:text-5xl font-bold font-poppins">
                         What Our Customers Say

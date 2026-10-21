@@ -22,7 +22,7 @@ const AboutServices = () => {
 
     return (
         <div>
-            <div className="min-h-[40vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10  dark:bg-black sm:items-start">
+            <div className="min-h-[40vh] lg:min-h-[60vh] w-full max-w-6xl mx-auto px-4 pt-10 space-y-10 sm:items-start">
                 <div className="text-3xl lg:text-5xl text-[#3B3B3B] font-bold font-poppins mt-2">
                     Our Services
                 </div>
@@ -80,7 +80,7 @@ const AboutServices = () => {
                             const image = s.rightBackgroundImage;
                             return (
                                 <SwiperSlide key={i}>
-                                    <div className=" w-full max-w-6xl mx-auto  dark:bg-black sm:items-start rounded-[18px] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+                                    <div className=" w-full max-w-6xl mx-auto sm:items-start rounded-[18px] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
                                         <div className={`order-2 lg:order-1 flex flex-col h-full  min-h-[40vh] lg:min-h-[50vh] justify-center text-start gap-5 px-5 lg:px-16`} style={{ backgroundColor: s.leftColor }}>
                                             <p className='text-[#3B3B3B] leading-16 text-3xl lg:text-5xl font-bold font-poppins'>{s.title}</p>
                                             <p className=' text-[#3B3B3B] '>{s.description}</p>
