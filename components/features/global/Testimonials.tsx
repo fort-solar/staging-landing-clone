@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { StarIcon } from '../icons/StarIcon';
+import { GoogleIcon } from '../icons/GoogleIcon';
 import { TESTIMONIAL_CONTENT } from '../constants';
 import { motion } from "framer-motion";
 
@@ -59,7 +60,27 @@ const Testimonials = () => {
                     <p className="text-3xl md:text-4xl lg:text-5xl font-bold font-poppins">
                         What Our Customers Say
                     </p>
-                    <p>Affordable and efficient solutions tailored to your needs.</p>
+                    <p className="text-[#5A646B]">Affordable and efficient solutions tailored to your needs.</p>
+
+                    {/* Consolidated Google Verified Rating */}
+                    <a
+                      href="https://www.google.com/search?q=Fortsolar+Reviews"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-2.5 rounded-full border border-amber-300/80 bg-amber-50/70 px-4 py-1.5 text-xs font-medium text-amber-950 transition hover:bg-amber-100/90 shadow-2xs mt-1"
+                      title="View verified Fortsolar customer reviews on Google"
+                    >
+                      <span className="flex items-center text-amber-500 text-xs tracking-tight">★★★★★</span>
+                      <span className="font-bold text-slate-900">4.9 / 5.0</span>
+                      <span className="text-slate-400">·</span>
+                      <span className="flex items-center gap-1.5 font-semibold text-slate-700">
+                        <GoogleIcon />
+                        <span>Fortsolar Verified Rating</span>
+                      </span>
+                      <span className="text-[11px] font-semibold text-[#048A05] group-hover:translate-x-0.5 transition-transform">
+                        Read Google Reviews ↗
+                      </span>
+                    </a>
                 </div>
 
                 <div className="relative h-105 overflow-hidden">
