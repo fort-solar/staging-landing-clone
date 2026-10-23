@@ -62,24 +62,27 @@ const Testimonials = () => {
                     </p>
                     <p className="text-[#5A646B]">Affordable and efficient solutions tailored to your needs.</p>
 
-                    {/* Consolidated Google Verified Rating */}
+                    {/* Consolidated Google Verified Rating (Location-Aware Google Maps) */}
                     <a
-                      href="https://www.google.com/search?q=Fortsolar+Reviews"
+                      href="https://www.google.com/maps/search/?api=1&query=Fortsolar"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-2.5 rounded-full border border-amber-300/80 bg-amber-50/70 px-4 py-1.5 text-xs font-medium text-amber-950 transition hover:bg-amber-100/90 shadow-2xs mt-1"
-                      title="View verified Fortsolar customer reviews on Google"
+                      className="group mt-2 inline-flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 rounded-2xl sm:rounded-full border border-amber-300/80 bg-gradient-to-b from-amber-50/90 to-amber-100/60 px-4 py-2 sm:py-1.5 text-xs font-medium text-amber-950 transition hover:from-amber-100 hover:to-amber-200/80 shadow-2xs max-w-full"
+                      title="View Fortsolar reviews and nearest office on Google Maps"
                     >
-                      <span className="flex items-center text-amber-500 text-xs tracking-tight">★★★★★</span>
-                      <span className="font-bold text-slate-900">4.9 / 5.0</span>
-                      <span className="text-slate-400">·</span>
-                      <span className="flex items-center gap-1.5 font-semibold text-slate-700">
-                        <GoogleIcon />
-                        <span>Fortsolar Verified Rating</span>
-                      </span>
-                      <span className="text-[11px] font-semibold text-[#048A05] group-hover:translate-x-0.5 transition-transform">
-                        Read Google Reviews ↗
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="flex text-amber-500 text-xs tracking-tight">★★★★★</span>
+                        <span className="font-bold text-slate-900">4.9 / 5.0</span>
+                        <span className="text-slate-400">·</span>
+                        <span className="flex items-center gap-1.5 font-semibold text-slate-800">
+                          <GoogleIcon />
+                          <span>Google Verified</span>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-[11px] font-semibold text-[#048A05] group-hover:translate-x-0.5 transition-transform">
+                        <span>View Reviews &amp; Nearest Office</span>
+                        <span className="text-[10px]">↗</span>
+                      </div>
                     </a>
                 </div>
 
