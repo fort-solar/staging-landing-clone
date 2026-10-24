@@ -1,10 +1,11 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StarIcon } from '../icons/StarIcon';
 import { GoogleIcon } from '../icons/GoogleIcon';
 import { TESTIMONIAL_CONTENT } from '../constants';
 import { motion } from "framer-motion";
+import { buildApiUrl } from '@/lib/public-content';
 
 interface AvatarInitialProps {
   name: string;
@@ -53,6 +54,31 @@ const AvatarInitial = ({ name, size = 40 }: AvatarInitialProps) => {
 
 
 const Testimonials = () => {
+    const [items, setItems] = useState<any[]>(TESTIMONIAL_CONTENT);
+
+    useEffect(() => {
+        let active = true;
+        fetch(buildApiUrl("/reviews"))
+            .then((res) => (res.ok ? res.json() : null))
+            .then((json) => {
+                if (!active || !json) return;
+                const rows = Array.isArray(json) ? json : json?.data || [];
+                if (rows.length > 0) {
+                    const mapped = rows.map((r: any) => ({
+                        name: r.name || "Customer",
+                        role: r.role || "Verified Google Customer",
+                        testimony: r.review_text || "",
+                        star: r.rating || 5,
+                    }));
+                    setItems([...mapped, ...TESTIMONIAL_CONTENT]);
+                }
+            })
+            .catch(() => {});
+        return () => {
+            active = false;
+        };
+    }, []);
+
     return (
         <div>
             <div className="min-h-[60%] w-full max-w-6xl mx-auto px-4 space-y-10 sm:items-start">
@@ -96,8 +122,8 @@ const Testimonials = () => {
                             repeat: Infinity,
                         }}
                     >
-                        {TESTIMONIAL_CONTENT.concat(TESTIMONIAL_CONTENT).map((t, i) => (
-                            <TestimonialRow key={i} t={t} />
+                        {items.concat(items).map((t, i) => (
+                            <TestimonialRow key={`${t.name}-${i}`} t={t} />
                         ))}
                     </motion.div>
                     <div className="pointer-events-none absolute top-0 left-0 right-0 h-20 bg-linear-to-b from-white to-transparent" />
@@ -114,20 +140,24 @@ export default Testimonials
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function TestimonialRow({ t }: any) {
+    const isGoogle = typeof t.role === 'string' && t.role.includes('Google');
     return (
-        <div className='bg-[#F9FAFB] p-4 space-y-6'>
-            <div className='flex gap-2 items-center'>
+        <div className='bg-[#F9FAFB] p-5 rounded-2xl border border-gray-100/90 shadow-2xs space-y-4 hover:border-emerald-200 transition-colors'>
+            <div className='flex gap-3 items-center'>
                 <AvatarInitial name={t.name} />
-                <div>
-                    <p className='font-semibold'>{t.name}</p>
-                    <p className='text-xs font-medium'>{t.role}</p>
+                <div className='min-w-0'>
+                    <p className='font-semibold text-sm text-slate-900 truncate'>{t.name}</p>
+                    <p className='text-xs font-medium text-slate-500 flex items-center gap-1.5'>
+                        {isGoogle && <span className="inline-flex shrink-0 scale-90"><GoogleIcon /></span>}
+                        <span className={isGoogle ? 'text-emerald-700 font-semibold' : ''}>{t.role}</span>
+                    </p>
                 </div>
             </div>
             <div>
-                <p className='text-xs'>{t.testimony}</p>
+                <p className='text-xs text-slate-600 leading-relaxed'>{t.testimony}</p>
             </div>
             <div className='flex gap-1 items-center'>
-                {Array.from({length: t.star}).map((_,i) => (
+                {Array.from({length: t.star || 5}).map((_,i) => (
                     <StarIcon key={i} />
                 ))}
             </div>
