@@ -62,13 +62,13 @@ const Testimonials = () => {
                     </p>
                     <p className="text-[#5A646B]">Affordable and efficient solutions tailored to your needs.</p>
 
-                    {/* Consolidated Google Verified Rating (Location-Aware Google Maps) */}
+                    {/* Consolidated Google Verified Rating (Location-Aware Google Search) */}
                     <a
-                      href="https://www.google.com/maps/search/?api=1&query=Fortsolar"
+                      href="https://www.google.com/search?q=Fortsolar"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group mt-2 inline-flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-3 rounded-2xl sm:rounded-full border border-amber-300/80 bg-gradient-to-b from-amber-50/90 to-amber-100/60 px-4 py-2 sm:py-1.5 text-xs font-medium text-amber-950 transition hover:from-amber-100 hover:to-amber-200/80 shadow-2xs max-w-full"
-                      title="View Fortsolar reviews and nearest office on Google Maps"
+                      title="View Fortsolar verified reviews and company profile on Google"
                     >
                       <div className="flex items-center gap-2">
                         <span className="flex text-amber-500 text-xs tracking-tight">★★★★★</span>
