@@ -28,7 +28,7 @@ export const CAROUSEL_CONTENT = [
     toast: "Solar Products & Packages",
     toast_color: "#FFC800",
     toast_background_color: "#FFC80014",
-    title: "Quality Products & Bundles You Can Trust",
+    title: "Quality Products & Packages You Can Trust",
     content:
       "Explore our collection of verified solar panels, batteries, and inverters, all sourced from trusted manufacturers and built for lasting performance.",
     buttonName: "View Store",
