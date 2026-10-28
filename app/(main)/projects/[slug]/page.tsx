@@ -225,7 +225,7 @@ export default async function ProjectDetailPage({
                 {project.isPackageBased ? (
                   <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
                     <Link
-                      href={project.packageSlug ? `${STORE_PACKAGES_URL}/${project.packageSlug}` : STORE_PACKAGES_URL}
+                      href={project.packageSlug ? `${STORE_PACKAGES_URL}/${project.packageSlug}` : project.packageId ? `${STORE_PACKAGES_URL}/${project.packageId}` : STORE_PACKAGES_URL}
                       className="w-full flex items-center justify-center gap-1.5"
                     >
                       <span>Get This Package</span>
