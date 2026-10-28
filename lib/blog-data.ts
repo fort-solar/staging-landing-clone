@@ -41,6 +41,7 @@ export type BlogPost = {
   publishedAtIso: string;
   readTime: string;
   readTimeMinutes: number;
+  authorName: string;
   coverImage: string;
   bodyHtml: string;
   headings: BlogHeading[];
@@ -250,6 +251,7 @@ function normalizeBlogRecord(record: unknown) {
     publishedAtIso,
     readTime: `${readTimeMinutes} min read`,
     readTimeMinutes,
+    authorName: readString(record, ["author_name", "author", "creator"], "Fortsolar Editorial"),
     coverImage: readString(record, ["image_url", "image"], BLOG_PLACEHOLDER_IMAGE),
     bodyHtml: decoratedBody.bodyHtml,
     headings: decoratedBody.headings,

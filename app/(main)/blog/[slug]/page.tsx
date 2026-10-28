@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { CalendarDays, Clock3 } from "lucide-react";
+import { CalendarDays, Clock3, User } from "lucide-react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaShare } from "react-icons/fa";
 
 import Footer from "@/components/features/global/Footer";
@@ -62,12 +62,18 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.65fr_0.8fr] lg:gap-8">
           <article>
             <div className="space-y-4">
-              <div className="flex items-center gap-5 text-sm text-[#667085]">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-5 text-sm text-[#667085]">
+                {post.authorName ? (
+                  <div className="flex items-center gap-1.5 font-medium text-slate-800">
+                    <User className="h-4 w-4 text-[#048A05]" />
+                    <span>{post.authorName}</span>
+                  </div>
+                ) : null}
+                <div className="flex items-center gap-1.5">
                   <CalendarDays className="h-4 w-4" />
                   <span>{post.publishedAt}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <Clock3 className="h-4 w-4" />
                   <span>{post.readTime}</span>
                 </div>

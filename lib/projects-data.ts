@@ -28,6 +28,10 @@ export type ProjectItem = {
   highlights: string[];
   systemDetails: ProjectSystemDetails;
   whatItCanPower: string[];
+  packageId: string | null;
+  packageName: string | null;
+  packageSlug: string | null;
+  isPackageBased: boolean;
   createdAt: string;
 };
 
@@ -278,6 +282,10 @@ export function normalizeProjectRecord(record: unknown) {
       ),
     },
     whatItCanPower: toStringList(record, ["what_it_powers"]),
+    packageId: readString(record, ["package_id"]) || null,
+    packageName: readString(record, ["package_name"]) || null,
+    packageSlug: readString(record, ["package_slug"]) || null,
+    isPackageBased: Boolean(readString(record, ["package_id"]) && readString(record, ["package_id"]) !== "none"),
     createdAt,
   } satisfies ProjectItem;
 }

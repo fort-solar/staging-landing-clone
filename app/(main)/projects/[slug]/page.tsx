@@ -68,9 +68,20 @@ export default async function ProjectDetailPage({
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-3xl">
-              <div className="flex items-center gap-2 mb-2">
-                <MapPin className="h-4 w-4" />
-                <span>{project.location}</span>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full font-medium">
+                  <MapPin className="h-3.5 w-3.5" />
+                  <span>{project.location}</span>
+                </div>
+                {project.isPackageBased ? (
+                  <span className="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Installed from {project.packageName || "Package"}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                    Custom Bespoke Installation
+                  </span>
+                )}
               </div>
               <h1 className="text-3xl font-bold leading-tight font-poppins text-[#333333] lg:text-5xl">
                 {project.title}
@@ -156,10 +167,11 @@ export default async function ProjectDetailPage({
               )}
 
               <Button
+                asChild
                 variant="outline"
                 className="mt-8 h-11 rounded-xl w-full lg:w-fit border-[#0000004D] bg-transparent px-6 text-[#111827] hover:bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:text-white"
               >
-                Get Quote
+                <Link href="/energy-audit">Get Quote</Link>
               </Button>
             </div>
 
@@ -210,14 +222,24 @@ export default async function ProjectDetailPage({
               </p>
 
               <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
-
-                <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
-                  <Link href={STORE_PACKAGES_URL} className="w-full">
-                    Get Package
-                    <SlantedArrow className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-
+                {project.isPackageBased ? (
+                  <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
+                    <Link
+                      href={project.packageSlug ? `${STORE_PACKAGES_URL}/${project.packageSlug}` : STORE_PACKAGES_URL}
+                      className="w-full flex items-center justify-center gap-1.5"
+                    >
+                      <span>Get This Package</span>
+                      <SlantedArrow className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button asChild className="h-11 rounded-xl text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90">
+                    <Link href="/energy-audit" className="w-full flex items-center justify-center gap-1.5">
+                      <span>Request Custom Quote</span>
+                      <SlantedArrow className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                )}
 
                 <Button
                   asChild
@@ -228,8 +250,6 @@ export default async function ProjectDetailPage({
                     Talk to an Expert
                   </Link>
                 </Button>
-
-
               </div>
             </div>
           </section>
