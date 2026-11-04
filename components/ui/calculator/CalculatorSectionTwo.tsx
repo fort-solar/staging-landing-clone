@@ -2,7 +2,21 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, CheckCircle2, Trash2, Zap, Tent } from "lucide-react";
+import {
+  ArrowRight,
+  BatteryCharging,
+  CheckCircle2,
+  ChevronDown,
+  Cpu,
+  HelpCircle,
+  Info,
+  Moon,
+  Sun,
+  Tent,
+  Trash2,
+  AlertTriangle,
+  Zap,
+} from "lucide-react";
 import PdfIcon from "@/components/features/icons/PdfIcon";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -20,12 +34,16 @@ import {
   buildCalculatorQuotePayload,
   buildCalculatorTotals,
   buildSelectedDevices,
+  calculateEngineeringSystem,
   createCalculatorRow,
   deriveCalculatorRecommendation,
   parseCalculatorNumericInput,
   removeCalculatorRow,
+  resolveRowNightHours,
+  validateCalculatorRow,
   type CalculatorResponseData,
   type CalculatorRow as Row,
+  type SimultaneousMode,
   type Totals,
 } from "@/lib/calculator";
 
@@ -61,7 +79,7 @@ type SuggestedPackage = {
   is_active?: boolean;
   thumbnail_url?: string | null;
   package_image_url?: string | null;
-  matchScore: number; // calculated combined difference
+  matchScore: number;
 };
 
 type PackagesApiResponse = {
@@ -73,6 +91,51 @@ type CalculatorResponse = {
   success: boolean;
   data: CalculatorResponseData;
 };
+
+type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+const DEFAULT_FAQ_ITEMS: FaqItem[] = [
+  {
+    id: "night-hours",
+    question: "Why do I enter both Daily Hours and Night Hours?",
+    answer:
+      'Daily Hours is the total time an appliance runs in a 24-hour day (daytime + nighttime). When you tick "Night Backup", you enter how many of those hours happen at night (typically 6 PM – 6 AM). Your battery is sized strictly from your Night Energy, while your solar panels are sized to cover both your daytime usage and recharging your battery.',
+  },
+  {
+    id: "inverter-size",
+    question: "How is the inverter size (kVA & kW) calculated?",
+    answer:
+      'We sum the running watts of all appliances that run at the same time (plus the single largest appliance marked "Used Separately"). We then check the startup surge of your largest motor/compressor (such as a borehole pump or AC), apply a 25% continuous safety margin, and convert to kVA using a standard 0.8 power factor so your inverter never trips.',
+  },
+  {
+    id: "battery-size",
+    question: "How is the lithium battery bank sized?",
+    answer:
+      "Your Nighttime Energy (kWh) is divided by real-world Nigerian system efficiencies: 80% usable Depth of Discharge (DoD) for LiFePO4 longevity, 95% battery discharge efficiency, and 92% inverter efficiency (~70% net usable factor). We then match the result to practical 5kWh lithium battery modules and verify that the bank can safely handle your continuous discharge power.",
+  },
+  {
+    id: "solar-pv-size",
+    question: "How many solar panels do I need under Nigerian weather conditions?",
+    answer:
+      "We use a conservative Nigerian baseline of 3.5 effective Peak Sun Hours (PSH), a 78% overall Performance Ratio (accounting for roof heat, harmattan dust, MPPT, and cable losses), and a 1.3× cloudy-weather safety factor so your battery still recharges reliably during rainy season.",
+  },
+  {
+    id: "non-inverter-fridge-ac",
+    question: "Why does a non-inverter AC, freezer, or borehole pump increase the inverter size?",
+    answer:
+      "Standard induction motors and non-inverter compressors draw 3× to 4× their running watts for a split second when starting. Inverter ACs and inverter refrigerators soft-start smoothly (only ~1.3× to 1.5×), allowing a smaller, more affordable hybrid inverter.",
+  },
+  {
+    id: "simultaneous-vs-staggered",
+    question: 'What is the difference between "Runs Together" and "Used Separately"?',
+    answer:
+      '"Runs Together (Simultaneous)" means the appliance stays on alongside your normal household loads (like fridges, fans, lights, TVs). "Used Separately (Staggered)" is for heavy short-use appliances you turn on one at a time (like a pressing iron, kettle, or borehole pump) so we do not oversize your inverter unnecessarily.',
+  },
+];
 
 const buildApiUrl = (endpoint: string, query?: Record<string, string>) => {
   const rawBase = BASE_URL || "/api/v1";
@@ -92,8 +155,10 @@ const CalculatorSectionTwo = () => {
   const [calculation, setCalculation] = useState<CalculatorResponse["data"] | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [quoteSubmitting, setQuoteSubmitting] = useState(false);
+  const [showAssumptions, setShowAssumptions] = useState(false);
+  const [faqItems, setFaqItems] = useState<FaqItem[]>(DEFAULT_FAQ_ITEMS);
+  const [openFaqId, setOpenFaqId] = useState<string | null>("night-hours");
 
-  // Package suggestion state
   const [suggestedPackages, setSuggestedPackages] = useState<SuggestedPackage[]>([]);
   const [isFetchingPackages, setIsFetchingPackages] = useState(false);
   const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
@@ -103,8 +168,29 @@ const CalculatorSectionTwo = () => {
   const tableScrollRef = useRef<HTMLDivElement>(null);
 
   const updateRow = (id: string, updates: Partial<Row>) => {
-    setRows(currentRows =>
-      currentRows.map(row => (row.id === id ? { ...row, ...updates } : row))
+    setRows((currentRows) =>
+      currentRows.map((row) => {
+        if (row.id !== id) return row;
+        const next = { ...row, ...updates };
+        // If daily hours decreased below nightHours, clamp nightHours automatically
+        if (
+          updates.hours !== undefined &&
+          typeof next.hours === "number" &&
+          typeof next.nightHours === "number" &&
+          next.nightHours > next.hours
+        ) {
+          next.nightHours = next.hours;
+        }
+        // When toggling nightBackup ON for the first time, prefill sensible nightHours
+        if (updates.nightBackup === true && next.nightHours === "") {
+          const dailyH = typeof next.hours === "number" && next.hours > 0 ? next.hours : 8;
+          next.nightHours = Math.min(dailyH, 8);
+        }
+        if (updates.nightBackup === false) {
+          next.nightHours = "";
+        }
+        return next;
+      }),
     );
   };
 
@@ -148,7 +234,13 @@ const CalculatorSectionTwo = () => {
         row.watts > 0 &&
         typeof row.hours === "number" &&
         Number.isFinite(row.hours) &&
-        row.hours > 0,
+        row.hours > 0 &&
+        row.hours <= 24 &&
+        (!row.nightBackup ||
+          row.nightHours === "" ||
+          (typeof row.nightHours === "number" &&
+            row.nightHours >= 0 &&
+            row.nightHours <= row.hours)),
     );
   }, [rows]);
 
@@ -158,33 +250,45 @@ const CalculatorSectionTwo = () => {
 
   const [catalogPresets, setCatalogPresets] = useState<CatalogItem[]>([]);
 
-  // Preload entire appliance catalog once on page visit for instant search without database delays
   useEffect(() => {
     let cancelled = false;
-    async function loadCatalog() {
+    async function loadCatalogAndFaq() {
       try {
-        const response = await fetch(buildApiUrl("calculator/catalog"), {
-          method: "GET",
-          headers: { Accept: "application/json" },
-        });
-        if (response.ok) {
-          const data = (await response.json()) as CatalogSearchResponse;
+        const [catRes, faqRes] = await Promise.allSettled([
+          fetch(buildApiUrl("calculator/catalog"), {
+            method: "GET",
+            headers: { Accept: "application/json" },
+          }),
+          fetch(buildApiUrl("calculator/faq"), {
+            method: "GET",
+            headers: { Accept: "application/json" },
+          }),
+        ]);
+        if (catRes.status === "fulfilled" && catRes.value.ok) {
+          const data = (await catRes.value.json()) as CatalogSearchResponse;
           if (data.success && !cancelled) {
-            const items = data.data.presets ?? data.data.matches ?? [];
-            setCatalogPresets(items);
+            setCatalogPresets(data.data.presets ?? data.data.matches ?? []);
+          }
+        }
+        if (faqRes.status === "fulfilled" && faqRes.value.ok) {
+          const fData = (await faqRes.value.json()) as {
+            success: boolean;
+            data?: { items?: FaqItem[] };
+          };
+          if (fData.success && fData.data?.items?.length && !cancelled) {
+            setFaqItems(fData.data.items);
           }
         }
       } catch {
-        // Ignored, will fall back to live API search if needed
+        // Fallback to local defaults
       }
     }
-    loadCatalog();
+    loadCatalogAndFaq();
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Live search: instantaneous in-memory search from preloaded catalog (zero database queries)
   useEffect(() => {
     if (!activeRowId) {
       setActiveSuggestions([]);
@@ -201,7 +305,6 @@ const CalculatorSectionTwo = () => {
       return;
     }
 
-    // Instant in-memory search when catalog is loaded
     if (catalogPresets.length > 0) {
       const q = rawQuery;
       const matches = catalogPresets.filter((item) => {
@@ -214,7 +317,6 @@ const CalculatorSectionTwo = () => {
         return nameMatch || keyMatch || catMatch || aliasMatch;
       });
 
-      // Sort by relevance: exact match or startsWith first
       matches.sort((a, b) => {
         const aName = a.name.toLowerCase();
         const bName = b.name.toLowerCase();
@@ -230,24 +332,18 @@ const CalculatorSectionTwo = () => {
       return;
     }
 
-    // Fallback if catalog is still loading
     const controller = new AbortController();
     setIsSearching(true);
     const timeout = setTimeout(async () => {
       try {
-        const response = await fetch(
-          buildApiUrl("calculator/catalog", { q: rawQuery }),
-          {
-            method: "GET",
-            signal: controller.signal,
-          }
-        );
-
+        const response = await fetch(buildApiUrl("calculator/catalog", { q: rawQuery }), {
+          method: "GET",
+          signal: controller.signal,
+        });
         if (!response.ok) {
           setActiveSuggestions([]);
           return;
         }
-
         const data = (await response.json()) as CatalogSearchResponse;
         if (data.success && !controller.signal.aborted) {
           setActiveSuggestions(data.data.matches ?? data.data.presets ?? []);
@@ -255,13 +351,9 @@ const CalculatorSectionTwo = () => {
           setActiveSuggestions([]);
         }
       } catch {
-        if (!controller.signal.aborted) {
-          setActiveSuggestions([]);
-        }
+        if (!controller.signal.aborted) setActiveSuggestions([]);
       } finally {
-        if (!controller.signal.aborted) {
-          setIsSearching(false);
-        }
+        if (!controller.signal.aborted) setIsSearching(false);
       }
     }, 150);
 
@@ -271,6 +363,7 @@ const CalculatorSectionTwo = () => {
     };
   }, [activeRowId, rows, catalogPresets]);
 
+  // Instant local calculation + backend sync
   useEffect(() => {
     if (!completeRows.length) {
       setCalculation(null);
@@ -278,6 +371,10 @@ const CalculatorSectionTwo = () => {
       setSuggestedPackages([]);
       return;
     }
+
+    // Immediate deterministic client-side engineering calculation so UI never lags or fails offline
+    const localCalc = calculateEngineeringSystem(completeRows);
+    setCalculation(localCalc);
 
     const controller = new AbortController();
     const timeout = setTimeout(async () => {
@@ -287,35 +384,35 @@ const CalculatorSectionTwo = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            appliances: completeRows.map(row => ({
+            appliances: completeRows.map((row) => ({
               name: row.item,
               quantity: Number(row.quantity),
               wattage: Number(row.watts),
               hoursPerDay: Number(row.hours),
               nightBackup: row.nightBackup,
+              nightHours: resolveRowNightHours(row),
+              simultaneousMode: row.simultaneousMode || "simultaneous",
               inductive: row.inductive,
+              surgeMultiplier: row.surgeMultiplier,
             })),
           }),
           signal: controller.signal,
         });
 
-        if (!response.ok) {
-          setCalculation(null);
-          return;
-        }
+        if (!response.ok) return;
 
         const data = (await response.json()) as CalculatorResponse;
-        setCalculation(data.success ? data.data : null);
-      } catch {
-        if (!controller.signal.aborted) {
-          setCalculation(null);
+        if (data.success && data.data && !controller.signal.aborted) {
+          setCalculation(data.data);
         }
+      } catch {
+        // Keep localCalc fallback
       } finally {
         if (!controller.signal.aborted) {
           setIsCalculating(false);
         }
       }
-    }, 300);
+    }, 250);
 
     return () => {
       clearTimeout(timeout);
@@ -323,7 +420,11 @@ const CalculatorSectionTwo = () => {
     };
   }, [completeRows]);
 
-  // Fetch package suggestions whenever calculation updates
+  const totals: Totals = buildCalculatorTotals(calculation);
+  const recommendation = deriveCalculatorRecommendation(calculation, totals);
+  const { inverterKw, inverterKva, batteryKwh, pvKwp } = recommendation;
+  const hasCalculated = recommendation.hasCalculated;
+
   useEffect(() => {
     if (!calculation) {
       setSuggestedPackages([]);
@@ -351,47 +452,38 @@ const CalculatorSectionTwo = () => {
           ? json.data
           : (json.data as { packages?: SuggestedPackage[] }).packages ?? [];
 
-        // Match packages that safely cover the user's calculated needs.
-        // A package must meet or exceed the requirement (10% under tolerance allowed)
-        // but must not be excessively oversized (max 2× the requirement).
-        const reqPv = calculatedKw;
+        const reqPv = Number(pvKwp);
         const reqInv = Number(inverterKw);
         const reqBat = Number(batteryKwh);
-        
+
         const matched = raw
-          .filter(pkg => pkg.system_size_kw != null && pkg.is_active !== false)
-          .map(pkg => {
+          .filter((pkg) => pkg.system_size_kw != null && pkg.is_active !== false)
+          .map((pkg) => {
             const pkgPv = pkg.system_size_kw!;
-            const pkgInv = pkg.inverter_size_kw ?? 0;
+            const pkgInv = pkg.inverter_size_kw ?? pkgPv;
             const pkgBat = pkg.battery_capacity_kwh ?? 0;
-            
-            // Package must meet or exceed the requirement (allow 10% under)
-            const pvOk = reqPv > 0 ? pkgPv >= reqPv * 0.9 : true;
-            const invOk = reqInv > 0 ? pkgInv >= reqInv * 0.9 : true;
-            const batOk = reqBat > 0 ? pkgBat >= reqBat * 0.9 : true;
-            
-            // But not excessively oversized (max 2× the requirement)
-            const pvCap = reqPv > 0 ? pkgPv <= reqPv * 2 : true;
-            const invCap = reqInv > 0 ? pkgInv <= reqInv * 2 : true;
-            const batCap = reqBat > 0 ? pkgBat <= reqBat * 2 : true;
-            
+
+            const pvOk = reqPv > 0 ? pkgPv >= reqPv * 0.85 : true;
+            const invOk = reqInv > 0 ? pkgInv >= reqInv * 0.85 : true;
+            const batOk = reqBat > 0 ? pkgBat >= reqBat * 0.85 : true;
+
+            const pvCap = reqPv > 0 ? pkgPv <= Math.max(reqPv * 2.2, reqPv + 3) : true;
+            const invCap = reqInv > 0 ? pkgInv <= Math.max(reqInv * 2.2, reqInv + 3) : true;
+            const batCap = reqBat > 0 ? pkgBat <= Math.max(reqBat * 2.2, reqBat + 5) : true;
+
             const fits = pvOk && invOk && batOk && pvCap && invCap && batCap;
-            
-            // Score = how much overshoot (lower is better, tighter fit)
+
             const diffPv = reqPv > 0 ? Math.abs(pkgPv - reqPv) / reqPv : 0;
             const diffInv = reqInv > 0 ? Math.abs(pkgInv - reqInv) / reqInv : 0;
             const diffBat = reqBat > 0 ? Math.abs(pkgBat - reqBat) / reqBat : 0;
-            
+
             return {
               ...pkg,
-              diffPv,
-              diffInv,
-              diffBat,
               matchScore: diffPv + diffInv + diffBat,
               fits,
             };
           })
-          .filter(pkg => pkg.fits)
+          .filter((pkg) => pkg.fits)
           .sort((a, b) => a.matchScore - b.matchScore)
           .slice(0, 3);
 
@@ -405,12 +497,7 @@ const CalculatorSectionTwo = () => {
 
     fetchPackages();
     return () => controller.abort();
-  }, [calculation]);
-
-  const totals: Totals = buildCalculatorTotals(calculation);
-  const recommendation = deriveCalculatorRecommendation(calculation, totals);
-  const { inverterKw, batteryKwh, pvKwp } = recommendation;
-  const hasCalculated = recommendation.hasCalculated && !isCalculating;
+  }, [calculation, pvKwp, inverterKw, batteryKwh]);
 
   const downloadPdf = () => {
     if (!hasCalculated) return;
@@ -418,16 +505,14 @@ const CalculatorSectionTwo = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Fortsolar Green Header bar
     doc.setFillColor(44, 178, 44);
     doc.rect(0, 0, pageWidth, 22, "F");
 
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(15);
     doc.setFont("helvetica", "bold");
-    doc.text("FORTSOLAR ENERGY AUDIT & ESTIMATE", 14, 15);
+    doc.text("FORTSOLAR ENGINEERING ENERGY AUDIT & ESTIMATE", 14, 15);
 
-    // Subtitle & Date
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
@@ -438,72 +523,72 @@ const CalculatorSectionTwo = () => {
     });
     doc.text(`Generated on: ${dateStr}  |  fortsolar.ng`, 14, 30);
 
-    doc.setFontSize(10);
-    doc.setTextColor(50, 50, 50);
-    doc.text(
-      "Here is your personalized solar load breakdown and system sizing recommendation based on your appliance inputs.",
-      14,
-      36,
-      { maxWidth: 180 }
-    );
+    const batConfig =
+      calculation?.batterySizing?.configurationLabel ??
+      `${Number(batteryKwh).toFixed(1)} kWh LiFePO4`;
+    const panelCount =
+      calculation?.pvSizing?.recommendedPanelCount ??
+      calculation?.display?.panelCount ??
+      Math.ceil((Number(pvKwp) * 1000) / 600);
+    const panelWatt = calculation?.pvSizing?.panelWattageW ?? 600;
 
-    // Table 1: System Sizing Estimates
     autoTable(doc, {
-      startY: 42,
-      head: [["System Metric", "Estimated Requirement"]],
+      startY: 38,
+      head: [["Engineering Metric", "Recommended Sizing / Specification"]],
       body: [
-        ["Total Peak Load", `${totals.peakKW.toFixed(2)} kW`],
-        ["Calculated Daily Energy Use", `${totals.dailyKWh.toFixed(2)} kWh / day`],
-        ["Estimated Inverter Size", `${Number(inverterKw).toFixed(2)} kW`],
-        ["Estimated Battery Capacity", `${Number(batteryKwh).toFixed(2)} kWh`],
-        ["Estimated Solar PV Array", `${Number(pvKwp).toFixed(2)} kWp`],
+        [
+          "Recommended Inverter Capacity",
+          `${Number(inverterKva).toFixed(1)} kVA / ${Number(inverterKw).toFixed(1)} kW (PF 0.8, +25% margin)`,
+        ],
+        ["Recommended Battery Bank", batConfig],
+        [
+          "Recommended Solar PV Array",
+          `${Number(pvKwp).toFixed(2)} kWp (${panelCount} × ${panelWatt}W Monocrystalline Panels)`,
+        ],
+        [
+          "Simultaneous Running Load / Connected Load",
+          `${totals.simultaneousKW.toFixed(2)} kW simultaneous / ${totals.peakKW.toFixed(2)} kW connected`,
+        ],
+        ["Total Daily Energy Consumption", `${totals.dailyKWh.toFixed(2)} kWh / day (${totals.totalWh.toLocaleString()} Wh)`],
+        ["Nighttime Backup Energy Requirement", `${totals.nightKWh.toFixed(2)} kWh / night (${totals.nightWh.toLocaleString()} Wh)`],
       ],
       theme: "grid",
-      styles: { fontSize: 9.5, cellPadding: 3.5 },
+      styles: { fontSize: 9, cellPadding: 3 },
       headStyles: { fillColor: [44, 178, 44], textColor: 255, fontStyle: "bold" },
     });
 
     let currentY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable
       ? (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8
-      : 95;
+      : 105;
 
-    // Table 2: Appliance Load Breakdown
     if (completeRows.length > 0) {
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(30, 30, 30);
-      doc.text("Appliance Load Breakdown", 14, currentY);
+      doc.text("Appliance Load & Night Backup Breakdown", 14, currentY);
 
       const applianceBody: (string | number)[][] = completeRows.map((r, i) => {
-        const wh = Number(r.quantity) * Number(r.watts) * Number(r.hours);
+        const qty = Number(r.quantity);
+        const w = Number(r.watts);
+        const h = Number(r.hours);
+        const nh = resolveRowNightHours(r);
+        const dailyWh = qty * w * h;
+        const nightWh = r.nightBackup ? qty * w * nh : 0;
         return [
           String(i + 1),
           r.item,
-          String(r.quantity),
-          `${r.watts} W`,
-          `${r.hours} hrs`,
-          `${wh.toLocaleString()} Wh`,
-          r.nightBackup ? "Yes" : "No",
+          String(qty),
+          `${w} W`,
+          `${h}h`,
+          r.nightBackup ? `${nh}h` : "—",
+          `${dailyWh.toLocaleString()} Wh`,
+          r.nightBackup ? `${nightWh.toLocaleString()} Wh` : "0 Wh",
         ];
       });
 
-      const totalWh = completeRows.reduce(
-        (sum, r) => sum + Number(r.quantity) * Number(r.watts) * Number(r.hours),
-        0
-      );
-      applianceBody.push([
-        "",
-        "Total Daily Consumption",
-        "",
-        "",
-        "",
-        `${totalWh.toLocaleString()} Wh (${(totalWh / 1000).toFixed(2)} kWh)`,
-        "",
-      ]);
-
       autoTable(doc, {
         startY: currentY + 3,
-        head: [["#", "Appliance", "Qty", "Power", "Hours/Day", "Daily Energy", "Night Backup"]],
+        head: [["#", "Appliance", "Qty", "Power", "Daily Hrs", "Night Hrs", "Daily Energy", "Night Energy"]],
         body: applianceBody,
         theme: "striped",
         styles: { fontSize: 8.5, cellPadding: 2.5 },
@@ -515,53 +600,14 @@ const CalculatorSectionTwo = () => {
         : currentY + 50;
     }
 
-    // Table 3: Recommended Fortsolar Packages (if any)
-    if (suggestedPackages.length > 0) {
-      if (currentY > 230) {
-        doc.addPage();
-        currentY = 20;
-      }
-
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(30, 30, 30);
-      doc.text("Matching Fortsolar Pre-Configured Packages", 14, currentY);
-
-      const packageBody = suggestedPackages.map((pkg) => [
-        pkg.name,
-        `${pkg.system_size_kw ?? "-"} kWp`,
-        `${pkg.inverter_size_kw ?? "-"} kW`,
-        `${pkg.battery_capacity_kwh ?? "-"} kWh`,
-        `NGN ${pkg.price.toLocaleString()}`,
-      ]);
-
-      autoTable(doc, {
-        startY: currentY + 3,
-        head: [["Package", "Solar PV", "Inverter", "Battery", "Price (NGN)"]],
-        body: packageBody,
-        theme: "grid",
-        styles: { fontSize: 9, cellPadding: 3 },
-        headStyles: { fillColor: [44, 178, 44], textColor: 255, fontStyle: "bold" },
-      });
-
-      currentY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable
-        ? (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8
-        : currentY + 35;
-    }
-
-    // Footer guidance note
-    if (currentY > 255) {
-      doc.addPage();
-      currentY = 20;
-    }
     doc.setFontSize(8);
     doc.setFont("helvetica", "italic");
     doc.setTextColor(120, 120, 120);
     doc.text(
-      "Note: Sizing values are estimates based on your stated consumption patterns. Actual system requirements may vary based on site survey, roof orientation, and peak surges. Visit store.fortsolar.ng or contact enquiry@fortsolar.ng to schedule a comprehensive physical energy audit.",
+      "Note: Sizing uses Fortsolar Nigerian Engineering Standards (3.5h PSH baseline, 1.3x cloudy-weather safety factor, 80% LiFePO4 DoD, 95% battery efficiency, 92% inverter efficiency).",
       14,
-      currentY,
-      { maxWidth: 180 }
+      Math.min(currentY, 275),
+      { maxWidth: 180 },
     );
 
     doc.save("fortsolar-energy-audit-summary.pdf");
@@ -578,17 +624,6 @@ const CalculatorSectionTwo = () => {
     termsAccepted: boolean;
     createAccount: boolean;
     note?: string;
-    summary?: {
-      peakKW: number;
-      dailyKWh: number;
-      items: Array<{
-        item: string;
-        quantity: number;
-        watts: number;
-        hours: number;
-        wattHours: number;
-      }>;
-    };
   }) => {
     const quotePayload = buildCalculatorQuotePayload({
       selectedDevices,
@@ -616,8 +651,9 @@ const CalculatorSectionTwo = () => {
           loading: "Submitting quote request...",
           position: "top-center",
           success: "Quote submitted successfully.",
-          error: err => (err instanceof Error ? err.message : "Unable to submit quote right now"),
-        }
+          error: (err) =>
+            err instanceof Error ? err.message : "Unable to submit quote right now",
+        },
       );
 
       if (payload.createAccount) {
@@ -638,39 +674,107 @@ const CalculatorSectionTwo = () => {
     }
   };
 
+  const batteryUnitsCount =
+    calculation?.batterySizing?.unitsCount ??
+    calculation?.display?.batteryUnitsCount ??
+    (Number(batteryKwh) > 0 ? Math.ceil(Number(batteryKwh) / 5) : 0);
+  const batteryUnitSize =
+    calculation?.batterySizing?.unitSizeKwh ?? calculation?.display?.batteryUnitKwh ?? 5;
+  const usableBatteryKwh =
+    calculation?.batterySizing?.usableCapacityKwh ??
+    calculation?.display?.usableBatteryKwh ??
+    Number(batteryKwh) * 0.7;
+  const panelCount =
+    calculation?.pvSizing?.recommendedPanelCount ??
+    calculation?.display?.panelCount ??
+    (Number(pvKwp) > 0 ? Math.ceil((Number(pvKwp) * 1000) / 600) : 0);
+  const panelWattageW =
+    calculation?.pvSizing?.panelWattageW ?? calculation?.display?.panelWattageW ?? 600;
+  const estSolarGenKwh =
+    calculation?.pvSizing?.estimatedDailyGenerationKwh ??
+    calculation?.display?.estimatedDailySolarGenKwh ??
+    Number(pvKwp) * 3.5 * 0.78;
+  const estRechargeHours =
+    calculation?.pvSizing?.estimatedBatteryRechargeHours ??
+    calculation?.display?.estimatedRechargeHours ??
+    0;
+
   return (
-    <section className="max-w-6xl mx-auto px-4 pt-10 my-10">
+    <section className="max-w-6xl mx-auto px-4 pt-6 md:pt-10 my-6 md:my-10">
       <Toaster />
 
+      {/* ── Mobile-First Appliance Cards (< md) ───────────────────────── */}
       <div className="space-y-4 md:hidden">
         {rows.map((row, index) => {
-          const wattHours =
-            typeof row.quantity === "number" && typeof row.watts === "number" && typeof row.hours === "number"
+          const dailyWh =
+            typeof row.quantity === "number" &&
+            typeof row.watts === "number" &&
+            typeof row.hours === "number"
               ? row.quantity * row.watts * row.hours
               : 0;
+          const nightHrs = resolveRowNightHours(row);
+          const nightWh =
+            row.nightBackup &&
+            typeof row.quantity === "number" &&
+            typeof row.watts === "number"
+              ? row.quantity * row.watts * nightHrs
+              : 0;
+          const rowError = validateCalculatorRow(row);
 
           return (
-            <article key={row.id} className={`rounded-2xl border p-4 shadow-sm ${row.nightBackup ? "border-[#2CB22C]/40 bg-[#F6FFF6]" : "border-gray-200 bg-white"}`}>
-              <div className="mb-4 flex items-center justify-between">
-                <p className="text-sm font-semibold text-[#101828]">Appliance {index + 1}</p>
-                <button type="button" onClick={() => removeRow(row.id)} aria-label={`Remove appliance ${index + 1}`} className="rounded-lg bg-red-50 p-2 text-red-500">
+            <article
+              key={row.id}
+              className={`rounded-2xl border p-4 shadow-sm transition-colors ${
+                row.inductive ? "border-l-4 border-l-amber-500 " : ""
+              }${
+                row.nightBackup
+                  ? "border-[#2CB22C]/40 bg-[#F6FFF6]"
+                  : "border-gray-200 bg-white"
+              }`}
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ECFDF3] text-xs font-bold text-[#027A48]">
+                    {index + 1}
+                  </span>
+                  <p className="text-sm font-semibold text-[#101828]">Appliance</p>
+                  {row.inductive && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                      Motor Surge ({row.surgeMultiplier ?? 2.5}×)
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeRow(row.id)}
+                  aria-label={`Remove appliance ${index + 1}`}
+                  className="rounded-lg bg-red-50 p-2 text-red-500 hover:bg-red-100"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
 
               <label className="block text-xs font-semibold uppercase tracking-wide text-[#667085]">
-                Appliance
+                Appliance Name
                 <input
                   type="text"
                   value={row.item}
-                  placeholder="Search or type an appliance"
-                  className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-3 py-3 text-base font-normal normal-case tracking-normal text-[#101828] outline-none focus:border-[#2CB22C]"
+                  placeholder="Search e.g. 1HP Inverter AC, Fridge, Fan..."
+                  className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-normal normal-case tracking-normal text-[#101828] outline-none focus:border-[#2CB22C]"
                   onFocus={(event) => {
                     activeInputRef.current = event.currentTarget;
                     setDropdownRect(event.currentTarget.getBoundingClientRect());
                     setActiveRowId(row.id);
                   }}
-                  onBlur={() => setTimeout(() => setActiveRowId((current) => current === row.id ? null : current), 100)}
+                  onBlur={() =>
+                    setTimeout(
+                      () =>
+                        setActiveRowId((current) =>
+                          current === row.id ? null : current,
+                        ),
+                      120,
+                    )
+                  }
                   onChange={(event) => {
                     activeInputRef.current = event.currentTarget;
                     setDropdownRect(event.currentTarget.getBoundingClientRect());
@@ -680,174 +784,277 @@ const CalculatorSectionTwo = () => {
                 />
               </label>
 
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                {([
-                  ["Qty", "quantity", 1, undefined],
-                  ["Watts", "watts", 1, undefined],
-                  ["Hrs/day", "hours", 1, 24],
-                ] as const).map(([label, field, min, max]) => (
-                  <label key={field} className="text-xs font-semibold uppercase tracking-wide text-[#667085]">
-                    {label}
-                    <input
-                      type="number"
-                      min={min}
-                      max={max}
-                      inputMode="decimal"
-                      value={row[field]}
-                      className="mt-2 w-full rounded-xl border border-gray-300 bg-white px-2 py-3 text-center text-base font-normal normal-case tracking-normal text-[#101828] outline-none focus:border-[#2CB22C]"
-                      onChange={(event) => updateRow(row.id, { [field]: parseCalculatorNumericInput(event.target.value) })}
-                    />
-                  </label>
-                ))}
+              <div className="mt-3 grid grid-cols-3 gap-2.5">
+                <label className="text-xs font-semibold uppercase tracking-wide text-[#667085]">
+                  Qty
+                  <input
+                    type="number"
+                    min={1}
+                    inputMode="numeric"
+                    placeholder="1"
+                    value={row.quantity}
+                    className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-2 py-2.5 text-center text-sm font-medium text-[#101828] outline-none focus:border-[#2CB22C]"
+                    onChange={(event) =>
+                      updateRow(row.id, {
+                        quantity: parseCalculatorNumericInput(event.target.value),
+                      })
+                    }
+                  />
+                </label>
+
+                <label className="text-xs font-semibold uppercase tracking-wide text-[#667085]">
+                  Watts (W)
+                  <input
+                    type="number"
+                    min={1}
+                    inputMode="decimal"
+                    placeholder="100"
+                    value={row.watts}
+                    className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-2 py-2.5 text-center text-sm font-medium text-[#101828] outline-none focus:border-[#2CB22C]"
+                    onChange={(event) =>
+                      updateRow(row.id, {
+                        watts: parseCalculatorNumericInput(event.target.value),
+                      })
+                    }
+                  />
+                </label>
+
+                <label className="text-xs font-semibold uppercase tracking-wide text-[#667085]">
+                  Daily Hrs
+                  <input
+                    type="number"
+                    min={0.5}
+                    max={24}
+                    step="0.5"
+                    inputMode="decimal"
+                    placeholder="8"
+                    value={row.hours}
+                    className="mt-1.5 w-full rounded-xl border border-gray-300 bg-white px-2 py-2.5 text-center text-sm font-medium text-[#101828] outline-none focus:border-[#2CB22C]"
+                    onChange={(event) =>
+                      updateRow(row.id, {
+                        hours: parseCalculatorNumericInput(event.target.value),
+                      })
+                    }
+                  />
+                </label>
               </div>
 
-              <label className="mt-4 flex cursor-pointer items-center justify-between rounded-xl bg-[#F2F4F7] px-3 py-3 text-sm font-medium text-[#344054]">
-                <span>🌙 Include in night backup</span>
-                <input type="checkbox" disabled={!row.item} checked={row.nightBackup} onChange={(event) => updateRow(row.id, { nightBackup: event.target.checked })} className="h-5 w-5 accent-[#2CB22C]" />
-              </label>
+              {/* Simultaneous Usage Mode */}
+              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2">
+                <span className="text-xs font-medium text-[#344054]">Usage Pattern:</span>
+                <select
+                  value={row.simultaneousMode || "simultaneous"}
+                  onChange={(e) =>
+                    updateRow(row.id, {
+                      simultaneousMode: e.target.value as SimultaneousMode,
+                    })
+                  }
+                  className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-[#101828] outline-none focus:border-[#2CB22C]"
+                >
+                  <option value="simultaneous">Runs with others (Simultaneous)</option>
+                  <option value="staggered">Used separately (Occasional)</option>
+                </select>
+              </div>
 
-              <p className="mt-3 text-right text-xs text-[#667085]">Daily energy: <strong className="text-[#101828]">{wattHours.toLocaleString()} Wh</strong></p>
+              {/* Option A Conditional Night Backup + Night Hours */}
+              <div className="mt-3 rounded-xl border border-[#D1FADF] bg-white p-3">
+                <label className="flex cursor-pointer items-center justify-between text-sm font-medium text-[#101828]">
+                  <span className="flex items-center gap-1.5">
+                    <Moon className="h-4 w-4 text-[#2CB22C]" />
+                    Include in Night Backup?
+                  </span>
+                  <input
+                    type="checkbox"
+                    disabled={!row.item}
+                    checked={row.nightBackup}
+                    onChange={(event) =>
+                      updateRow(row.id, { nightBackup: event.target.checked })
+                    }
+                    className="h-5 w-5 accent-[#2CB22C] rounded cursor-pointer"
+                  />
+                </label>
+
+                {row.nightBackup && (
+                  <div className="mt-3 flex items-center justify-between gap-3 border-t border-gray-100 pt-3 animate-in fade-in duration-200">
+                    <div className="text-xs text-[#475467]">
+                      <p className="font-semibold text-[#101828]">Night Backup Hours</p>
+                      <p className="text-[11px] text-[#667085]">
+                        Out of {row.hours || 0} daily hrs (max {row.hours || 24}h)
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="number"
+                        min={0}
+                        max={typeof row.hours === "number" ? row.hours : 24}
+                        step="0.5"
+                        inputMode="decimal"
+                        value={row.nightHours}
+                        placeholder={String(nightHrs)}
+                        onChange={(e) =>
+                          updateRow(row.id, {
+                            nightHours: parseCalculatorNumericInput(e.target.value),
+                          })
+                        }
+                        className="w-20 rounded-xl border border-[#2CB22C] bg-[#F6FFF6] px-2.5 py-2 text-center text-sm font-bold text-[#027A48] outline-none"
+                      />
+                      <span className="text-xs font-semibold text-[#027A48]">hrs</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {rowError && (
+                <p className="mt-2 text-xs font-medium text-red-600">{rowError}</p>
+              )}
+
+              <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-2.5 text-xs text-[#667085]">
+                <span>
+                  Daily:{" "}
+                  <strong className="text-[#101828]">
+                    {dailyWh.toLocaleString()} Wh
+                  </strong>
+                </span>
+                <span>
+                  Night Backup:{" "}
+                  <strong className="text-[#027A48]">
+                    {nightWh.toLocaleString()} Wh
+                  </strong>
+                </span>
+              </div>
             </article>
           );
         })}
       </div>
 
-      <div ref={tableScrollRef} className="hidden border border-gray-200 overflow-x-auto md:block">
-        <table className="w-full text-[10px] md:text-sm table">
-          <thead className="table-header-group">
-            <tr className="text-[#101828] font-medium md:font-semibold border-b">
-              <th className="p-2 md:p-3 border-r text-start">
+      {/* ── Desktop / Tablet Appliance Table (md+) ────────────────────── */}
+      <div
+        ref={tableScrollRef}
+        className="hidden rounded-t-2xl border border-gray-200 bg-white overflow-x-auto md:block shadow-xs"
+      >
+        <table className="w-full text-xs md:text-sm table">
+          <thead className="bg-gray-50/80 text-[#344054]">
+            <tr className="font-semibold border-b border-gray-200">
+              <th className="p-3 border-r text-start min-w-[210px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-pointer">Item</span>
-                  </TooltipTrigger>
-                  <TooltipContent>Device or appliance</TooltipContent>
-                </Tooltip>
-              </th>
-              <th className="p-2 md:p-3 border-r text-start ">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-pointer">
-                      <p className="hidden md:block">Quantity</p>
-                      <p className="block md:hidden">Qty</p>
+                    <span className="inline-flex items-center gap-1 cursor-pointer">
+                      Appliance / Load <Info className="h-3.5 w-3.5 text-gray-400" />
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>Number of items</TooltipContent>
+                  <TooltipContent>
+                    Search our Nigerian appliance catalog or type any custom device
+                  </TooltipContent>
                 </Tooltip>
               </th>
-              <th className="p-2 md:p-3 border-r text-start">
+              <th className="p-3 border-r text-center w-20">Qty</th>
+              <th className="p-3 border-r text-center w-28">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-pointer">
-                      <p className="hidden md:block">
-                        Watts <span className="font-normal">(Per Item)</span>
-                      </p>
-                      <p className="block md:hidden">Watts</p>
+                    <span className="inline-flex items-center gap-1 cursor-pointer">
+                      Watts (W) <Info className="h-3.5 w-3.5 text-gray-400" />
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>Power per item</TooltipContent>
+                  <TooltipContent>Running power per unit in Watts</TooltipContent>
                 </Tooltip>
               </th>
-              <th className="p-2 md:p-3 border-r text-start">
+              <th className="p-3 border-r text-center w-28">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-pointer">
-                      <p className="hidden md:block">
-                        Hours <span className="font-normal">(Per Day)</span>
-                      </p>
-                      <p className="block md:hidden">Hrs</p>
+                    <span className="inline-flex items-center gap-1 cursor-pointer">
+                      Daily Hrs <Info className="h-3.5 w-3.5 text-gray-400" />
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>Hours used per day</TooltipContent>
+                  <TooltipContent>
+                    Total hours this appliance runs in a 24-hour day (daytime + night)
+                  </TooltipContent>
                 </Tooltip>
               </th>
-              <th className="p-2 md:p-3 border-r text-start whitespace-nowrap">
+              <th className="p-3 border-r text-center min-w-[165px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-pointer whitespace-nowrap">
-                      <p className="hidden md:block whitespace-nowrap">
-                        Energy Consumed
-                      </p>
-                      <p className="block md:hidden whitespace-nowrap">Energy(Wh)</p>
+                    <span className="inline-flex items-center gap-1 cursor-pointer">
+                      🌙 Night Backup & Hrs <Info className="h-3.5 w-3.5 text-gray-400" />
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>Total Watt Hours</TooltipContent>
+                  <TooltipContent>
+                    Tick if used at night (6 PM – 6 AM) and specify how many of the Daily Hours occur at night
+                  </TooltipContent>
                 </Tooltip>
               </th>
-              <th className="p-2 md:p-3 border-r text-center">
+              <th className="p-3 border-r text-center w-36">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="inline-flex cursor-pointer whitespace-nowrap">
-                      🌙 Night Backup?
+                    <span className="inline-flex items-center gap-1 cursor-pointer">
+                      Usage Mode <Info className="h-3.5 w-3.5 text-gray-400" />
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>Runs when solar is off</TooltipContent>
+                  <TooltipContent>
+                    Simultaneous loads run together; Staggered loads (e.g. iron, kettle, pump) run one at a time
+                  </TooltipContent>
                 </Tooltip>
               </th>
-              <th className="p-2 md:p-3 text-center">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="inline-flex items-center justify-center cursor-pointer w-full">
-                      <p className="hidden md:block">Actions</p>
-                      <p className="flex items-center justify-center md:hidden">...</p>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>Remove row</TooltipContent>
-                </Tooltip>
+              <th className="p-3 border-r text-right whitespace-nowrap w-36">
+                Daily / Night Energy
               </th>
+              <th className="p-3 text-center w-14">Del</th>
             </tr>
           </thead>
 
-          <tbody className="table-row-group">
-            {rows.map(row => {
-              const wattHours =
+          <tbody>
+            {rows.map((row) => {
+              const dailyWh =
                 typeof row.quantity === "number" &&
                 row.quantity >= 1 &&
                 typeof row.watts === "number" &&
                 row.watts >= 1 &&
                 typeof row.hours === "number" &&
-                row.hours >= 1
-                ? Number(row.quantity) * Number(row.watts) * Number(row.hours)
-                : "";
+                row.hours > 0
+                  ? Number(row.quantity) * Number(row.watts) * Number(row.hours)
+                  : 0;
+              const nightHrs = resolveRowNightHours(row);
+              const nightWh =
+                row.nightBackup &&
+                typeof row.quantity === "number" &&
+                row.quantity >= 1 &&
+                typeof row.watts === "number" &&
+                row.watts >= 1
+                  ? Number(row.quantity) * Number(row.watts) * nightHrs
+                  : 0;
 
               return (
                 <tr
                   key={row.id}
-                  className={`border-b p-3 last:border-b-0 table-row md:border-t md:p-0 ${row.inductive ? 'border-l-4 border-l-amber-500' : 'border-l-4 border-l-transparent'} ${row.nightBackup ? 'bg-[#2CB22C]/5' : 'bg-white'}`}
+                  className={`border-b last:border-b-0 transition-colors ${
+                    row.inductive
+                      ? "border-l-4 border-l-amber-500"
+                      : "border-l-4 border-l-transparent"
+                  } ${row.nightBackup ? "bg-[#2CB22C]/5" : "bg-white"}`}
                 >
-                  <td
-                    className="table-cell border-b-0 border-r md:p-2 w-fit whitespace-nowrap min-w-22"
-                  >
-                    <div className="relative w-full flex items-center">
+                  <td className="border-r p-2">
+                    <div className="flex items-center gap-1.5">
                       {row.nightBackup && (
-                        <div className="w-2 h-2 rounded-full bg-[#2CB22C] shrink-0 mr-2 ml-1" />
+                        <span className="w-2 h-2 rounded-full bg-[#2CB22C] shrink-0" />
                       )}
                       <input
                         type="text"
-                        className="w-full text-[10px] md:text-sm rounded-md border-none p-2 outline-0 focus:ring-0 whitespace-nowrap"
-                        placeholder="Search or type item"
+                        className="w-full text-sm rounded-lg border border-transparent focus:border-[#2CB22C] bg-transparent px-2 py-1.5 outline-0"
+                        placeholder="Search or type appliance..."
                         value={row.item}
-                        onFocus={e => {
+                        onFocus={(e) => {
                           activeInputRef.current = e.currentTarget;
                           setDropdownRect(e.currentTarget.getBoundingClientRect());
                           setActiveRowId(row.id);
                         }}
-                        onKeyDown={e => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                          }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") e.preventDefault();
                         }}
                         onBlur={() =>
-                          setActiveRowId(prev => {
-                            if (prev === row.id) {
-                              activeInputRef.current = null;
-                              setDropdownRect(null);
-                              return null;
-                            }
-                            return prev;
-                          })
+                          setTimeout(() => {
+                            setActiveRowId((prev) => (prev === row.id ? null : prev));
+                          }, 120)
                         }
-                        onChange={e => {
+                        onChange={(e) => {
                           const value = e.target.value;
                           if (activeRowId !== row.id) {
                             activeInputRef.current = e.currentTarget;
@@ -860,113 +1067,165 @@ const CalculatorSectionTwo = () => {
                     </div>
                   </td>
 
-                  <td
-                    className="table-cell border-b-0 border-r md:p-2"
-                  >
-                    <div className="flex w-full items-center justify-center gap-3 px-2 lg:px-4 py-2">
-                      <input
-                        type="number"
-                        min={1}
-                        inputMode="decimal"
-                        className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-20"
-                        value={row.quantity}
-                        onChange={e =>
-                          updateRow(row.id, {
-                            quantity: parseCalculatorNumericInput(e.target.value),
-                          })
-                        }
-                        onBlur={() => {
-                          if (row.quantity === "") return;
-                          updateRow(row.id, { quantity: Math.max(1, Number(row.quantity)) });
-                        }}
-                      />
-                    </div>
-
+                  <td className="border-r p-2">
+                    <input
+                      type="number"
+                      min={1}
+                      inputMode="numeric"
+                      placeholder="1"
+                      className="w-full text-center rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus:border-[#2CB22C]"
+                      value={row.quantity}
+                      onChange={(e) =>
+                        updateRow(row.id, {
+                          quantity: parseCalculatorNumericInput(e.target.value),
+                        })
+                      }
+                      onBlur={() => {
+                        if (row.quantity === "") return;
+                        updateRow(row.id, {
+                          quantity: Math.max(1, Number(row.quantity)),
+                        });
+                      }}
+                    />
                   </td>
 
-                  <td
-                    className="table-cell border-b-0 border-r md:p-2"
-                  >
-                    <div className="flex w-full items-center justify-between gap-3 px-2 lg:px-4 py-2">
+                  <td className="border-r p-2">
+                    <div className="flex items-center gap-1">
                       <input
                         type="number"
                         min={1}
                         inputMode="decimal"
-                        className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-24"
+                        placeholder="100"
+                        className="w-full text-center rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus:border-[#2CB22C]"
                         value={row.watts}
-                        onChange={e =>
+                        onChange={(e) =>
                           updateRow(row.id, {
                             watts: parseCalculatorNumericInput(e.target.value),
                           })
                         }
                         onBlur={() => {
                           if (row.watts === "") return;
-                          updateRow(row.id, { watts: Math.max(1, Number(row.watts)) });
+                          updateRow(row.id, {
+                            watts: Math.max(1, Number(row.watts)),
+                          });
                         }}
                       />
-                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm hidden md:block">W</p>
+                      <span className="text-xs font-medium text-gray-400">W</span>
                     </div>
-
                   </td>
 
-                  <td
-                    className="table-cell border-b-0 border-r md:p-2"
-                  >
-                    <div className="flex w-full items-center justify-center lg:justify-between gap-3 px-2 lg:px-4 py-2">
+                  <td className="border-r p-2">
+                    <div className="flex items-center gap-1">
                       <input
                         type="number"
-                        min={1}
+                        min={0.5}
                         max={24}
+                        step="0.5"
                         inputMode="decimal"
-                        className="w-full rounded-md border-none p-2 outline-0 focus:ring-0 md:w-24"
+                        placeholder="8"
+                        className="w-full text-center rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-sm outline-none focus:border-[#2CB22C]"
                         value={row.hours}
-                        onChange={e =>
+                        onChange={(e) =>
                           updateRow(row.id, {
                             hours: parseCalculatorNumericInput(e.target.value),
                           })
                         }
                         onBlur={() => {
                           if (row.hours === "") return;
-                          updateRow(row.id, { hours: Math.min(24, Math.max(1, Number(row.hours))) });
+                          updateRow(row.id, {
+                            hours: Math.min(24, Math.max(0.5, Number(row.hours))),
+                          });
                         }}
                       />
-                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm hidden md:block">Hrs</p>
+                      <span className="text-xs font-medium text-gray-400">h</span>
                     </div>
-
                   </td>
 
-                  <td
-                    className="table-cell border-b-0 border-r md:p-2"
-                  >
-                    <div className="flex w-full items-center justify-center lg:justify-between gap-3 px-2 lg:px-4 py-2">
-                      <p>{wattHours}</p>
-                      <p className="font-medium text-[7px] md:text-sm bg-[#B8C0CC33] p-1 md:p-2 text-[#3B3B3BB2] rounded-sm">Wh</p>
-                    </div>
-
-                  </td>
-
-                  <td
-                    className="table-cell border-b-0 border-r md:p-2"
-                  >
-                    <div className="flex w-full items-center justify-center h-full">
+                  {/* Option A Conditional Night Backup + Night Hours */}
+                  <td className="border-r p-2">
+                    <div className="flex items-center justify-center gap-2">
                       <input
                         type="checkbox"
                         disabled={!row.item}
                         checked={row.nightBackup}
-                        onChange={(e) => updateRow(row.id, { nightBackup: e.target.checked })}
-                        className="w-4 h-4 text-[#2CB22C] focus:ring-[#2CB22C] rounded border-gray-300 cursor-pointer"
+                        onChange={(e) =>
+                          updateRow(row.id, { nightBackup: e.target.checked })
+                        }
+                        className="w-4 h-4 accent-[#2CB22C] rounded border-gray-300 cursor-pointer shrink-0"
                       />
+                      {row.nightBackup ? (
+                        <div className="flex items-center gap-1 animate-in fade-in duration-150">
+                          <input
+                            type="number"
+                            min={0}
+                            max={typeof row.hours === "number" ? row.hours : 24}
+                            step="0.5"
+                            inputMode="decimal"
+                            value={row.nightHours}
+                            placeholder={String(nightHrs)}
+                            onChange={(e) =>
+                              updateRow(row.id, {
+                                nightHours: parseCalculatorNumericInput(e.target.value),
+                              })
+                            }
+                            onBlur={() => {
+                              if (row.nightHours === "") return;
+                              const maxH =
+                                typeof row.hours === "number" ? row.hours : 24;
+                              updateRow(row.id, {
+                                nightHours: Math.min(
+                                  maxH,
+                                  Math.max(0, Number(row.nightHours)),
+                                ),
+                              });
+                            }}
+                            className="w-16 rounded-lg border border-[#2CB22C] bg-white px-1.5 py-1 text-center text-xs font-bold text-[#027A48] outline-none"
+                          />
+                          <span className="text-[11px] font-medium text-[#027A48]">
+                            /{row.hours || 24}h
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">Day only</span>
+                      )}
                     </div>
                   </td>
 
-                  <td
-                    className="table-cell border-b-0 md:p-2 bg-[#FF00001A]"
-                  >
-                    <button
-                      onClick={() => removeRow(row.id)}
-                      className="text-red-500 flex items-center justify-center w-full "
+                  <td className="border-r p-2">
+                    <select
+                      value={row.simultaneousMode || "simultaneous"}
+                      onChange={(e) =>
+                        updateRow(row.id, {
+                          simultaneousMode: e.target.value as SimultaneousMode,
+                        })
+                      }
+                      className="w-full rounded-lg border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-[#344054] outline-none focus:border-[#2CB22C]"
                     >
-                      <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <option value="simultaneous">Runs Together</option>
+                      <option value="staggered">Used Separately</option>
+                    </select>
+                  </td>
+
+                  <td className="border-r p-2 text-right">
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold text-[#101828]">
+                        {dailyWh > 0 ? `${dailyWh.toLocaleString()} Wh` : "—"}
+                      </p>
+                      {row.nightBackup && nightWh > 0 && (
+                        <p className="text-[11px] font-medium text-[#027A48]">
+                          🌙 {nightWh.toLocaleString()} Wh night
+                        </p>
+                      )}
+                    </div>
+                  </td>
+
+                  <td className="p-2 text-center bg-red-50/40">
+                    <button
+                      type="button"
+                      onClick={() => removeRow(row.id)}
+                      className="text-red-500 hover:text-red-700 inline-flex items-center justify-center p-1.5 rounded-lg hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </td>
                 </tr>
@@ -975,100 +1234,388 @@ const CalculatorSectionTwo = () => {
           </tbody>
         </table>
       </div>
-      {activeRowId && dropdownRect && typeof window !== "undefined" && (() => {
-        const dropdownMaxHeight = 192;
-        const spaceBelow = window.innerHeight - dropdownRect.bottom;
-        const openUp = spaceBelow < dropdownMaxHeight && dropdownRect.top > dropdownMaxHeight;
-        const top = openUp ? dropdownRect.top - dropdownMaxHeight - 4 : dropdownRect.bottom + 4;
-        const left = Math.max(8, dropdownRect.left);
-        const width = Math.min(dropdownRect.width, window.innerWidth - left - 8);
 
-        if (!activeSuggestions.length) return null;
+      {/* Autocomplete Portal */}
+      {activeRowId &&
+        dropdownRect &&
+        typeof window !== "undefined" &&
+        (() => {
+          const dropdownMaxHeight = 220;
+          const spaceBelow = window.innerHeight - dropdownRect.bottom;
+          const openUp =
+            spaceBelow < dropdownMaxHeight && dropdownRect.top > dropdownMaxHeight;
+          const top = openUp
+            ? dropdownRect.top - dropdownMaxHeight - 4
+            : dropdownRect.bottom + 4;
+          const left = Math.max(8, dropdownRect.left);
+          const width = Math.max(
+            260,
+            Math.min(dropdownRect.width, window.innerWidth - left - 8),
+          );
 
-        return createPortal(
-          <div
-            className="fixed z-50 max-h-48 overflow-auto rounded-md border border-gray-200 bg-white shadow-md"
-            style={{ top, left, width }}
-          >
-            {activeSuggestions.map(device => (
-              <button
-                key={device.key}
-                type="button"
-                className="w-full text-left text-[10px] md:text-sm px-3 py-2 hover:bg-gray-50"
-                onMouseDown={event => {
-                  event.preventDefault();
-                  if (!activeRowId) return;
-                  updateRow(activeRowId, {
-                    item: device.name,
-                    watts: Math.max(1, Number(device.watts) || 1),
-                    hours: 1,
-                    quantity: 1,
-                    inductive: device.inductive || false,
-                  });
-                  setActiveRowId(null);
-                  setActiveSuggestions([]);
-                }}
-              >
-                <span className="font-medium">{device.name}</span>
-                <span className="text-[#667085]">
-                  {` — ${device.watts}W`}
-                  {device.category ? ` · ${device.category}` : ""}
-                </span>
-              </button>
-            ))}
-          </div>,
-          document.body
-        );
-      })()}
-      <div className="flex justify-end">
+          if (!activeSuggestions.length) return null;
+
+          return createPortal(
+            <div
+              className="fixed z-50 max-h-56 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg"
+              style={{ top, left, width }}
+            >
+              {activeSuggestions.map((device) => {
+                const isDefaultNight =
+                  device.name.toLowerCase().includes("fridge") ||
+                  device.name.toLowerCase().includes("freezer") ||
+                  device.name.toLowerCase().includes("fan") ||
+                  device.name.toLowerCase().includes("bulb") ||
+                  device.name.toLowerCase().includes("floodlight") ||
+                  device.name.toLowerCase().includes("cctv") ||
+                  device.name.toLowerCase().includes("router");
+                const defaultDailyHours =
+                  device.name.toLowerCase().includes("fridge") ||
+                  device.name.toLowerCase().includes("freezer")
+                    ? 16
+                    : device.name.toLowerCase().includes("pump") ||
+                        device.name.toLowerCase().includes("iron") ||
+                        device.name.toLowerCase().includes("kettle") ||
+                        device.name.toLowerCase().includes("washing")
+                      ? 1
+                      : 6;
+                const defaultNightHours = isDefaultNight
+                  ? Math.min(defaultDailyHours, 8)
+                  : "";
+                const isStaggeredDefault =
+                  device.name.toLowerCase().includes("pump") ||
+                  device.name.toLowerCase().includes("iron") ||
+                  device.name.toLowerCase().includes("kettle") ||
+                  device.name.toLowerCase().includes("microwave") ||
+                  device.name.toLowerCase().includes("washing");
+
+                return (
+                  <button
+                    key={device.key}
+                    type="button"
+                    className="w-full text-left text-xs md:text-sm px-3.5 py-2.5 hover:bg-[#F6FFF6] border-b border-gray-50 last:border-b-0 flex items-center justify-between gap-2"
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      if (!activeRowId) return;
+                      updateRow(activeRowId, {
+                        item: device.name,
+                        watts: Math.max(1, Number(device.watts) || 1),
+                        hours: defaultDailyHours,
+                        quantity: 1,
+                        nightBackup: isDefaultNight,
+                        nightHours: defaultNightHours,
+                        simultaneousMode: isStaggeredDefault
+                          ? "staggered"
+                          : "simultaneous",
+                        inductive: device.inductive || false,
+                        surgeMultiplier: device.surgeMultiplier || 1,
+                      });
+                      setActiveRowId(null);
+                      setActiveSuggestions([]);
+                    }}
+                  >
+                    <div>
+                      <span className="font-semibold text-[#101828]">
+                        {device.name}
+                      </span>
+                      {device.category && (
+                        <span className="ml-1.5 text-xs text-[#667085]">
+                          · {device.category}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-semibold text-[#344054]">
+                        {device.watts}W
+                      </span>
+                      {device.inductive && (
+                        <span className="rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
+                          {device.surgeMultiplier}× surge
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>,
+            document.body,
+          );
+        })()}
+
+      <div className="flex justify-end mt-3 md:mt-0">
         <Button
           onClick={() => setRows((currentRows) => addCalculatorRow(currentRows))}
-          className="w-full md:w-fit text-[10px] md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-8 py-5 rounded-b-lg rounded-t-none hover:opacity-90"
+          className="w-full md:w-fit text-xs md:text-sm cursor-pointer text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] px-8 py-5 rounded-xl md:rounded-b-xl md:rounded-t-none hover:opacity-90 font-semibold"
         >
-          Add Item
+          + Add Another Appliance
         </Button>
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-4 bg-gray-50 border border-t-0 border-gray-200 p-3 text-xs text-gray-600 rounded-b-lg">
+      <div className="mt-3 md:mt-0 flex flex-wrap items-center gap-4 bg-gray-50 border border-gray-200 p-3.5 text-xs text-gray-600 rounded-xl md:rounded-b-xl md:rounded-t-none">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-3.5 bg-amber-500 rounded-[1px]"></div>
-          <span>Inductive load — startup surge factored into inverter sizing</span>
+          <div className="w-1.5 h-3.5 bg-amber-500 rounded-xs"></div>
+          <span>
+            <strong>Inductive motor load:</strong> Startup surge is factored into inverter sizing
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 bg-[#2CB22C] rounded-full"></div>
-          <span>🌙 Night backup load — factored into battery sizing</span>
+          <span>
+            <strong>🌙 Night Backup:</strong> Enter exact night hours (out of daily hours) to size your lithium battery bank accurately
+          </span>
         </div>
-        <p className="w-full text-[11px] italic text-gray-400 mt-1">Energy consumed per item is included in your downloadable PDF summary.</p>
       </div>
-      <div ref={summaryRef} className="bg-white mt-8 mb-12 max-w-2xl">
-        <p className="text-lg font-semibold mb-4 text-[#101828]">
-          Your Custom System Recommendation
-        </p>
-        <p className="pb-10">
-          Here&apos;s a quick breakdown of your total energy usage based on your inputs. This shows your daily demand and the solar setup that fits perfectly.
-        </p>
 
-        {isSearching && (
-          <p className="text-xs text-[#667085] pb-3">Searching appliances...</p>
+      {/* ── 3 Prominent Engineering Result Cards + Summary ──────────────── */}
+      <div ref={summaryRef} className="mt-10 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF3] px-3 py-1 text-xs font-semibold text-[#027A48] mb-2">
+              <Zap className="h-3.5 w-3.5" /> Nigerian Engineering Standard Sizing
+            </span>
+            <h3 className="text-xl md:text-2xl font-bold text-[#101828]">
+              Your Custom Solar Engineering Recommendation
+            </h3>
+            <p className="text-sm text-[#475467] mt-1">
+              Sized independently for peak load &amp; motor surge (Inverter), nighttime backup energy (Battery), and rainy-season recharge recovery (Solar PV).
+            </p>
+          </div>
+          {isCalculating && (
+            <span className="text-xs font-medium text-[#027A48] animate-pulse">
+              Updating engineering calculations...
+            </span>
+          )}
+        </div>
+
+        {/* 3 Hero Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* Card 1: Recommended Inverter */}
+          <div className="rounded-2xl border border-[#EAECF0] bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+                  Recommended Inverter
+                </span>
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ECFDF3] text-[#027A48]">
+                  <Cpu className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <p className="text-3xl font-extrabold text-[#101828]">
+                  {Number(inverterKva).toFixed(1)} kVA
+                </p>
+                <span className="text-sm font-semibold text-[#027A48]">
+                  ({Number(inverterKw).toFixed(1)} kW)
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-[#475467]">
+                Pure Sine Wave Hybrid Inverter (PF 0.8, +25% safety headroom)
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-gray-100 space-y-1 text-xs text-[#475467]">
+              <div className="flex justify-between">
+                <span>Simultaneous Load:</span>
+                <strong className="text-[#101828]">
+                  {totals.simultaneousKW.toFixed(2)} kW ({Math.round(totals.simultaneousKW * 1000)} W)
+                </strong>
+              </div>
+              <div className="flex justify-between">
+                <span>Max Motor Surge Headroom:</span>
+                <strong className="text-amber-700">
+                  +{Math.round(totals.maxSurgeW).toLocaleString()} W
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Recommended Battery Bank */}
+          <div className="rounded-2xl border-2 border-[#2CB22C] bg-[#F6FFF6]/60 p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#027A48]">
+                  Recommended Battery Bank
+                </span>
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2CB22C] text-white">
+                  <BatteryCharging className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <p className="text-3xl font-extrabold text-[#101828]">
+                  {Number(batteryKwh).toFixed(1)} kWh
+                </p>
+                <span className="text-xs font-semibold text-[#027A48]">
+                  Nominal LiFePO4
+                </span>
+              </div>
+              <p className="mt-1 text-xs font-semibold text-[#027A48]">
+                {batteryUnitsCount > 0
+                  ? `${batteryUnitsCount} × ${batteryUnitSize}kWh Lithium Module${batteryUnitsCount > 1 ? "s" : ""} (${usableBatteryKwh.toFixed(1)} kWh Usable)`
+                  : "No night backup loads selected (0 kWh)"}
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-[#2CB22C]/20 space-y-1 text-xs text-[#344054]">
+              <div className="flex justify-between">
+                <span>Nighttime Energy Need:</span>
+                <strong className="text-[#101828]">
+                  {totals.nightKWh.toFixed(2)} kWh ({Math.round(totals.nightWh).toLocaleString()} Wh)
+                </strong>
+              </div>
+              <div className="flex justify-between">
+                <span>Est. Backup Duration:</span>
+                <strong className="text-[#027A48]">
+                  {calculation?.batterySizing?.requestedBackupHours
+                    ? `${calculation.batterySizing.estimatedBackupHours.toFixed(1)} hrs (Req: ${calculation.batterySizing.requestedBackupHours.toFixed(1)}h)`
+                    : "Daytime Only"}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 3: Recommended Solar PV Array */}
+          <div className="rounded-2xl border border-[#EAECF0] bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+                  Recommended Solar Array
+                </span>
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                  <Sun className="h-5 w-5" />
+                </div>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <p className="text-3xl font-extrabold text-[#101828]">
+                  {Number(pvKwp).toFixed(2)} kWp
+                </p>
+                <span className="text-xs font-semibold text-amber-700">
+                  ({panelCount} × {panelWattageW}W Panels)
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-[#475467]">
+                Includes 1.3× Nigerian rainy/cloudy weather safety factor
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-gray-100 space-y-1 text-xs text-[#475467]">
+              <div className="flex justify-between">
+                <span>Est. Daily Generation:</span>
+                <strong className="text-[#101828]">
+                  ~{estSolarGenKwh.toFixed(1)} kWh / day
+                </strong>
+              </div>
+              <div className="flex justify-between">
+                <span>Battery Recharge Time:</span>
+                <strong className="text-[#027A48]">
+                  {estRechargeHours > 0
+                    ? `~${estRechargeHours.toFixed(1)} Peak Sun Hrs`
+                    : "N/A (No night load)"}
+                </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Engineering Warnings (if any) */}
+        {calculation?.warnings && calculation.warnings.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {calculation.warnings.map((warn, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/80 p-3.5 text-xs text-amber-900"
+              >
+                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>{warn}</span>
+              </div>
+            ))}
+          </div>
         )}
 
-        {isCalculating && (
-          <p className="text-xs text-[#667085] pb-3">Calculating your recommendation...</p>
-        )}
+        {/* Detailed Energy Breakdown & Collapsible Engineering Assumptions */}
+        <div className="mt-6 rounded-2xl border border-[#EAECF0] bg-white overflow-hidden">
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100 p-4 text-center">
+            <div className="p-2">
+              <p className="text-[11px] font-medium text-[#667085] uppercase">
+                Total Connected Load
+              </p>
+              <p className="mt-1 text-base font-bold text-[#101828]">
+                {totals.peakKW.toFixed(2)} kW
+              </p>
+            </div>
+            <div className="p-2">
+              <p className="text-[11px] font-medium text-[#667085] uppercase">
+                Total Daily Energy
+              </p>
+              <p className="mt-1 text-base font-bold text-[#101828]">
+                {totals.dailyKWh.toFixed(2)} kWh
+              </p>
+            </div>
+            <div className="p-2">
+              <p className="text-[11px] font-medium text-[#667085] uppercase">
+                Daytime Direct Energy
+              </p>
+              <p className="mt-1 text-base font-bold text-[#101828]">
+                {totals.daytimeKWh.toFixed(2)} kWh
+              </p>
+            </div>
+            <div className="p-2">
+              <p className="text-[11px] font-medium text-[#027A48] uppercase">
+                Night Backup Energy
+              </p>
+              <p className="mt-1 text-base font-bold text-[#027A48]">
+                {totals.nightKWh.toFixed(2)} kWh
+              </p>
+            </div>
+          </div>
 
-        <table className="w-full max-w-xl border rounded-lg text-sm">
-          <tbody>
-            <tr className="border-b"><td className="p-3">Total Load</td><td>{totals.peakKW.toFixed(2)} kW</td></tr>
-            <tr className="border-b"><td className="p-3">Calculated Daily Energy Use</td><td>{totals.dailyKWh.toFixed(2)} kWh</td></tr>
-            <tr className="border-b"><td className="p-3">Estimated Inverter Size</td><td>{Number(inverterKw).toFixed(2)} kW</td></tr>
-            <tr className="border-b"><td className="p-3">Estimated Battery Capacity</td><td>{Number(batteryKwh).toFixed(2)} kWh</td></tr>
-            <tr><td className="p-3">Estimated PV Size</td><td>{Number(pvKwp).toFixed(2)} kWp</td></tr>
-          </tbody>
-        </table>
-
-        <div className="mt-8">
-          <p className="italic text-[#667085] text-sm mb-6">Note: <span>These are estimates based on your usage pattern. For custom optimization, you can request a detailed quote. </span> </p>
+          <div className="border-t border-gray-100 bg-gray-50/60 px-4 py-2.5">
+            <button
+              type="button"
+              onClick={() => setShowAssumptions((v) => !v)}
+              className="flex w-full items-center justify-between text-xs font-semibold text-[#344054] hover:text-[#101828]"
+            >
+              <span>View Nigerian Engineering Design Parameters &amp; Efficiencies</span>
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${
+                  showAssumptions ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {showAssumptions && (
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-gray-200/70 text-[11px] text-[#475467]">
+                <div>
+                  <span className="text-gray-500">Peak Sun Hours (PSH):</span>{" "}
+                  <strong className="text-[#101828]">3.5 hrs/day</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">Cloudy Safety Factor:</span>{" "}
+                  <strong className="text-[#101828]">1.3×</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">PV Performance Ratio:</span>{" "}
+                  <strong className="text-[#101828]">78%</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">LiFePO4 Usable DoD:</span>{" "}
+                  <strong className="text-[#101828]">80%</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">Battery Charge/Disch Eff:</span>{" "}
+                  <strong className="text-[#101828]">95% / 95%</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">Inverter Efficiency:</span>{" "}
+                  <strong className="text-[#101828]">92% (PF 0.8)</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">Inverter Safety Margin:</span>{" "}
+                  <strong className="text-[#101828]">+25% (1.25×)</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500">Standard Modules:</span>{" "}
+                  <strong className="text-[#101828]">600W PV / 5kWh Bat</strong>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1076,12 +1623,13 @@ const CalculatorSectionTwo = () => {
       {hasCalculated && (
         <div className="mt-12 w-full">
           {isFetchingPackages && (
-            <p className="text-xs text-[#667085] mb-3">Checking for matching packages...</p>
+            <p className="text-xs text-[#667085] mb-3">
+              Checking for matching packages...
+            </p>
           )}
 
           {!isFetchingPackages && suggestedPackages.length > 0 && hasCalculated && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
                   <Zap className="h-6 w-6 text-[#2CB22C] fill-[#2CB22C]" />
@@ -1097,15 +1645,15 @@ const CalculatorSectionTwo = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {suggestedPackages.map((pkg, i) => {
                   const isBestMatch = i === 0;
-                  
+
                   return (
                     <div
                       key={pkg.id}
                       onMouseEnter={() => setHoveredCardId(pkg.id)}
                       onMouseLeave={() => setHoveredCardId(null)}
                       className={`relative rounded-[24px] p-5 transition-all duration-300 hover:shadow-lg flex flex-col min-h-[420px] ${
-                        isBestMatch 
-                          ? "bg-white border-2 border-[#2CB22C] shadow-md shadow-[#2CB22C]/10" 
+                        isBestMatch
+                          ? "bg-white border-2 border-[#2CB22C] shadow-md shadow-[#2CB22C]/10"
                           : "bg-white border border-gray-200"
                       }`}
                     >
@@ -1114,7 +1662,7 @@ const CalculatorSectionTwo = () => {
                           Best Match
                         </div>
                       )}
-                      
+
                       <div className="flex items-start justify-between gap-3 mb-2 pt-1 z-20 relative">
                         <h3 className="text-[18px] font-bold text-[#101828] leading-tight">
                           {pkg.name}
@@ -1122,20 +1670,28 @@ const CalculatorSectionTwo = () => {
                         <Link
                           href={storePackageHref(pkg.slug ?? pkg.id)}
                           className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-xl transition-colors ${
-                            isBestMatch ? "bg-[#2CB22C] text-white hover:bg-[#048A05]" : "bg-[#F2F4F7] text-[#101828] hover:bg-gray-200"
+                            isBestMatch
+                              ? "bg-[#2CB22C] text-white hover:bg-[#048A05]"
+                              : "bg-[#F2F4F7] text-[#101828] hover:bg-gray-200"
                           }`}
                         >
                           <ArrowRight className="w-4 h-4 -rotate-45" />
                         </Link>
                       </div>
-                      
+
                       <p className="text-xs text-[#475467] line-clamp-2 min-h-[32px] mb-4 z-20 relative">
-                        {pkg.description || "Affordable and efficient solar solution tailored to power your home and appliances seamlessly."}
+                        {pkg.description ||
+                          "Affordable and efficient solar solution tailored to power your home and appliances seamlessly."}
                       </p>
 
                       <div className="relative flex-1 grid mt-2">
-                        {/* Default State Container */}
-                        <div className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-300 z-10 bg-white ${hoveredCardId === pkg.id ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                        <div
+                          className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-300 z-10 bg-white ${
+                            hoveredCardId === pkg.id
+                              ? "opacity-0 pointer-events-none"
+                              : "opacity-100"
+                          }`}
+                        >
                           <div className="mb-4">
                             <p className="text-xl font-extrabold text-[#101828]">
                               ₦{pkg.price.toLocaleString()}
@@ -1143,78 +1699,115 @@ const CalculatorSectionTwo = () => {
                           </div>
 
                           <div className="mt-auto w-full h-[200px] bg-gray-100 rounded-xl overflow-hidden relative">
-                          <img 
-                            src={(pkg.thumbnail_url && pkg.thumbnail_url !== "null") ? pkg.thumbnail_url : ((pkg.package_image_url && pkg.package_image_url !== "null") ? pkg.package_image_url : "/double_solar_panels.png")}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/double_solar_panels.png";
-                            }}
-                            alt={pkg.name} 
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm p-1.5 rounded-lg shadow-sm">
-                            {(!pkg.target_audience || pkg.target_audience === 'residential') && (
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2CB22C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                            )}
-                            {pkg.target_audience === 'commercial' && (
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2CB22C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
-                            )}
-                            {pkg.target_audience === 'industrial' && (
-                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2CB22C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M17 18h1"></path><path d="M12 18h1"></path><path d="M7 18h1"></path></svg>
-                            )}
-                            {pkg.target_audience === 'campus' && (
-                              <Tent className="w-4 h-4 text-[#2CB22C]" strokeWidth={2} />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Hover State Container */}
-                      <div className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-300 z-20 bg-white h-full ${hoveredCardId === pkg.id ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-                        <div className={`rounded-xl p-3 mb-4 ${isBestMatch ? "bg-[#F0FFF0] border border-[#2CB22C]/20" : "bg-[#F9FAFB] border border-[#EAECF0]"}`}>
-                          <div className={`flex items-center gap-1.5 font-semibold text-xs mb-2 ${isBestMatch ? "text-[#048A05]" : "text-[#344054]"}`}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                            Package Components
-                          </div>
-                          
-                          <div className="space-y-1.5">
-                            <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
-                              <span>{pkg.inverter_size_kw || 3.5}kW Inverter</span>
-                              <CheckCircle2 className="w-3 h-3" />
-                            </div>
-                            
-                            <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
-                              <span>{pkg.battery_capacity_kwh || 5.12}kWh Battery</span>
-                              <CheckCircle2 className="w-3 h-3" />
-                            </div>
-
-                            <div className={`flex items-center justify-between text-[11px] font-medium ${isBestMatch ? "text-[#048A05]" : "text-[#475467]"}`}>
-                              <span>{pkg.system_size_kw || 2.4}kWp Solar Panels</span>
-                              <CheckCircle2 className="w-3 h-3" />
+                            <img
+                              src={
+                                pkg.thumbnail_url && pkg.thumbnail_url !== "null"
+                                  ? pkg.thumbnail_url
+                                  : pkg.package_image_url &&
+                                      pkg.package_image_url !== "null"
+                                    ? pkg.package_image_url
+                                    : "/double_solar_panels.png"
+                              }
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src =
+                                  "/double_solar_panels.png";
+                              }}
+                              alt={pkg.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm p-1.5 rounded-lg shadow-sm">
+                              {pkg.target_audience === "campus" && (
+                                <Tent className="w-4 h-4 text-[#2CB22C]" strokeWidth={2} />
+                              )}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex-1">
-                          <div className="flex items-center gap-1.5 font-semibold text-[#101828] text-xs mb-2">
-                            <Zap className="w-3.5 h-3.5 text-[#FDB022] fill-[#FDB022]" />
-                            Fortified To Power
-                          </div>
-                          <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-[10px] text-[#475467] font-medium">
-                            {((pkg.what_it_powers && pkg.what_it_powers.length > 0) ? pkg.what_it_powers : ["1x AC (1HP)", "1x Fridge", "1x TV", "4x Fans", "10x Lighting", "2x Laptops"]).slice(0, 8).map((item: string) => (
-                              <span key={item}>{item}</span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="pt-3 mt-auto">
-                          <Link
-                            href={storePackageHref(pkg.slug ?? pkg.id)}
-                            className="w-full py-2 px-3 text-xs font-semibold text-center text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90 rounded-xl flex items-center justify-center gap-1.5 transition-opacity"
+                        <div
+                          className={`col-start-1 row-start-1 flex flex-col transition-opacity duration-300 z-20 bg-white h-full ${
+                            hoveredCardId === pkg.id
+                              ? "opacity-100 pointer-events-auto"
+                              : "opacity-0 pointer-events-none"
+                          }`}
+                        >
+                          <div
+                            className={`rounded-xl p-3 mb-4 ${
+                              isBestMatch
+                                ? "bg-[#F0FFF0] border border-[#2CB22C]/20"
+                                : "bg-[#F9FAFB] border border-[#EAECF0]"
+                            }`}
                           >
-                            View & Order Package →
-                          </Link>
+                            <div
+                              className={`flex items-center gap-1.5 font-semibold text-xs mb-2 ${
+                                isBestMatch ? "text-[#048A05]" : "text-[#344054]"
+                              }`}
+                            >
+                              Package Components
+                            </div>
+
+                            <div className="space-y-1.5">
+                              <div
+                                className={`flex items-center justify-between text-[11px] font-medium ${
+                                  isBestMatch ? "text-[#048A05]" : "text-[#475467]"
+                                }`}
+                              >
+                                <span>{pkg.inverter_size_kw || 3.5}kW Inverter</span>
+                                <CheckCircle2 className="w-3 h-3" />
+                              </div>
+
+                              <div
+                                className={`flex items-center justify-between text-[11px] font-medium ${
+                                  isBestMatch ? "text-[#048A05]" : "text-[#475467]"
+                                }`}
+                              >
+                                <span>{pkg.battery_capacity_kwh || 5.12}kWh Battery</span>
+                                <CheckCircle2 className="w-3 h-3" />
+                              </div>
+
+                              <div
+                                className={`flex items-center justify-between text-[11px] font-medium ${
+                                  isBestMatch ? "text-[#048A05]" : "text-[#475467]"
+                                }`}
+                              >
+                                <span>{pkg.system_size_kw || 2.4}kWp Solar Panels</span>
+                                <CheckCircle2 className="w-3 h-3" />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex-1">
+                            <div className="flex items-center gap-1.5 font-semibold text-[#101828] text-xs mb-2">
+                              <Zap className="w-3.5 h-3.5 text-[#FDB022] fill-[#FDB022]" />
+                              Fortified To Power
+                            </div>
+                            <div className="grid grid-cols-2 gap-y-1.5 gap-x-2 text-[10px] text-[#475467] font-medium">
+                              {(pkg.what_it_powers && pkg.what_it_powers.length > 0
+                                ? pkg.what_it_powers
+                                : [
+                                    "1x AC (1HP)",
+                                    "1x Fridge",
+                                    "1x TV",
+                                    "4x Fans",
+                                    "10x Lighting",
+                                    "2x Laptops",
+                                  ]
+                              )
+                                .slice(0, 8)
+                                .map((item: string) => (
+                                  <span key={item}>{item}</span>
+                                ))}
+                            </div>
+                          </div>
+
+                          <div className="pt-3 mt-auto">
+                            <Link
+                              href={storePackageHref(pkg.slug ?? pkg.id)}
+                              className="w-full py-2 px-3 text-xs font-semibold text-center text-white bg-[linear-gradient(94.62deg,#2CB22C_-8.83%,#048A05_110.95%)] hover:opacity-90 rounded-xl flex items-center justify-center gap-1.5 transition-opacity"
+                            >
+                              View &amp; Order Package →
+                            </Link>
+                          </div>
                         </div>
-                      </div>
                       </div>
                     </div>
                   );
@@ -1225,10 +1818,11 @@ const CalculatorSectionTwo = () => {
 
           {!isFetchingPackages && suggestedPackages.length === 0 && hasCalculated && (
             <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center mt-8">
-              <p className="text-sm font-medium text-[#101828] mb-1">No exact package match found</p>
-              <p className="text-[#333333] text-xs text-center">
-                We don&apos;t have a pre-built package that matches your exact needs right now — but we can build one for you.
-                Request a custom quote and our team will get back to you within 24 hours.
+              <p className="text-sm font-medium text-[#101828] mb-1">
+                Custom Engineered System Recommended
+              </p>
+              <p className="text-[#475467] text-xs text-center max-w-xl mx-auto">
+                Your load profile is best served by a custom-tailored Fortsolar package. Click &ldquo;Get Quote&rdquo; below and our engineering team will send your itemized quotation within 24 hours.
               </p>
             </div>
           )}
@@ -1236,38 +1830,7 @@ const CalculatorSectionTwo = () => {
       )}
 
       {hasCalculated && (
-        <div className="mt-12 rounded-2xl border border-[#EAECF0] bg-white p-6 md:p-8">
-          <h4 className="text-lg font-bold text-[#101828]">What happens after requesting a quote?</h4>
-          <p className="text-sm text-[#475467] mt-1 mb-6">
-            We follow a structured engineering process to ensure you get the absolute best setup for your home or business.
-          </p>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECFDF3] text-sm font-semibold text-[#027A48]">1</div>
-              <h5 className="font-semibold text-sm text-[#101828]">Submit Energy Audit</h5>
-              <p className="text-xs text-[#475467]">Submit your appliance load breakdown so our engineers have accurate requirements.</p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F0F9FF] text-sm font-semibold text-[#026AA2]">2</div>
-              <h5 className="font-semibold text-sm text-[#101828]">Engineer Review</h5>
-              <p className="text-xs text-[#475467]">Our engineers review the sizing, calculate exact equipment specs, and upload a priced proposal.</p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FDF2FA] text-sm font-semibold text-[#C11574]">3</div>
-              <h5 className="font-semibold text-sm text-[#101828]">Approve & Pay Deposit</h5>
-              <p className="text-xs text-[#475467]">Review the custom design spec in your customer portal, approve it, and make a Paystack payment.</p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FEF4EB] text-sm font-semibold text-[#B93815]">4</div>
-              <h5 className="font-semibold text-sm text-[#101828]">Professional Install</h5>
-              <p className="text-xs text-[#475467]">A verified local installer sets up the system, sharing real-time photo proofs for your sign-off.</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {hasCalculated && (
-        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
+        <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
           <GetQuoteDialog
             totals={totals}
             selectedDevices={selectedDevices}
@@ -1275,11 +1838,58 @@ const CalculatorSectionTwo = () => {
             isSubmitting={quoteSubmitting}
             onSubmit={submitQuote}
           />
-          <Button disabled={!hasCalculated} variant="outline" onClick={downloadPdf} className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300">
-            <PdfIcon /> Download Summary
+          <Button
+            disabled={!hasCalculated}
+            variant="outline"
+            onClick={downloadPdf}
+            className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300"
+          >
+            <PdfIcon /> Download Engineering Summary (PDF)
           </Button>
         </div>
       )}
+
+      {/* ── Brief, Plain-English Engineering FAQ Section ──────────────── */}
+      <div className="mt-16 rounded-2xl border border-[#EAECF0] bg-white p-6 md:p-8">
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECFDF3] text-[#027A48]">
+            <HelpCircle className="h-4 w-4" />
+          </div>
+          <h3 className="text-lg md:text-xl font-bold text-[#101828]">
+            How Our Solar Calculator Works (FAQ)
+          </h3>
+        </div>
+        <p className="text-xs md:text-sm text-[#475467] mb-6">
+          Brief answers on how we calculate your inverter, lithium battery, and solar panel requirements using Nigerian standards.
+        </p>
+
+        <div className="divide-y divide-gray-100">
+          {faqItems.map((item) => {
+            const isOpen = openFaqId === item.id;
+            return (
+              <div key={item.id} className="py-3.5 first:pt-0 last:pb-0">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaqId(isOpen ? null : item.id)}
+                  className="flex w-full items-center justify-between gap-4 text-left text-sm font-semibold text-[#101828] hover:text-[#027A48] transition-colors"
+                >
+                  <span>{item.question}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-[#667085] transition-transform ${
+                      isOpen ? "rotate-180 text-[#027A48]" : ""
+                    }`}
+                  />
+                </button>
+                {isOpen && (
+                  <p className="mt-2 text-xs md:text-sm leading-relaxed text-[#475467]">
+                    {item.answer}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 };
