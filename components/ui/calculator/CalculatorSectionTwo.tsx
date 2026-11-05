@@ -52,8 +52,12 @@ type CatalogItem = {
   name: string;
   category: string;
   watts: number;
+  dailyHoursUsage?: number;
   surgeMultiplier: number;
   inductive: boolean;
+  nightBackupDefault?: boolean;
+  defaultNightHours?: number;
+  defaultUsageMode?: SimultaneousMode;
   search_aliases: string[];
 };
 
@@ -77,6 +81,7 @@ type SuggestedPackage = {
   number_of_panels: number | null;
   estimated_savings_monthly: number | null;
   is_active?: boolean;
+  is_private?: boolean;
   thumbnail_url?: string | null;
   package_image_url?: string | null;
   matchScore: number;
@@ -101,39 +106,39 @@ type FaqItem = {
 const DEFAULT_FAQ_ITEMS: FaqItem[] = [
   {
     id: "night-hours",
-    question: "Why do I enter both Daily Hours and Night Hours?",
+    question: "Why do I enter both Daily Hours and Night Backup Hours?",
     answer:
-      'Daily Hours is the total time an appliance runs in a 24-hour day (daytime + nighttime). When you tick "Night Backup", you enter how many of those hours happen at night (typically 6 PM – 6 AM). Your battery is sized strictly from your Night Energy, while your solar panels are sized to cover both your daytime usage and recharging your battery.',
+      "Daily Hours is the total time an appliance runs in a 24-hour day (daytime + nighttime). When you tick the Night Backup checkbox, you enter how many of those hours happen at night (typically 6 PM – 6 AM). Your battery storage is sized from your Night Backup Energy, while your solar panels are sized to cover both your daytime usage and recharging your battery.",
   },
   {
-    id: "inverter-size",
-    question: "How is the inverter size (kVA & kW) calculated?",
+    id: "load-capacity-kw",
+    question: "How is the Load Capacity Needed (kW) calculated?",
     answer:
-      'We sum the running watts of all appliances that run at the same time (plus the single largest appliance marked "Used Separately"). We then check the startup surge of your largest motor/compressor (such as a borehole pump or AC), apply a 25% continuous safety margin, and convert to kVA using a standard 0.8 power factor so your inverter never trips.',
+      'We add the running watts of all appliances that run together (plus the single largest appliance marked "Used Separately"). We then factor in the startup surge of your largest motor or compressor (such as a pump, freezer, or AC) and apply a 25% continuous safety margin so your system handles your load comfortably without tripping.',
   },
   {
     id: "battery-size",
-    question: "How is the lithium battery bank sized?",
+    question: "How is the Energy / Battery Capacity Needed (kWh) sized?",
     answer:
-      "Your Nighttime Energy (kWh) is divided by real-world Nigerian system efficiencies: 80% usable Depth of Discharge (DoD) for LiFePO4 longevity, 95% battery discharge efficiency, and 92% inverter efficiency (~70% net usable factor). We then match the result to practical 5kWh lithium battery modules and verify that the bank can safely handle your continuous discharge power.",
+      "Your Night Backup Energy (kWh) is divided by real-world system efficiencies: 80% usable Depth of Discharge (DoD) for lithium battery longevity, 95% battery discharge efficiency, and 92% inverter conversion efficiency (~70% net usable factor).",
   },
   {
     id: "solar-pv-size",
-    question: "How many solar panels do I need under Nigerian weather conditions?",
+    question: "How is the Solar PV Capacity Needed (kWp) calculated?",
     answer:
-      "We use a conservative Nigerian baseline of 3.5 effective Peak Sun Hours (PSH), a 78% overall Performance Ratio (accounting for roof heat, harmattan dust, MPPT, and cable losses), and a 1.3× cloudy-weather safety factor so your battery still recharges reliably during rainy season.",
+      "We calculate the solar array needed to supply your daytime loads directly and replenish your nighttime battery energy using a conservative baseline of 3.5 effective Peak Sun Hours (PSH), a 78% overall performance ratio (accounting for heat, dust, MPPT, and cable losses), and a 1.3× cloudy-weather safety factor.",
   },
   {
     id: "non-inverter-fridge-ac",
-    question: "Why does a non-inverter AC, freezer, or borehole pump increase the inverter size?",
+    question: "Why does a non-inverter AC, freezer, or pump increase the required kW capacity?",
     answer:
-      "Standard induction motors and non-inverter compressors draw 3× to 4× their running watts for a split second when starting. Inverter ACs and inverter refrigerators soft-start smoothly (only ~1.3× to 1.5×), allowing a smaller, more affordable hybrid inverter.",
+      "Standard induction motors and non-inverter compressors draw 3× to 4× their running watts for a split second when starting. Inverter ACs and inverter refrigerators soft-start smoothly (only ~1.3× to 1.5×), allowing a lower kW inverter capacity.",
   },
   {
     id: "simultaneous-vs-staggered",
     question: 'What is the difference between "Runs Together" and "Used Separately"?',
     answer:
-      '"Runs Together (Simultaneous)" means the appliance stays on alongside your normal household loads (like fridges, fans, lights, TVs). "Used Separately (Staggered)" is for heavy short-use appliances you turn on one at a time (like a pressing iron, kettle, or borehole pump) so we do not oversize your inverter unnecessarily.',
+      '"Runs Together" means the appliance stays on alongside your normal household loads (like fridges, fans, lights, TVs). "Used Separately" is for heavy short-use appliances you turn on one at a time (like a pressing iron, kettle, or water pump) so your required kW capacity is not oversized unnecessarily.',
   },
 ];
 
@@ -150,12 +155,11 @@ const CalculatorSectionTwo = () => {
   const [activeRowId, setActiveRowId] = useState<string | null>(null);
   const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
   const [activeSuggestions, setActiveSuggestions] = useState<CatalogItem[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [, setIsSearching] = useState(false);
 
   const [calculation, setCalculation] = useState<CalculatorResponse["data"] | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [quoteSubmitting, setQuoteSubmitting] = useState(false);
-  const [showAssumptions, setShowAssumptions] = useState(false);
   const [faqItems, setFaqItems] = useState<FaqItem[]>(DEFAULT_FAQ_ITEMS);
   const [openFaqId, setOpenFaqId] = useState<string | null>("night-hours");
 
@@ -172,7 +176,6 @@ const CalculatorSectionTwo = () => {
       currentRows.map((row) => {
         if (row.id !== id) return row;
         const next = { ...row, ...updates };
-        // If daily hours decreased below nightHours, clamp nightHours automatically
         if (
           updates.hours !== undefined &&
           typeof next.hours === "number" &&
@@ -181,7 +184,6 @@ const CalculatorSectionTwo = () => {
         ) {
           next.nightHours = next.hours;
         }
-        // When toggling nightBackup ON for the first time, prefill sensible nightHours
         if (updates.nightBackup === true && next.nightHours === "") {
           const dailyH = typeof next.hours === "number" && next.hours > 0 ? next.hours : 8;
           next.nightHours = Math.min(dailyH, 8);
@@ -372,7 +374,6 @@ const CalculatorSectionTwo = () => {
       return;
     }
 
-    // Immediate deterministic client-side engineering calculation so UI never lags or fails offline
     const localCalc = calculateEngineeringSystem(completeRows);
     setCalculation(localCalc);
 
@@ -422,8 +423,21 @@ const CalculatorSectionTwo = () => {
 
   const totals: Totals = buildCalculatorTotals(calculation);
   const recommendation = deriveCalculatorRecommendation(calculation, totals);
-  const { inverterKw, inverterKva, batteryKwh, pvKwp } = recommendation;
+  const { inverterKw, batteryKwh, pvKwp } = recommendation;
   const hasCalculated = recommendation.hasCalculated;
+
+  // Exact required capacities (without forcing 600W panel or 5kWh battery module assumptions)
+  const requiredLoadKw = Number(inverterKw) || 0;
+  const requiredBatteryKwh =
+    calculation?.batterySizing?.requiredNominalKwh !== undefined &&
+    calculation.batterySizing.requiredNominalKwh > 0
+      ? calculation.batterySizing.requiredNominalKwh
+      : Number(batteryKwh) || 0;
+  const requiredPvKwp =
+    calculation?.pvSizing?.requiredPvKwp !== undefined &&
+    calculation.pvSizing.requiredPvKwp > 0
+      ? calculation.pvSizing.requiredPvKwp
+      : Number(pvKwp) || 0;
 
   useEffect(() => {
     if (!calculation) {
@@ -452,37 +466,44 @@ const CalculatorSectionTwo = () => {
           ? json.data
           : (json.data as { packages?: SuggestedPackage[] }).packages ?? [];
 
-        const reqPv = Number(pvKwp);
-        const reqInv = Number(inverterKw);
-        const reqBat = Number(batteryKwh);
+        const reqPv = Number(requiredPvKwp || pvKwp);
+        const reqInv = Number(requiredLoadKw || inverterKw);
+        const reqBat = Number(requiredBatteryKwh || batteryKwh);
 
-        const matched = raw
-          .filter((pkg) => pkg.system_size_kw != null && pkg.is_active !== false)
-          .map((pkg) => {
-            const pkgPv = pkg.system_size_kw!;
-            const pkgInv = pkg.inverter_size_kw ?? pkgPv;
-            const pkgBat = pkg.battery_capacity_kwh ?? 0;
+        const activePublicPackages = raw.filter(
+          (pkg) =>
+            pkg.system_size_kw != null &&
+            pkg.is_active !== false &&
+            !pkg.is_private,
+        );
 
-            const pvOk = reqPv > 0 ? pkgPv >= reqPv * 0.85 : true;
-            const invOk = reqInv > 0 ? pkgInv >= reqInv * 0.85 : true;
-            const batOk = reqBat > 0 ? pkgBat >= reqBat * 0.85 : true;
+        const scored = activePublicPackages.map((pkg) => {
+          const pkgPv = pkg.system_size_kw!;
+          const pkgInv = pkg.inverter_size_kw ?? pkgPv;
+          const pkgBat = pkg.battery_capacity_kwh ?? 0;
 
-            const pvCap = reqPv > 0 ? pkgPv <= Math.max(reqPv * 2.2, reqPv + 3) : true;
-            const invCap = reqInv > 0 ? pkgInv <= Math.max(reqInv * 2.2, reqInv + 3) : true;
-            const batCap = reqBat > 0 ? pkgBat <= Math.max(reqBat * 2.2, reqBat + 5) : true;
+          const pvOk = reqPv > 0 ? pkgPv >= reqPv * 0.8 : true;
+          const invOk = reqInv > 0 ? pkgInv >= reqInv * 0.8 : true;
+          const batOk = reqBat > 0 ? pkgBat >= reqBat * 0.75 : true;
 
-            const fits = pvOk && invOk && batOk && pvCap && invCap && batCap;
+          const pvCap = reqPv > 0 ? pkgPv <= Math.max(reqPv * 2.5, reqPv + 4) : true;
+          const invCap = reqInv > 0 ? pkgInv <= Math.max(reqInv * 2.5, reqInv + 4) : true;
+          const batCap = reqBat > 0 ? pkgBat <= Math.max(reqBat * 2.5, reqBat + 6) : true;
 
-            const diffPv = reqPv > 0 ? Math.abs(pkgPv - reqPv) / reqPv : 0;
-            const diffInv = reqInv > 0 ? Math.abs(pkgInv - reqInv) / reqInv : 0;
-            const diffBat = reqBat > 0 ? Math.abs(pkgBat - reqBat) / reqBat : 0;
+          const fits = pvOk && invOk && batOk && pvCap && invCap && batCap;
 
-            return {
-              ...pkg,
-              matchScore: diffPv + diffInv + diffBat,
-              fits,
-            };
-          })
+          const diffPv = reqPv > 0 ? Math.abs(pkgPv - reqPv) / reqPv : 0;
+          const diffInv = reqInv > 0 ? Math.abs(pkgInv - reqInv) / reqInv : 0;
+          const diffBat = reqBat > 0 ? Math.abs(pkgBat - reqBat) / reqBat : 0;
+
+          return {
+            ...pkg,
+            matchScore: diffPv + diffInv + diffBat,
+            fits,
+          };
+        });
+
+        const matched = scored
           .filter((pkg) => pkg.fits)
           .sort((a, b) => a.matchScore - b.matchScore)
           .slice(0, 3);
@@ -497,7 +518,7 @@ const CalculatorSectionTwo = () => {
 
     fetchPackages();
     return () => controller.abort();
-  }, [calculation, pvKwp, inverterKw, batteryKwh]);
+  }, [calculation, pvKwp, inverterKw, batteryKwh, requiredPvKwp, requiredLoadKw, requiredBatteryKwh]);
 
   const downloadPdf = () => {
     if (!hasCalculated) return;
@@ -511,7 +532,7 @@ const CalculatorSectionTwo = () => {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(15);
     doc.setFont("helvetica", "bold");
-    doc.text("FORTSOLAR ENGINEERING ENERGY AUDIT & ESTIMATE", 14, 15);
+    doc.text("FORTSOLAR ENERGY ESTIMATE & APPLIANCE SUMMARY", 14, 15);
 
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(9);
@@ -523,34 +544,36 @@ const CalculatorSectionTwo = () => {
     });
     doc.text(`Generated on: ${dateStr}  |  fortsolar.ng`, 14, 30);
 
-    const batConfig =
-      calculation?.batterySizing?.configurationLabel ??
-      `${Number(batteryKwh).toFixed(1)} kWh LiFePO4`;
-    const panelCount =
-      calculation?.pvSizing?.recommendedPanelCount ??
-      calculation?.display?.panelCount ??
-      Math.ceil((Number(pvKwp) * 1000) / 600);
-    const panelWatt = calculation?.pvSizing?.panelWattageW ?? 600;
-
     autoTable(doc, {
       startY: 38,
-      head: [["Engineering Metric", "Recommended Sizing / Specification"]],
+      head: [["System Metric", "Estimated Capacity Needed"]],
       body: [
         [
-          "Recommended Inverter Capacity",
-          `${Number(inverterKva).toFixed(1)} kVA / ${Number(inverterKw).toFixed(1)} kW (PF 0.8, +25% margin)`,
+          "Load Capacity Needed (Inverter)",
+          `${requiredLoadKw.toFixed(1)} kW (includes startup surge & 25% safety headroom)`,
         ],
-        ["Recommended Battery Bank", batConfig],
         [
-          "Recommended Solar PV Array",
-          `${Number(pvKwp).toFixed(2)} kWp (${panelCount} × ${panelWatt}W Monocrystalline Panels)`,
+          "Energy Storage Needed (Battery)",
+          requiredBatteryKwh > 0
+            ? `${requiredBatteryKwh.toFixed(1)} kWh`
+            : "0.0 kWh (Daytime usage only)",
+        ],
+        [
+          "Solar PV Needed",
+          `${requiredPvKwp.toFixed(2)} kWp`,
         ],
         [
           "Simultaneous Running Load / Connected Load",
           `${totals.simultaneousKW.toFixed(2)} kW simultaneous / ${totals.peakKW.toFixed(2)} kW connected`,
         ],
-        ["Total Daily Energy Consumption", `${totals.dailyKWh.toFixed(2)} kWh / day (${totals.totalWh.toLocaleString()} Wh)`],
-        ["Nighttime Backup Energy Requirement", `${totals.nightKWh.toFixed(2)} kWh / night (${totals.nightWh.toLocaleString()} Wh)`],
+        [
+          "Total Daily Energy Consumption",
+          `${totals.dailyKWh.toFixed(2)} kWh / day (${totals.totalWh.toLocaleString()} Wh)`,
+        ],
+        [
+          "Night Backup Energy Requirement",
+          `${totals.nightKWh.toFixed(2)} kWh / night (${totals.nightWh.toLocaleString()} Wh)`,
+        ],
       ],
       theme: "grid",
       styles: { fontSize: 9, cellPadding: 3 },
@@ -604,7 +627,7 @@ const CalculatorSectionTwo = () => {
     doc.setFont("helvetica", "italic");
     doc.setTextColor(120, 120, 120);
     doc.text(
-      "Note: Sizing uses Fortsolar Nigerian Engineering Standards (3.5h PSH baseline, 1.3x cloudy-weather safety factor, 80% LiFePO4 DoD, 95% battery efficiency, 92% inverter efficiency).",
+      "Note: Estimate factors in startup surge headroom, 80% usable lithium battery depth of discharge, 95% battery efficiency, 92% inverter efficiency, and cloudy-weather solar recovery margin.",
       14,
       Math.min(currentY, 275),
       { maxWidth: 180 },
@@ -674,30 +697,10 @@ const CalculatorSectionTwo = () => {
     }
   };
 
-  const batteryUnitsCount =
-    calculation?.batterySizing?.unitsCount ??
-    calculation?.display?.batteryUnitsCount ??
-    (Number(batteryKwh) > 0 ? Math.ceil(Number(batteryKwh) / 5) : 0);
-  const batteryUnitSize =
-    calculation?.batterySizing?.unitSizeKwh ?? calculation?.display?.batteryUnitKwh ?? 5;
-  const usableBatteryKwh =
-    calculation?.batterySizing?.usableCapacityKwh ??
-    calculation?.display?.usableBatteryKwh ??
-    Number(batteryKwh) * 0.7;
-  const panelCount =
-    calculation?.pvSizing?.recommendedPanelCount ??
-    calculation?.display?.panelCount ??
-    (Number(pvKwp) > 0 ? Math.ceil((Number(pvKwp) * 1000) / 600) : 0);
-  const panelWattageW =
-    calculation?.pvSizing?.panelWattageW ?? calculation?.display?.panelWattageW ?? 600;
   const estSolarGenKwh =
     calculation?.pvSizing?.estimatedDailyGenerationKwh ??
     calculation?.display?.estimatedDailySolarGenKwh ??
-    Number(pvKwp) * 3.5 * 0.78;
-  const estRechargeHours =
-    calculation?.pvSizing?.estimatedBatteryRechargeHours ??
-    calculation?.display?.estimatedRechargeHours ??
-    0;
+    requiredPvKwp * 3.5 * 0.78;
 
   return (
     <section className="max-w-6xl mx-auto px-4 pt-6 md:pt-10 my-6 md:my-10">
@@ -841,7 +844,7 @@ const CalculatorSectionTwo = () => {
 
               {/* Simultaneous Usage Mode */}
               <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-3 py-2">
-                <span className="text-xs font-medium text-[#344054]">Usage Pattern:</span>
+                <span className="text-xs font-medium text-[#344054]">Usage Mode:</span>
                 <select
                   value={row.simultaneousMode || "simultaneous"}
                   onChange={(e) =>
@@ -851,17 +854,17 @@ const CalculatorSectionTwo = () => {
                   }
                   className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-[#101828] outline-none focus:border-[#2CB22C]"
                 >
-                  <option value="simultaneous">Runs with others (Simultaneous)</option>
-                  <option value="staggered">Used separately (Occasional)</option>
+                  <option value="simultaneous">Runs Together</option>
+                  <option value="staggered">Used Separately</option>
                 </select>
               </div>
 
-              {/* Option A Conditional Night Backup + Night Hours */}
+              {/* Night Backup + Night Hours */}
               <div className="mt-3 rounded-xl border border-[#D1FADF] bg-white p-3">
                 <label className="flex cursor-pointer items-center justify-between text-sm font-medium text-[#101828]">
                   <span className="flex items-center gap-1.5">
                     <Moon className="h-4 w-4 text-[#2CB22C]" />
-                    Include in Night Backup?
+                    Night Backup Hrs?
                   </span>
                   <input
                     type="checkbox"
@@ -943,7 +946,7 @@ const CalculatorSectionTwo = () => {
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    Search our Nigerian appliance catalog or type any custom device
+                    Search the appliance catalog or type any custom device
                   </TooltipContent>
                 </Tooltip>
               </th>
@@ -970,15 +973,15 @@ const CalculatorSectionTwo = () => {
                   </TooltipContent>
                 </Tooltip>
               </th>
-              <th className="p-3 border-r text-center min-w-[165px]">
+              <th className="p-3 border-r text-center min-w-[155px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="inline-flex items-center gap-1 cursor-pointer">
-                      🌙 Night Backup & Hrs <Info className="h-3.5 w-3.5 text-gray-400" />
+                      Night Backup Hrs? <Info className="h-3.5 w-3.5 text-gray-400" />
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    Tick if used at night (6 PM – 6 AM) and specify how many of the Daily Hours occur at night
+                    Tick if used at night (6 PM – 6 AM) and enter how many of the Daily Hours occur at night
                   </TooltipContent>
                 </Tooltip>
               </th>
@@ -990,7 +993,7 @@ const CalculatorSectionTwo = () => {
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    Simultaneous loads run together; Staggered loads (e.g. iron, kettle, pump) run one at a time
+                    Runs Together loads run at the same time; Used Separately loads (e.g. iron, kettle, pump) run one at a time
                   </TooltipContent>
                 </Tooltip>
               </th>
@@ -1141,7 +1144,7 @@ const CalculatorSectionTwo = () => {
                     </div>
                   </td>
 
-                  {/* Option A Conditional Night Backup + Night Hours */}
+                  {/* Night Backup Checkbox + Conditional Night Hours Input */}
                   <td className="border-r p-2">
                     <div className="flex items-center justify-center gap-2">
                       <input
@@ -1153,7 +1156,7 @@ const CalculatorSectionTwo = () => {
                         }
                         className="w-4 h-4 accent-[#2CB22C] rounded border-gray-300 cursor-pointer shrink-0"
                       />
-                      {row.nightBackup ? (
+                      {row.nightBackup && (
                         <div className="flex items-center gap-1 animate-in fade-in duration-150">
                           <input
                             type="number"
@@ -1185,8 +1188,6 @@ const CalculatorSectionTwo = () => {
                             /{row.hours || 24}h
                           </span>
                         </div>
-                      ) : (
-                        <span className="text-xs text-gray-400">Day only</span>
                       )}
                     </div>
                   </td>
@@ -1262,32 +1263,44 @@ const CalculatorSectionTwo = () => {
             >
               {activeSuggestions.map((device) => {
                 const isDefaultNight =
-                  device.name.toLowerCase().includes("fridge") ||
-                  device.name.toLowerCase().includes("freezer") ||
-                  device.name.toLowerCase().includes("fan") ||
-                  device.name.toLowerCase().includes("bulb") ||
-                  device.name.toLowerCase().includes("floodlight") ||
-                  device.name.toLowerCase().includes("cctv") ||
-                  device.name.toLowerCase().includes("router");
+                  device.nightBackupDefault !== undefined
+                    ? Boolean(device.nightBackupDefault)
+                    : device.name.toLowerCase().includes("fridge") ||
+                      device.name.toLowerCase().includes("freezer") ||
+                      device.name.toLowerCase().includes("fan") ||
+                      device.name.toLowerCase().includes("bulb") ||
+                      device.name.toLowerCase().includes("floodlight") ||
+                      device.name.toLowerCase().includes("cctv") ||
+                      device.name.toLowerCase().includes("router");
                 const defaultDailyHours =
-                  device.name.toLowerCase().includes("fridge") ||
-                  device.name.toLowerCase().includes("freezer")
-                    ? 16
-                    : device.name.toLowerCase().includes("pump") ||
-                        device.name.toLowerCase().includes("iron") ||
-                        device.name.toLowerCase().includes("kettle") ||
-                        device.name.toLowerCase().includes("washing")
-                      ? 1
-                      : 6;
+                  device.dailyHoursUsage && device.dailyHoursUsage > 0
+                    ? Number(device.dailyHoursUsage)
+                    : device.name.toLowerCase().includes("fridge") ||
+                        device.name.toLowerCase().includes("freezer")
+                      ? 16
+                      : device.name.toLowerCase().includes("pump") ||
+                          device.name.toLowerCase().includes("iron") ||
+                          device.name.toLowerCase().includes("kettle") ||
+                          device.name.toLowerCase().includes("washing")
+                        ? 1
+                        : 6;
                 const defaultNightHours = isDefaultNight
-                  ? Math.min(defaultDailyHours, 8)
+                  ? device.defaultNightHours && device.defaultNightHours > 0
+                    ? Math.min(defaultDailyHours, Number(device.defaultNightHours))
+                    : Math.min(defaultDailyHours, 8)
                   : "";
-                const isStaggeredDefault =
-                  device.name.toLowerCase().includes("pump") ||
-                  device.name.toLowerCase().includes("iron") ||
-                  device.name.toLowerCase().includes("kettle") ||
-                  device.name.toLowerCase().includes("microwave") ||
-                  device.name.toLowerCase().includes("washing");
+                const defaultMode: SimultaneousMode =
+                  device.defaultUsageMode === "staggered"
+                    ? "staggered"
+                    : device.defaultUsageMode === "simultaneous"
+                      ? "simultaneous"
+                      : device.name.toLowerCase().includes("pump") ||
+                          device.name.toLowerCase().includes("iron") ||
+                          device.name.toLowerCase().includes("kettle") ||
+                          device.name.toLowerCase().includes("microwave") ||
+                          device.name.toLowerCase().includes("washing")
+                        ? "staggered"
+                        : "simultaneous";
 
                 return (
                   <button
@@ -1304,9 +1317,7 @@ const CalculatorSectionTwo = () => {
                         quantity: 1,
                         nightBackup: isDefaultNight,
                         nightHours: defaultNightHours,
-                        simultaneousMode: isStaggeredDefault
-                          ? "staggered"
-                          : "simultaneous",
+                        simultaneousMode: defaultMode,
                         inductive: device.inductive || false,
                         surgeMultiplier: device.surgeMultiplier || 1,
                       });
@@ -1356,46 +1367,35 @@ const CalculatorSectionTwo = () => {
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-3.5 bg-amber-500 rounded-xs"></div>
           <span>
-            <strong>Inductive motor load:</strong> Startup surge is factored into inverter sizing
+            <strong>Inductive motor load:</strong> Startup surge is factored into required load capacity
           </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 bg-[#2CB22C] rounded-full"></div>
           <span>
-            <strong>🌙 Night Backup:</strong> Enter exact night hours (out of daily hours) to size your lithium battery bank accurately
+            <strong>Night Backup Hrs:</strong> Tick the checkbox and enter night hours to size battery storage
           </span>
         </div>
       </div>
 
-      {/* ── 3 Prominent Engineering Result Cards + Summary ──────────────── */}
-      <div ref={summaryRef} className="mt-10 mb-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF3] px-3 py-1 text-xs font-semibold text-[#027A48] mb-2">
-              <Zap className="h-3.5 w-3.5" /> Nigerian Engineering Standard Sizing
-            </span>
-            <h3 className="text-xl md:text-2xl font-bold text-[#101828]">
-              Your Custom Solar Engineering Recommendation
-            </h3>
-            <p className="text-sm text-[#475467] mt-1">
-              Sized independently for peak load &amp; motor surge (Inverter), nighttime backup energy (Battery), and rainy-season recharge recovery (Solar PV).
-            </p>
-          </div>
-          {isCalculating && (
+      {/* ── 3 Direct Capacity Cards + 4-Metric Energy Bar ──────────────── */}
+      <div ref={summaryRef} className="mt-8 mb-10">
+        {isCalculating && (
+          <div className="mb-3 flex justify-end">
             <span className="text-xs font-medium text-[#027A48] animate-pulse">
-              Updating engineering calculations...
+              Updating calculations...
             </span>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* 3 Hero Cards */}
+        {/* 3 Capacity Cards (Load kW, Energy kWh, Solar PV kWp) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {/* Card 1: Recommended Inverter */}
+          {/* Card 1: Load Capacity Needed (kW) */}
           <div className="rounded-2xl border border-[#EAECF0] bg-white p-5 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#667085]">
-                  Recommended Inverter
+                  Load Capacity Needed
                 </span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ECFDF3] text-[#027A48]">
                   <Cpu className="h-5 w-5" />
@@ -1403,14 +1403,11 @@ const CalculatorSectionTwo = () => {
               </div>
               <div className="flex items-baseline gap-2">
                 <p className="text-3xl font-extrabold text-[#101828]">
-                  {Number(inverterKva).toFixed(1)} kVA
+                  {requiredLoadKw.toFixed(1)} kW
                 </p>
-                <span className="text-sm font-semibold text-[#027A48]">
-                  ({Number(inverterKw).toFixed(1)} kW)
-                </span>
               </div>
               <p className="mt-1 text-xs text-[#475467]">
-                Pure Sine Wave Hybrid Inverter (PF 0.8, +25% safety headroom)
+                Includes startup surge &amp; continuous safety margin
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-gray-100 space-y-1 text-xs text-[#475467]">
@@ -1420,21 +1417,23 @@ const CalculatorSectionTwo = () => {
                   {totals.simultaneousKW.toFixed(2)} kW ({Math.round(totals.simultaneousKW * 1000)} W)
                 </strong>
               </div>
-              <div className="flex justify-between">
-                <span>Max Motor Surge Headroom:</span>
-                <strong className="text-amber-700">
-                  +{Math.round(totals.maxSurgeW).toLocaleString()} W
-                </strong>
-              </div>
+              {totals.maxSurgeW > 0 && (
+                <div className="flex justify-between">
+                  <span>Motor Surge Headroom:</span>
+                  <strong className="text-amber-700">
+                    +{Math.round(totals.maxSurgeW).toLocaleString()} W
+                  </strong>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Card 2: Recommended Battery Bank */}
+          {/* Card 2: Energy / Battery Capacity Needed (kWh) */}
           <div className="rounded-2xl border-2 border-[#2CB22C] bg-[#F6FFF6]/60 p-5 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#027A48]">
-                  Recommended Battery Bank
+                  Energy Storage Needed
                 </span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2CB22C] text-white">
                   <BatteryCharging className="h-5 w-5" />
@@ -1442,42 +1441,37 @@ const CalculatorSectionTwo = () => {
               </div>
               <div className="flex items-baseline gap-2">
                 <p className="text-3xl font-extrabold text-[#101828]">
-                  {Number(batteryKwh).toFixed(1)} kWh
+                  {requiredBatteryKwh.toFixed(1)} kWh
                 </p>
-                <span className="text-xs font-semibold text-[#027A48]">
-                  Nominal LiFePO4
-                </span>
               </div>
-              <p className="mt-1 text-xs font-semibold text-[#027A48]">
-                {batteryUnitsCount > 0
-                  ? `${batteryUnitsCount} × ${batteryUnitSize}kWh Lithium Module${batteryUnitsCount > 1 ? "s" : ""} (${usableBatteryKwh.toFixed(1)} kWh Usable)`
-                  : "No night backup loads selected (0 kWh)"}
+              <p className="mt-1 text-xs font-medium text-[#027A48]">
+                {totals.nightKWh > 0
+                  ? "Sized for your selected night backup hours"
+                  : "Tick Night Backup Hrs to size battery storage"}
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-[#2CB22C]/20 space-y-1 text-xs text-[#344054]">
               <div className="flex justify-between">
-                <span>Nighttime Energy Need:</span>
+                <span>Night Backup Energy:</span>
                 <strong className="text-[#101828]">
                   {totals.nightKWh.toFixed(2)} kWh ({Math.round(totals.nightWh).toLocaleString()} Wh)
                 </strong>
               </div>
               <div className="flex justify-between">
-                <span>Est. Backup Duration:</span>
+                <span>Total Daily Energy:</span>
                 <strong className="text-[#027A48]">
-                  {calculation?.batterySizing?.requestedBackupHours
-                    ? `${calculation.batterySizing.estimatedBackupHours.toFixed(1)} hrs (Req: ${calculation.batterySizing.requestedBackupHours.toFixed(1)}h)`
-                    : "Daytime Only"}
+                  {totals.dailyKWh.toFixed(2)} kWh
                 </strong>
               </div>
             </div>
           </div>
 
-          {/* Card 3: Recommended Solar PV Array */}
+          {/* Card 3: Solar PV Capacity Needed (kWp) */}
           <div className="rounded-2xl border border-[#EAECF0] bg-white p-5 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#667085]">
-                  Recommended Solar Array
+                  Solar PV Needed
                 </span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                   <Sun className="h-5 w-5" />
@@ -1485,36 +1479,31 @@ const CalculatorSectionTwo = () => {
               </div>
               <div className="flex items-baseline gap-2">
                 <p className="text-3xl font-extrabold text-[#101828]">
-                  {Number(pvKwp).toFixed(2)} kWp
+                  {requiredPvKwp.toFixed(2)} kWp
                 </p>
-                <span className="text-xs font-semibold text-amber-700">
-                  ({panelCount} × {panelWattageW}W Panels)
-                </span>
               </div>
               <p className="mt-1 text-xs text-[#475467]">
-                Includes 1.3× Nigerian rainy/cloudy weather safety factor
+                Covers daytime usage &amp; daily battery recharge
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-gray-100 space-y-1 text-xs text-[#475467]">
               <div className="flex justify-between">
-                <span>Est. Daily Generation:</span>
+                <span>Est. Daily Solar Yield:</span>
                 <strong className="text-[#101828]">
                   ~{estSolarGenKwh.toFixed(1)} kWh / day
                 </strong>
               </div>
               <div className="flex justify-between">
-                <span>Battery Recharge Time:</span>
+                <span>Daytime Direct Load:</span>
                 <strong className="text-[#027A48]">
-                  {estRechargeHours > 0
-                    ? `~${estRechargeHours.toFixed(1)} Peak Sun Hrs`
-                    : "N/A (No night load)"}
+                  {totals.daytimeKWh.toFixed(2)} kWh
                 </strong>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Engineering Warnings (if any) */}
+        {/* Warnings (if any) */}
         {calculation?.warnings && calculation.warnings.length > 0 && (
           <div className="mt-4 space-y-2">
             {calculation.warnings.map((warn, idx) => (
@@ -1529,7 +1518,7 @@ const CalculatorSectionTwo = () => {
           </div>
         )}
 
-        {/* Detailed Energy Breakdown & Collapsible Engineering Assumptions */}
+        {/* 4-Metric Summary Block */}
         <div className="mt-6 rounded-2xl border border-[#EAECF0] bg-white overflow-hidden">
           <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gray-100 p-4 text-center">
             <div className="p-2">
@@ -1565,57 +1554,6 @@ const CalculatorSectionTwo = () => {
               </p>
             </div>
           </div>
-
-          <div className="border-t border-gray-100 bg-gray-50/60 px-4 py-2.5">
-            <button
-              type="button"
-              onClick={() => setShowAssumptions((v) => !v)}
-              className="flex w-full items-center justify-between text-xs font-semibold text-[#344054] hover:text-[#101828]"
-            >
-              <span>View Nigerian Engineering Design Parameters &amp; Efficiencies</span>
-              <ChevronDown
-                className={`h-4 w-4 transition-transform ${
-                  showAssumptions ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            {showAssumptions && (
-              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-gray-200/70 text-[11px] text-[#475467]">
-                <div>
-                  <span className="text-gray-500">Peak Sun Hours (PSH):</span>{" "}
-                  <strong className="text-[#101828]">3.5 hrs/day</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">Cloudy Safety Factor:</span>{" "}
-                  <strong className="text-[#101828]">1.3×</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">PV Performance Ratio:</span>{" "}
-                  <strong className="text-[#101828]">78%</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">LiFePO4 Usable DoD:</span>{" "}
-                  <strong className="text-[#101828]">80%</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">Battery Charge/Disch Eff:</span>{" "}
-                  <strong className="text-[#101828]">95% / 95%</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">Inverter Efficiency:</span>{" "}
-                  <strong className="text-[#101828]">92% (PF 0.8)</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">Inverter Safety Margin:</span>{" "}
-                  <strong className="text-[#101828]">+25% (1.25×)</strong>
-                </div>
-                <div>
-                  <span className="text-gray-500">Standard Modules:</span>{" "}
-                  <strong className="text-[#101828]">600W PV / 5kWh Bat</strong>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
@@ -1634,11 +1572,11 @@ const CalculatorSectionTwo = () => {
                 <div className="flex items-center gap-2 mb-2">
                   <Zap className="h-6 w-6 text-[#2CB22C] fill-[#2CB22C]" />
                   <h2 className="text-[24px] md:text-[32px] font-bold text-[#101828] leading-tight">
-                    We have packages that match your energy needs!
+                    Packages Matching Your Energy Needs
                   </h2>
                 </div>
                 <p className="text-[#475467] text-base md:text-lg max-w-3xl">
-                  We’ve found the best package(s) based on your energy needs. Select your preferred choice to continue. All packages include free delivery and installation.
+                  Select a package below to order directly, or click &ldquo;Get Quote&rdquo; to speak with our engineers for a custom-tailored system.
                 </p>
               </div>
 
@@ -1819,10 +1757,10 @@ const CalculatorSectionTwo = () => {
           {!isFetchingPackages && suggestedPackages.length === 0 && hasCalculated && (
             <div className="border border-dashed border-gray-200 rounded-xl p-5 text-center mt-8">
               <p className="text-sm font-medium text-[#101828] mb-1">
-                Custom Engineered System Recommended
+                Custom System Recommended
               </p>
               <p className="text-[#475467] text-xs text-center max-w-xl mx-auto">
-                Your load profile is best served by a custom-tailored Fortsolar package. Click &ldquo;Get Quote&rdquo; below and our engineering team will send your itemized quotation within 24 hours.
+                Your load profile is best served by a custom-tailored Fortsolar package. Click &ldquo;Get Quote&rdquo; below and our engineering team will send your itemized quotation.
               </p>
             </div>
           )}
@@ -1844,12 +1782,12 @@ const CalculatorSectionTwo = () => {
             onClick={downloadPdf}
             className="cursor-pointer w-full sm:w-fit py-6 rounded-xl font-semibold border-gray-300"
           >
-            <PdfIcon /> Download Engineering Summary (PDF)
+            <PdfIcon /> Download Summary (PDF)
           </Button>
         </div>
       )}
 
-      {/* ── Brief, Plain-English Engineering FAQ Section ──────────────── */}
+      {/* ── Brief, Plain-English FAQ Section ──────────────── */}
       <div className="mt-16 rounded-2xl border border-[#EAECF0] bg-white p-6 md:p-8">
         <div className="flex items-center gap-2.5 mb-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECFDF3] text-[#027A48]">
@@ -1860,7 +1798,7 @@ const CalculatorSectionTwo = () => {
           </h3>
         </div>
         <p className="text-xs md:text-sm text-[#475467] mb-6">
-          Brief answers on how we calculate your inverter, lithium battery, and solar panel requirements using Nigerian standards.
+          Brief answers on how we estimate your load capacity, battery storage, and solar panel requirements.
         </p>
 
         <div className="divide-y divide-gray-100">

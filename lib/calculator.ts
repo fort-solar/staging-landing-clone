@@ -384,7 +384,7 @@ export function calculateEngineeringSystem(
 
   let pvWarning: string | null = null;
   if (recommendedInverterKw > 0 && installedPvKwp > recommendedInverterKw * 1.6) {
-    pvWarning = `High night energy demand requires a ${installedPvKwp.toFixed(2)}kWp solar array (${recommendedPanelCount} panels), which exceeds typical MPPT input limits for a ${recommendedInverterKva}kVA inverter.`;
+    pvWarning = `High night energy demand requires a ${installedPvKwp.toFixed(2)}kWp solar array, which exceeds typical MPPT input limits for a ${recommendedInverterKw}kW inverter.`;
     warnings.push(pvWarning);
   }
 
